@@ -62,6 +62,18 @@
 
   <section aria-labelledby="hist-h">
     <h2 id="hist-h">Status history</h2>
+    {% if a.eu_history %}
+    <h3 class="subh">EU list since 2013</h3>
+    <ol class="timeline">
+      {% for h in a.eu_history|sort(attribute='date', reverse=True) %}
+      <li><time datetime="{{ h.date }}">{{ fmt_date(h.date) }}</time> — {{ h.change }} (<a href="{{ h.url }}" rel="noopener">consolidated text</a>)</li>
+      {% endfor %}
+    </ol>
+    <p class="muted small">Each date is the first EU consolidated text that shows the change. The amending act may be older, and transition periods can apply.</p>
+    {% elif EU_HISTORY.versions and a.e %}
+    <p class="muted">No change to this additive's EU status in the {{ EU_HISTORY.versions }} consolidated versions of the EU list since {{ fmt_date(EU_HISTORY.first[:4] ~ '-' ~ EU_HISTORY.first[4:6] ~ '-' ~ EU_HISTORY.first[6:]) }}.</p>
+    {% endif %}
+    <h3 class="subh">Weekly checks</h3>
     {% if changes %}
     <ol class="timeline">
       {% for c in changes|sort(attribute='date', reverse=True) %}
@@ -69,7 +81,7 @@
       {% endfor %}
     </ol>
     {% else %}
-    <p class="muted">No status change detected since tracking started. <a href="{{ url('/changes/') }}">See all changes</a>.</p>
+    <p class="muted">No status change detected in the weekly checks since tracking started. <a href="{{ url('/changes/') }}">See all changes</a>.</p>
     {% endif %}
   </section>
 

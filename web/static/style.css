@@ -204,3 +204,5 @@ table.sources td, table.sources th { font-size: .9rem; }
   body { background: #fff; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+
+h3.subh { font-size: 1rem; margin: 14px 0 4px; color: var(--muted); }

@@ -10,24 +10,28 @@ JURISDICTIONS = {
     "eu": {
         "short": "EU",
         "name": "European Union",
+        "name_in": "the European Union",
         "system": "positive list",
         "system_note": "Only additives on the Union list (Annex II of Regulation (EC) No 1333/2008) may be used, and only in the foods and at the levels listed.",
     },
     "gb": {
         "short": "UK (GB)",
         "name": "Great Britain (England, Scotland, Wales)",
+        "name_in": "Great Britain",
         "system": "positive list",
         "system_note": "Great Britain keeps its own version of the EU additives list. Northern Ireland follows EU rules, so it is covered by the EU column.",
     },
     "us": {
         "short": "US",
         "name": "United States (federal)",
+        "name_in": "the United States",
         "system": "listed regulations + GRAS",
         "system_note": "Food additives and colour additives need FDA approval, but substances 'generally recognized as safe' (GRAS) can be used without being listed. So 'not in the FDA inventory' does not mean 'not allowed'. State laws are not covered.",
     },
     "ca": {
         "short": "Canada",
         "name": "Canada",
+        "name_in": "Canada",
         "system": "positive list",
         "system_note": "Food additives must appear on one of Health Canada's 15 Lists of Permitted Food Additives, for the listed foods and purposes.",
     },

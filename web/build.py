@@ -167,6 +167,7 @@ class Builder:
             generated_at=self.data.get("generated_at"),
             sources=self.data.get("sources", {}),
             quality=self.data.get("quality", []),
+            EU_HISTORY=self.data.get("eu_history") or {},
             CLASSES=[],
             TINY={"authorised": "Yes", "phase_out": "Ending", "not_authorised": "No",
                   "prohibited": "No", "delisted": "No", "not_listed": "?", "listed_noreg": "?",
@@ -257,8 +258,8 @@ class Builder:
         sets = self.compare_sets()
         for s in sets:
             self.page(s["path"], "compare.html", priority=0.8, page_title=s["title"], s=s,
-                      description=f"{len(s['items'])} food additives that are allowed in the "
-                                  f"{JURISDICTIONS[s['a']]['name']} but not in the {JURISDICTIONS[s['b']]['name']}, "
+                      description=f"{len(s['items'])} food additives that are allowed in "
+                                  f"{JURISDICTIONS[s['a']]['name_in']} but not in {JURISDICTIONS[s['b']]['name_in']}, "
                                   "with the official status and source for each.")
         self.page("/compare/", "compare_index.html", priority=0.8,
                   page_title="Where food additive rules differ: EU, UK, US and Canada", sets=sets,
@@ -311,8 +312,8 @@ class Builder:
     def build_changes_page(self) -> None:
         entries = sorted(self.changelog.get("entries", []), key=lambda e: e.get("date", ""), reverse=True)
         self.page("/changes/", "changes.html", priority=0.7,
-                  page_title="Recent changes in food additive status",
-                  entries=entries, by_id=self.by_id,
+                  page_title="Changes in food additive status: weekly checks and EU history since 2013",
+                  entries=entries, by_id=self.by_id, eu_events=self.data.get("eu_history_events", []),
                   tracking_since=self.changelog.get("tracking_since"),
                   description="Status changes for food additives detected in the official EU, UK, US and Canadian sources, with dates.")
 

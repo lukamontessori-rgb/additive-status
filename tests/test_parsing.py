@@ -117,3 +117,17 @@ def test_fr_effective_date():
     rev = [{"norm_title": " revocation color additive listing use orange b casing ", "publication_date": "2026-07-23"}]
     assert parse_fr.match_revocation({"key": "orange b", "other_names": []}, rev)
     assert parse_fr.match_revocation({"key": "orange", "other_names": []}, rev) is None
+
+
+def test_eu_history_timeline_and_renumbering():
+    from pipeline import eu_history
+    hist = {"versions": {
+        "20130601": {"celex": "c1", "codes": {"e171": "A", "e960": "A", "e100": "A"}},
+        "20220222": {"celex": "c2", "codes": {"e171": "N", "e960": "A", "e100": "A"}},
+        "20230601": {"celex": "c3", "codes": {"e171": "N", "e960a": "A", "e960b": "A", "e100": "A", "e999": "A"}},
+    }}
+    ev = eu_history.timeline(hist)
+    assert ev["e171"] == [{"version": "20220222", "previous_version": "20130601", "celex": "c2", "from": "A", "to": "N"}]
+    assert "e960" not in ev and "e960a" not in ev          # split into e960a/e960b is not a change
+    assert ev["e999"][0]["from"] == "X" and ev["e999"][0]["to"] == "A"
+    assert "e100" not in ev

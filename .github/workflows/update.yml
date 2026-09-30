@@ -51,12 +51,19 @@ jobs:
         continue-on-error: true
         run: mkdir -p /tmp/ci && python -m pipeline.fetch 2>&1 | tee /tmp/ci/fetch.log
 
+      - name: EU history from consolidated versions
+        # Downloads only consolidated versions not processed before (all of them on the first run).
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python -m pipeline.eu_history 2>&1 | tee /tmp/ci/eu-history.log
+
       - name: Commit raw snapshots
         run: |
           exec > >(tee /tmp/ci/commit-raw.log) 2>&1
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/raw
+          if [ -d data/history ]; then git add data/history; fi
           if ! git diff --cached --quiet; then
             git commit -m "Raw source snapshot $(date -u +%F)"
             git pull --rebase origin "$GITHUB_REF_NAME"

@@ -3,7 +3,7 @@
 {% block main %}
 {{ breadcrumbs([("Where the rules differ", "/compare/"), (s.short, None)]) }}
 <h1>{{ s.title }}</h1>
-<p class="lede">{{ s['items']|length }} additive{{ '' if s['items']|length == 1 else 's' }} {{ 'is' if s['items']|length == 1 else 'are' }} allowed (authorised or still in a phase-out period) in the {{ JUR[s.a].name }} but not allowed in the {{ JUR[s.b].name }} (not authorised, prohibited or revoked).</p>
+<p class="lede">{{ s['items']|length }} additive{{ '' if s['items']|length == 1 else 's' }} {{ 'is' if s['items']|length == 1 else 'are' }} allowed (authorised or still in a phase-out period) in {{ JUR[s.a].name_in }} but not allowed in {{ JUR[s.b].name_in }} (not authorised, prohibited or revoked).</p>
 <div class="note">
   <p><strong>{{ JUR[s.a].short }}:</strong> {{ JUR[s.a].system_note }}</p>
   <p><strong>{{ JUR[s.b].short }}:</strong> {{ JUR[s.b].system_note }}</p>

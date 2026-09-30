@@ -14,7 +14,7 @@ from datetime import date
 
 import yaml
 
-from pipeline import parse_ca, parse_eu, parse_fr, parse_specs, parse_uk, parse_us
+from pipeline import eu_history, parse_ca, parse_eu, parse_fr, parse_specs, parse_uk, parse_us
 from pipeline.common import CURATED, INTERIM, PUBLISHED, RAW, load_sources, now_iso, read_json, write_json
 from pipeline.model import JUR_ORDER
 from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
@@ -662,6 +662,27 @@ class Build:
             additives.append(item)
         additives.sort(key=lambda a: a["sort"])
 
+        # EU history from consolidated versions (since the Union list applied, 1 June 2013)
+        hist = read_json(eu_history.HISTORY, {}) or {}
+        events = eu_history.timeline(hist) if hist.get("versions") else {}
+        change_text = {("X", "A"): "Added to the EU list", ("A", "X"): "Removed from the EU list",
+                       ("A", "N"): "No longer authorised in food", ("N", "A"): "Authorised in food again",
+                       ("N", "X"): "Removed from the EU list", ("X", "N"): "Added to the EU list, but not for use in food"}
+        eu_hist_all = []
+        for a in additives:
+            evs = []
+            for e in events.get(a["id"], []):
+                d = e["version"]
+                item = {"date": f"{d[:4]}-{d[4:6]}-{d[6:]}", "change": change_text.get((e["from"], e["to"]), "Status changed"),
+                        "url": f"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:{e['celex']}"}
+                evs.append(item)
+                eu_hist_all.append({**item, "id": a["id"]})
+            if evs:
+                a["eu_history"] = evs
+        vs = sorted(hist.get("versions", {}))
+        eu_history_meta = {"versions": len(vs), "first": vs[0] if vs else None, "last": vs[-1] if vs else None,
+                           "skipped": len(hist.get("skipped", {}))}
+
         # changelog
         today = self.today.isoformat()
         changelog = read_json(PUBLISHED / "changelog.json", {"entries": [], "tracking_since": None})
@@ -737,6 +758,8 @@ class Build:
         write_json(INTERIM / "match_log.json", {"us": dict(us_stats), "ca": dict(ca_stats), **self.log})
 
         published = {"generated_at": now_iso(), "data_version": today, "method_version": METHOD_VERSION,
+                     "eu_history": eu_history_meta,
+                     "eu_history_events": sorted(eu_hist_all, key=lambda x: x["date"], reverse=True),
                      "sources": src_out,
                      "counts": self.counts() or self.prev.get("counts", {}), "quality": quality,
                      "additives": additives}

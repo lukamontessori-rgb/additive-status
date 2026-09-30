@@ -22,6 +22,25 @@
 </table>
 </div>
 {% else %}
-<p class="empty">No status changes detected yet.</p>
+<p class="empty">No status changes detected in the weekly checks yet.</p>
+{% endif %}
+
+{% if eu_events %}
+<h2 id="eu-history">EU list changes since {{ fmt_date(EU_HISTORY.first[:4] ~ '-' ~ EU_HISTORY.first[4:6] ~ '-' ~ EU_HISTORY.first[6:]) }}</h2>
+<p>Found by comparing all {{ EU_HISTORY.versions }} consolidated versions of the EU additives regulation (Regulation (EC) No 1333/2008) since the Union list started to apply. Each date is the first consolidated text that shows the change; the amending act may be older, and transition periods can apply.</p>
+<div class="table-wrap">
+<table class="grid">
+  <thead><tr><th scope="col">Consolidated text</th><th scope="col">Additive</th><th scope="col">Change</th></tr></thead>
+  <tbody>
+  {% for e in eu_events %}{% set a = by_id.get(e.id) %}
+  <tr>
+    <td><a href="{{ e.url }}" rel="noopener"><time datetime="{{ e.date }}">{{ fmt_date(e.date) }}</time></a></td>
+    <th scope="row">{% if a %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% else %}{{ e.id }}{% endif %}</th>
+    <td>{{ e.change }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
 {% endif %}
 {% endblock %}
