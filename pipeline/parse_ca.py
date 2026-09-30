@@ -49,6 +49,7 @@ def _col(header: list[str], *keys) -> int | None:
 
 def clean_additive_name(raw: str) -> str:
     name = raw.split("\n")[0]
+    name = re.sub(r"\s*Footnote\s*[\w*†‡]*", "", name)   # footnote link text
     name = re.sub(r"[\*†‡]+", "", name)
     name = re.sub(r"\s*\((?:see|refer)[^)]*\)", "", name, flags=re.I)
     return re.sub(r"\s+", " ", name).strip(" ,;:")
@@ -122,8 +123,8 @@ def parse_all() -> dict:
             if r["item"] and r["item"] not in L["items"]:
                 L["items"].append(r["item"])
             for p in re.split(r"\n|;", r["purpose"] or ""):
-                p = p.strip()
-                if p and p not in L["purposes"]:
+                p = re.sub(r"^\([a-z0-9.]+\)\s*", "", p.strip()).strip()
+                if p and not re.fullmatch(r"\(?[a-z0-9.]+\)?", p) and p.lower() != "n/a" and p not in L["purposes"]:
                     L["purposes"].append(p)
             if r["foods"]:
                 L["food_rows"] += 1

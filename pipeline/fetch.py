@@ -208,7 +208,43 @@ def fetch_eurlex_latest(sess, sid, cfg, src_dir, meta):
                                       "notes": errors})]
 
 
+def fetch_fr_api(sess, sid, cfg, src_dir, meta):
+    """Federal Register API: FDA final rules touching the listed 21 CFR parts."""
+    fields = ["title", "document_number", "publication_date", "effective_on", "dates", "action",
+              "html_url", "abstract", "cfr_references", "type"]
+    docs = {}
+    for part in cfg["parts"]:
+        page = 1
+        while page <= 20:
+            params = [("conditions[agencies][]", "food-and-drug-administration"),
+                      ("conditions[type][]", "RULE"),
+                      ("conditions[cfr][title]", "21"),
+                      ("conditions[cfr][part]", str(part)),
+                      ("conditions[publication_date][gte]", cfg["since"]),
+                      ("order", "newest"), ("per_page", "100"), ("page", str(page))]
+            params += [("fields[]", f) for f in fields]
+            url = cfg["endpoint"]
+            if not robots_allowed(sess, url):
+                raise FetchError(f"robots.txt disallows {url}")
+            r = get_with_retry(sess, url, params=params, headers={"Accept": "application/json"})
+            if r.status_code != 200:
+                raise FetchError(f"Federal Register API HTTP {r.status_code} (part {part})")
+            data = r.json()
+            for d in data.get("results", []):
+                docs.setdefault(d["document_number"], d)
+            if not data.get("next_page_url"):
+                break
+            page += 1
+    if not docs:
+        raise FetchError("Federal Register API returned no documents")
+    body = json.dumps(sorted(docs.values(), key=lambda d: d["document_number"]), ensure_ascii=False,
+                      indent=1, sort_keys=True).encode("utf-8")
+    return [store(src_dir, cfg["file"], body, cfg["endpoint"], cfg["endpoint"], "application/json",
+                  meta, {"documents": len(docs)})]
+
+
 FETCHERS = {
+    "fr_api": fetch_fr_api,
     "http": fetch_http,
     "http_multi": fetch_http_multi,
     "fsa_paged": fetch_fsa_paged,

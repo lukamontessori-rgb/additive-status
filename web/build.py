@@ -79,6 +79,9 @@ def not_allowed(st: str) -> bool:
     return st in NOT_ALLOWED_LIKE
 
 
+ARTICLE = {"EU": "the EU", "UK (GB)": "the UK (GB)", "US": "the US"}
+
+
 def summary_sentence(a: dict) -> str:
     """Plain factual one-line answer built only from the status data."""
     groups = defaultdict(list)
@@ -89,6 +92,7 @@ def summary_sentence(a: dict) -> str:
     parts = []
 
     def join(xs):
+        xs = [ARTICLE.get(x, x) for x in xs]
         return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
 
     if groups.get("authorised"):
@@ -102,8 +106,10 @@ def summary_sentence(a: dict) -> str:
         parts.append(f"prohibited in {join(groups['prohibited'])}")
     if groups.get("delisted"):
         parts.append(f"delisted in {join(groups['delisted'])}")
+    if groups.get("listed_noreg"):
+        parts.append("in the FDA inventory without a cited regulation (US)")
     if groups.get("not_listed"):
-        parts.append("not listed in the FDA inventory (US)")
+        parts.append(f"not on the list in {join(groups['not_listed'])}, which does not cover every permitted substance")
     if not parts:
         return f"We have no status data for {name}."
     s = f"{name} is " + "; ".join(parts) + "."
@@ -163,7 +169,8 @@ class Builder:
             quality=self.data.get("quality", []),
             CLASSES=[],
             TINY={"authorised": "Yes", "phase_out": "Ending", "not_authorised": "No",
-                  "prohibited": "No", "delisted": "No", "not_listed": "?", "unknown": "–"},
+                  "prohibited": "No", "delisted": "No", "not_listed": "?", "listed_noreg": "?",
+                  "unknown": "–"},
         )
 
     # ------------------------------------------------------------ helpers

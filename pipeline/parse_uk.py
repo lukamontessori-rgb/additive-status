@@ -56,7 +56,13 @@ def parse_all() -> dict:
         rec = records.setdefault(key, {
             "key": key, "e": e_display(*p), "name": name, "groups": [], "phases": [],
             "nations": [], "terms": [], "last_modified": None, "notes": [], "url": it.get("@id"),
+            "phase_notes": [],
         })
+        for ph in it.get("phase") or []:
+            if isinstance(ph, dict):
+                for n in ph.get("phaseNotes", []):
+                    if isinstance(n, str) and n not in rec["phase_notes"]:
+                        rec["phase_notes"].append(n)
         for g in groups:
             if g not in rec["groups"]:
                 rec["groups"].append(g)

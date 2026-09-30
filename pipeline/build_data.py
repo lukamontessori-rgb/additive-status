@@ -1,8 +1,8 @@
 """Parse all raw sources, join them, validate, and publish data/published/*.json.
 
 If a source fails to parse or fails validation, the previous published
-values for that jurisdiction are kept and the problem is written to
-data/published/health.json (the workflow turns that into a GitHub issue).
+values for that jurisdiction are kept (marked stale) and the problem is
+written to data/published/health.json; the workflow turns that into an issue.
 """
 from __future__ import annotations
 
@@ -10,18 +10,53 @@ import re
 import sys
 import traceback
 from collections import Counter, defaultdict
+from datetime import date
 
 import yaml
 
-from pipeline import parse_ca, parse_eu, parse_uk, parse_us
+from pipeline import parse_ca, parse_eu, parse_fr, parse_specs, parse_uk, parse_us
 from pipeline.common import CURATED, INTERIM, PUBLISHED, RAW, load_sources, now_iso, read_json, write_json
 from pipeline.model import JUR_ORDER
-from pipeline.names import e_display, e_id, e_parts, e_sort, name_variants, norm_name
+from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
 
-STATUS_RANK = {"authorised": 6, "phase_out": 5, "prohibited": 4, "delisted": 3,
+# Bump when parsing or matching rules change. Status differences caused by a method
+# change are not reported as regulatory changes on the changes page.
+METHOD_VERSION = "2026-09-30.2"
+
+STATUS_RANK = {"authorised": 7, "phase_out": 6, "listed_noreg": 5, "prohibited": 4, "delisted": 3,
                "not_authorised": 2, "not_listed": 1, "unknown": 0}
-
 EU_CLASS = {"Colours": "Colours", "Sweeteners": "Sweeteners"}
+FLAVOUR_SECTIONS = {"172.510", "172.515"}
+GENERIC_KEYS = {"fatty acid", "wax", "gum", "starch", "caramel", "color", "colour", "extract", "oil", "resin",
+                "polymer", "salt", "acid", "ester", "glyceride", "sugar", "vinegar"}
+MATCH_QUALITY = {"reviewed": 5, "Colour": 4, "CAS": 4, "name": 3, "alternative": 2, "FDA": 3}
+
+
+def match_rank(m, ent_key: str):
+    r, how = m
+    q = MATCH_QUALITY.get((how or "").split(" ")[0], 1)
+    exact = 1 if r["key"] and match_key(r["name"]) == ent_key else 0
+    return (q, exact, STATUS_RANK.get(r["status"], 0))
+
+
+def match_key(name: str) -> str:
+    """norm_name plus simple plural folding, used for name matching only."""
+    words = []
+    for w in norm_name(name).split():
+        if len(w) >= 5 and w.endswith("s") and not w.endswith("ss"):
+            w = w[:-1]
+        words.append(w)
+    return " ".join(words)
+
+
+def match_variants(name: str) -> set[str]:
+    return {" ".join(w[:-1] if len(w) >= 5 and w.endswith("s") and not w.endswith("ss") else w
+                     for w in v.split()) for v in name_variants(name)}
+
+
+def base_key(k: str) -> str:
+    m = re.match(r"(e\d+[a-z]?)", k)
+    return m.group(1) if m else k
 
 
 def load_curated() -> dict:
@@ -32,232 +67,275 @@ def load_curated() -> dict:
         return yaml.safe_load(f) or {}
 
 
-def base_key(k: str) -> str:
-    m = re.match(r"(e\d+[a-z]?)", k)
-    return m.group(1) if m else k
-
-
 class Build:
-    def __init__(self):
+    def __init__(self, today: date | None = None):
+        self.today = today or date.today()
         self.sources = load_sources()
         self.problems: list[str] = []
-        self.notes: list[str] = []
         self.parsed: dict = {}
         self.curated = load_curated()
         self.prev = read_json(PUBLISHED / "additives.json", {}) or {}
         self.prev_by_id = {a["id"]: a for a in self.prev.get("additives", [])}
+        self.log: dict[str, list] = defaultdict(list)
 
-    # ------------------------------------------------------------ parsing
+    # ------------------------------------------------------------ parsing / validation
     def parse(self, sid: str, fn):
         try:
             self.parsed[sid] = fn()
-            return self.parsed[sid]
         except FileNotFoundError as e:
             self.problems.append(f"{sid}: raw file missing ({e})")
+            self.parsed[sid] = None
         except Exception as e:  # noqa: BLE001
             traceback.print_exc()
             self.problems.append(f"{sid}: parse failed: {type(e).__name__}: {e}")
-        self.parsed[sid] = None
-        return None
+            self.parsed[sid] = None
 
-    # ------------------------------------------------------------ validation
+    def drop(self, sid: str, why: str):
+        self.problems.append(f"{sid}: {why}; previous data kept")
+        self.parsed[sid] = None
+
     def validate(self):
-        """Structural checks; a failing source is dropped (previous values kept)."""
         eu = self.parsed.get("eu_annex2")
         if eu is not None:
             n = len(eu["listed"])
             with_use = sum(1 for k in eu["listed"] if parse_eu.eu_uses_for(eu, k))
-            if n < 250 or n > 450:
-                self.problems.append(f"eu_annex2: {n} additives in Part B (expected 250–450); EU data not updated")
-                self.parsed["eu_annex2"] = None
-            elif with_use < 0.8 * n:
-                self.problems.append(f"eu_annex2: only {with_use}/{n} additives have a Part E use; EU data not updated")
-                self.parsed["eu_annex2"] = None
+            if not 250 <= n <= 450:
+                self.drop("eu_annex2", f"{n} additives in Part B (expected 250–450)")
+            elif with_use < 0.85 * n:
+                self.drop("eu_annex2", f"only {with_use}/{n} additives have a Part E use")
+            elif set("ABCDE") - set(eu["parts_seen"]):
+                self.drop("eu_annex2", f"Annex II parts missing: {eu['parts_seen']}")
             else:
-                # reference checks: well-known entries must be present / absent
-                for k in ("e100", "e330", "e951", "e129"):
-                    if k not in eu["listed"] or not parse_eu.eu_uses_for(eu, k):
-                        self.problems.append(f"eu_annex2: reference additive {k} missing or without uses; EU data not updated")
-                        self.parsed["eu_annex2"] = None
-                        break
+                # reference checks from the legal text (stable facts)
+                refs_ok = all(parse_eu.eu_uses_for(eu, k) for k in ("e100", "e330", "e951", "e129")) \
+                    and not parse_eu.eu_uses_for(eu, "e171") and "e924" not in eu["listed"]
+                if not refs_ok:
+                    self.drop("eu_annex2", "reference additives failed (E 100/E 330/E 951/E 129 uses, E 171 none, E 924 absent)")
         us = self.parsed.get("us_fda_substances")
         if us is not None:
             n = len(us["records"])
-            if n < 2500:
-                self.problems.append(f"us_fda_substances: only {n} records (expected ~4000); US data not updated")
-                self.parsed["us_fda_substances"] = None
+            names = {r["name"] for r in us["records"]}
+            if n < 3000 or not {"ASPARTAME", "FD&C RED NO. 40", "TITANIUM DIOXIDE"} <= names:
+                self.drop("us_fda_substances", f"{n} records or reference substances missing")
         ca = self.parsed.get("ca_lists")
         if ca is not None:
-            empty = [k for k, v in ca["rows_per_list"].items() if v == 0 and k != "05"]
+            empty = [k for k, v in ca["rows_per_list"].items() if v == 0]
             if len(ca["records"]) < 300 or empty:
-                self.problems.append(f"ca_lists: {len(ca['records'])} additives, empty lists {empty}; Canada data not updated")
-                self.parsed["ca_lists"] = None
+                self.drop("ca_lists", f"{len(ca['records'])} additives, empty lists {empty}")
         uk = self.parsed.get("uk_fsa")
-        if uk is not None and len(uk["records"]) < 20:
-            self.problems.append(f"uk_fsa: only {len(uk['records'])} additives; UK register data not used")
-            self.parsed["uk_fsa"] = None
-        # a previous comparable count must not drop by more than 10 %
-        prev_q = self.prev.get("counts", {})
+        if uk is not None and len(uk["records"]) < 250:
+            self.drop("uk_fsa", f"only {len(uk['records'])} additives in the register")
+        sp = self.parsed.get("eu_specs")
+        if sp is not None and len(sp["entries"]) < 250:
+            self.drop("eu_specs", f"only {len(sp['entries'])} specification entries")
+        prev_counts = self.prev.get("counts", {})
         for sid, count in self.counts().items():
-            old = prev_q.get(sid)
+            old = prev_counts.get(sid)
             if old and count < 0.9 * old:
-                self.problems.append(f"{sid}: count dropped from {old} to {count}; data not updated")
-                self.parsed[sid] = None
+                self.drop(sid, f"count dropped from {old} to {count}")
 
     def counts(self) -> dict:
         c = {}
-        if self.parsed.get("eu_annex2"):
-            c["eu_annex2"] = len(self.parsed["eu_annex2"]["listed"])
-        if self.parsed.get("us_fda_substances"):
-            c["us_fda_substances"] = len(self.parsed["us_fda_substances"]["records"])
-        if self.parsed.get("ca_lists"):
-            c["ca_lists"] = len(self.parsed["ca_lists"]["records"])
-        if self.parsed.get("uk_fsa"):
-            c["uk_fsa"] = len(self.parsed["uk_fsa"]["records"])
+        for sid, key in (("eu_annex2", "listed"), ("us_fda_substances", "records"), ("ca_lists", "records"),
+                         ("uk_fsa", "records"), ("eu_specs", "entries")):
+            if self.parsed.get(sid):
+                c[sid] = len(self.parsed[sid][key])
         return c
 
-    # ------------------------------------------------------------ joining
-    def entities(self) -> dict:
-        """Create E-numbered entities from EU list, UK register and Wikidata."""
+    # ------------------------------------------------------------ entities and indexes
+    def build_entities(self) -> dict:
         ents: dict[str, dict] = {}
         eu = self.parsed.get("eu_annex2")
-        wd = (self.parsed.get("wikidata") or {}).get("by_e", {})
         uk = (self.parsed.get("uk_fsa") or {}).get("records", {})
 
         def ensure(key, e, name, sort):
             if key not in ents:
                 ents[key] = {"id": key, "e": e, "sort": sort, "name": name, "names": [], "cas": [],
-                             "classes": [], "wikidata": None, "jur": {}}
+                             "ci": [], "classes": [], "jur": {}}
             return ents[key]
 
         if eu:
             for k, r in eu["listed"].items():
                 ent = ensure(k, r["e"], r["name"], r["sort"])
                 ent["names"].append(r["name"])
+                ent.setdefault("official", []).append(r["name"])
                 if r["section"] in EU_CLASS:
                     ent["classes"].append(EU_CLASS[r["section"]])
+        elif self.prev_by_id:  # EU source down: keep previous E-numbered entities
+            for k, a in self.prev_by_id.items():
+                if a.get("e"):
+                    ensure(k, a["e"], a["name"], a.get("sort", k))["names"].append(a["name"])
         for k, r in uk.items():
             p = e_parts(r["e"])
             ent = ensure(k, r["e"], r["name"], e_sort(*p))
             if r["name"]:
                 ent["names"].append(r["name"])
-        for k, r in wd.items():
-            if k in ents:
-                ent = ents[k]
-            elif base_key(k) in ents and k.startswith(base_key(k) + "-"):
+                ent.setdefault("official", []).append(r["name"])
+        specs = (self.parsed.get("eu_specs") or {}).get("entries", {})
+        for sk, sp in specs.items():
+            k = sk if sk in ents else base_key(sk)
+            if k not in ents:
                 continue
-            else:
-                continue  # only enrich here; Wikidata-only entities are added after US/CA matching
-            ent["names"].extend(r["labels"] + r["aliases"])
-            ent["cas"].extend(c for c in r["cas"] if c not in ent["cas"])
-            ent["wikidata"] = ent["wikidata"] or (r["qids"][0] if r["qids"] else None)
+            ent = ents[k]
+            ent["names"].extend([sp["title"].title() if sp["title"].isupper() else sp["title"]] + sp["synonyms"])
+            ent.setdefault("chem_names", []).extend(sp["chem_names"])
+            for c in sp["cas"]:
+                if c not in ent["cas"]:
+                    ent["cas"].append(c)
+            for n in sp["colour_index"]:
+                if n not in ent["ci"]:
+                    ent["ci"].append(n)
         return ents
 
-    def name_index(self, ents: dict) -> tuple[dict, dict]:
+    def build_index(self, ents: dict):
         by_name: dict[str, set[str]] = defaultdict(set)
         by_cas: dict[str, set[str]] = defaultdict(set)
-        wd = (self.parsed.get("wikidata") or {}).get("by_e", {})
+        by_ci: dict[str, set[str]] = defaultdict(set)
         for k, ent in ents.items():
-            for n in ent["names"]:
-                for v in name_variants(n):
+            for i, n in enumerate(ent["names"]):
+                # official list names may hold several synonyms separated by commas;
+                # specification synonyms are already one name each
+                vs = match_variants(n) if n in ent.get("official", []) else {match_key(n)}
+                for v in vs:
                     by_name[v].add(k)
+            for n in ent.get("chem_names", []):
+                for part in n.split(";"):
+                    part = part.strip()
+                    if part and len(part.split()) <= 5 and not re.search(r"co-|poly|:\d", part, re.I):
+                        by_name[match_key(part)].add(k)
             for c in ent["cas"]:
                 by_cas[c].add(k)
-        # Wikidata E-numbers that are not on the EU/UK lists (historic or other) are
-        # indexed too, so US/Canadian records can be linked to them.
-        for k, r in wd.items():
-            if k in ents:
-                continue
-            for n in r["labels"] + r["aliases"]:
-                for v in name_variants(n):
-                    by_name[v].add(k)
-            for c in r["cas"]:
-                by_cas[c].add(k)
+            for c in ent["ci"]:
+                by_ci[c].add(k)
         for alias, k in (self.curated.get("names") or {}).items():
-            by_name[norm_name(alias)].add(k)
-        return by_name, by_cas
+            by_name[match_key(alias)] = {k}
+        return by_name, by_cas, by_ci
 
-    def pick(self, candidates: set[str], ents: dict) -> str | None:
-        if not candidates:
+    def pick(self, cands: set[str], ents: dict) -> str | None:
+        cands = {c for c in cands if c in ents}
+        if not cands:
             return None
-        if len(candidates) == 1:
-            return next(iter(candidates))
-        # prefer the base E-number if all candidates share it; else prefer listed entities
-        bases = {base_key(c) for c in candidates}
+        if len(cands) == 1:
+            return next(iter(cands))
+        bases = {base_key(c) for c in cands}
         if len(bases) == 1:
-            b = bases.pop()
-            return b if b in candidates or b in ents else sorted(candidates)[0]
-        listed = [c for c in candidates if c in ents]
-        if len(listed) == 1:
-            return listed[0]
-        return None  # ambiguous
+            b = next(iter(bases))
+            return b if b in ents else sorted(cands)[0]
+        return None
 
-    def match_us(self, ents, by_name, by_cas):
+    # ------------------------------------------------------------ US
+    def apply_revocations(self):
+        us, fr = self.parsed.get("us_fda_substances"), self.parsed.get("us_fr_revocations")
+        if not us or not fr:
+            return
+        for r in us["records"]:
+            if r["status"] not in ("authorised", "listed_noreg"):
+                continue
+            hit = parse_fr.match_revocation(r, fr["revocations"])
+            if not hit:
+                continue
+            eff = hit["effective"]
+            pub = hit["publication_date"]
+            if eff and eff > self.today:
+                r["status"] = "phase_out"
+                r["headline"] = f"Authorisation revoked; ends {eff.strftime('%-d %B %Y')}"
+            else:
+                r["status"] = "delisted"
+                r["headline"] = f"Authorisation revoked{(' — effective ' + eff.strftime('%-d %B %Y')) if eff else ''}"
+            r["revocation"] = {"title": hit["title"], "url": hit["url"], "published": pub,
+                               "effective": eff.isoformat() if eff else None, "doc": hit["document_number"]}
+            self.log["revocations_applied"].append(f"{r['name']}: {hit['document_number']} ({eff})")
+
+    def match_us(self, ents, by_name, by_cas, by_ci):
         us = self.parsed.get("us_fda_substances")
         if not us:
-            return {}, {}
-        forced = {norm_name(k): v for k, v in (self.curated.get("us") or {}).items()}
+            return {}, Counter(), []
+        forced = {match_key(k): v for k, v in (self.curated.get("us") or {}).items()}
         matched = defaultdict(list)
-        stats = Counter()
-        unmatched = []
+        stats, unmatched = Counter(), []
         for r in us["records"]:
-            how = None
-            key = forced.get(r["key"])
-            if key == "none":
-                stats["excluded"] += 1
+            key, how = None, None
+            f = forced.get(match_key(r["name"]))
+            if f == "none":
+                stats["excluded by review"] += 1
+                unmatched.append(r)
                 continue
-            if key:
-                how = "reviewed match table"
+            if f:
+                keys = [k for k in (f if isinstance(f, list) else [f]) if k in ents]
+                if not keys:
+                    self.problems.append(f"crosswalk: US mapping for {r['name']} points to unknown ids {f}")
+                for k in keys:
+                    matched[k].append((r, "reviewed match table"))
+                stats["reviewed"] += 1
+                continue
+            if not key and r["colour_index"]:
+                key = self.pick(set().union(*(by_ci.get(c, set()) for c in r["colour_index"])), ents)
+                how = f"Colour Index {', '.join(r['colour_index'])}" if key else None
             if not key and r["cas"]:
                 key = self.pick(set().union(*(by_cas.get(c, set()) for c in r["cas"])), ents)
-                if key:
-                    how = f"CAS {', '.join(r['cas'])}"
+                how = f"CAS {', '.join(r['cas'])}" if key else None
+            if not key:
+                key = self.pick(by_name.get(match_key(r["name"]), set()), ents)
+                how = "name" if key else None
             if not key:
                 cands = set()
-                for n in [r["name"]] + r["other_names"]:
-                    for v in name_variants(n):
-                        cands |= by_name.get(v, set())
+                for o in r["other_names"]:
+                    mk = match_key(o)
+                    if len(mk) >= 5 and mk not in GENERIC_KEYS:
+                        cands |= by_name.get(mk, set())
                 key = self.pick(cands, ents)
-                if key:
-                    how = "name"
+                how = "alternative name" if key else None
             if key:
                 matched[key].append((r, how))
-                stats["matched"] += 1
+                stats[how.split(" ")[0] if how else "?"] += 1
             else:
-                stats["unmatched"] += 1
                 unmatched.append(r)
-        self.us_unmatched = unmatched
-        return matched, stats
+                stats["unmatched"] += 1
+        return matched, stats, unmatched
 
+    # ------------------------------------------------------------ Canada
     def match_ca(self, ents, by_name):
         ca = self.parsed.get("ca_lists")
         if not ca:
-            return {}, {}
-        forced = {norm_name(k): v for k, v in (self.curated.get("ca") or {}).items()}
+            return {}, Counter(), []
+        forced = {match_key(k): v for k, v in (self.curated.get("ca") or {}).items()}
         matched = defaultdict(list)
-        stats = Counter()
-        unmatched = []
+        stats, unmatched = Counter(), []
         for nk, r in ca["records"].items():
-            key = forced.get(nk)
-            how = "reviewed match table" if key else None
-            if key == "none":
-                stats["excluded"] += 1
+            f = forced.get(match_key(r["name"]))
+            if f == "none":
+                stats["excluded by review"] += 1
+                unmatched.append(r)
                 continue
+            if f:
+                keys = [k for k in (f if isinstance(f, list) else [f]) if k in ents]
+                if not keys:
+                    self.problems.append(f"crosswalk: Canada mapping for {r['name']} points to unknown ids {f}")
+                for k in keys:
+                    matched[k].append((r, "reviewed match table"))
+                stats["reviewed"] += 1
+                continue
+            key, how = None, None
             if not key:
                 cands = set()
                 for n in r["names"]:
-                    for v in name_variants(n):
-                        cands |= by_name.get(v, set())
+                    cands |= by_name.get(match_key(n), set())
                 key = self.pick(cands, ents)
                 how = "name" if key else None
+            if not key:
+                cands = set()
+                for n in r["names"]:
+                    for v in match_variants(n):
+                        cands |= by_name.get(v, set())
+                key = self.pick(cands, ents)
+                how = "name part" if key else None
             if key:
                 matched[key].append((r, how))
-                stats["matched"] += 1
+                stats[how.split(" ")[0]] += 1
             else:
-                stats["unmatched"] += 1
                 unmatched.append(r)
-        self.ca_unmatched = unmatched
-        return matched, stats
+                stats["unmatched"] += 1
+        return matched, stats, unmatched
 
     # ------------------------------------------------------------ statuses
     def eu_status(self, key, ent):
@@ -266,81 +344,115 @@ class Build:
             return None
         src = self.sources["eu_annex2"]
         celex = eu.get("celex") or ""
-        url = src["html_url"].format(celex=celex) if celex else src["discovery_urls"][0]
-        refs = [{"label": "Annex II, Regulation (EC) No 1333/2008 (EUR-Lex)", "url": url},
+        refs = [{"label": "Regulation (EC) No 1333/2008, Annex II (EUR-Lex)",
+                 "url": src["html_url"].format(celex=celex)},
                 {"label": "EU food additives database", "url": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search"}]
-        listed = eu["listed"].get(key) or (eu["listed"].get(base_key(key)) if key != base_key(key) else None)
+        listed = eu["listed"].get(key)
         if not listed:
+            detail = "Checked by E-number against Annex II, Part B." if ent.get("e") else \
+                "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
             return {"status": "not_authorised", "headline": "Not on the EU list of authorised food additives",
-                    "refs": refs, "source": "eu_annex2", "match": "e_number",
-                    "match_detail": "Checked by E-number against Annex II, Part B."}
+                    "refs": refs, "source": "eu_annex2", "match": "e_number" if ent.get("e") else "name",
+                    "match_detail": detail}
         cats = parse_eu.eu_uses_for(eu, key)
+        notes = list(eu["notes"].get(key, []))
         facts = [["EU list section", listed["section"] or "—"]]
-        notes = []
-        if listed.get("marks"):
-            last = sorted(listed["marks"], key=lambda m: int(m[1:]) if m[1:].isdigit() else 0)[-1]
-            act = eu["acts"].get(last)
-            if act:
-                facts.append(["Entry last amended by", act])
-        if listed.get("note"):
-            notes.append(listed["note"])
-        if not cats:
+        lc = parse_eu.last_change(eu, key)
+        if lc:
+            facts.append(["Last changed by", f"{lc['act']} ({lc.get('oj_date') or lc.get('adopted')})"])
+            if lc.get("url"):
+                refs.append({"label": lc["act"], "url": lc["url"]})
+        base = {"facts": facts, "notes": notes, "refs": refs, "source": "eu_annex2", "match": "e_number",
+                "match_detail": "Matched by E-number (Annex II, Parts B, C and E)."}
+        if cats:
+            cat_names = eu["categories"]
+            top = sorted({c.split(".")[0] for c in cats})
+            facts.insert(0, ["Food categories with a use", str(len(cats))])
+            notes.append("Food categories: " + "; ".join(f"{c} {cat_names.get(c, '')}".strip() for c in cats[:60]) +
+                         ("…" if len(cats) > 60 else ""))
+            return {"status": "authorised",
+                    "headline": f"Authorised in {len(cats)} food categor{'y' if len(cats) == 1 else 'ies'}",
+                    "cats": cats, "top_categories": top, **base}
+        joined = " ".join(notes).lower()
+        if "not authorised in the food categories" in joined:
             return {"status": "not_authorised",
-                    "headline": "On the Union list, but no authorised use in any food category",
-                    "facts": facts, "notes": notes, "refs": refs, "source": "eu_annex2", "match": "e_number",
-                    "match_detail": "Matched by E-number (Annex II Parts B and E)."}
-        facts.insert(0, ["Food categories with a use", str(len(cats))])
-        return {"status": "authorised",
-                "headline": f"Authorised in {len(cats)} food categor{'y' if len(cats) == 1 else 'ies'}",
-                "facts": facts, "notes": notes, "cats": cats, "refs": refs, "source": "eu_annex2",
-                "match": "e_number", "match_detail": "Matched by E-number (Annex II Parts B and E)."}
+                    "headline": "Not authorised in food (kept on the list only for use in medicines)", **base}
+        m = re.search(r"authorised until (\d{1,2} \w+ \d{4})", joined)
+        if m:
+            d = parse_eu.parse_date(m.group(1))
+            if d and d < self.today:
+                return {"status": "delisted", "headline": f"EU authorisation ended on {d.strftime('%-d %B %Y')}", **base}
+        if key in eu.get("annex3", []):
+            return {"status": "authorised",
+                    "headline": "Authorised only in food additives, enzymes, flavourings or nutrients (Annex III)", **base}
+        notes.append("This additive is on the Union list, but Annex II Part E sets no food category for it. "
+                     "Its use may be governed by other EU rules (for example, wine legislation).")
+        return {"status": "authorised", "headline": "On the EU list; no food category set in Annex II", **base}
 
     def gb_status(self, key, ent):
         uk = self.parsed.get("uk_fsa")
         if not uk:
             return None
-        r = uk["records"].get(key) or uk["records"].get(base_key(key))
         refs = [{"label": "FSA Regulated Products Register", "url": "https://data.food.gov.uk/regulated-products"}]
+        r = uk["records"].get(key)
         if not r:
-            return {"status": "unknown", "headline": "Not found in the FSA register",
-                    "refs": refs, "source": "uk_fsa", "match": "e_number",
-                    "match_detail": "The FSA register was searched by E-number. Absence here does not prove the additive is not authorised in Great Britain."}
+            return {"status": "not_authorised", "headline": "Not in the GB register of authorised food additives",
+                    "refs": refs, "source": "uk_fsa", "match": "e_number" if ent.get("e") else "name",
+                    "match_detail": "Checked by E-number against the Food Standards Agency register." if ent.get("e")
+                    else "No E-number and no match in the Food Standards Agency register."}
         st = parse_uk.status_of(r)
         facts = [["Register status", ", ".join(r["phases"])]]
         if r["nations"]:
-            facts.append(["Applies in", ", ".join(r["nations"])])
+            facts.append(["Applies in", ", ".join(sorted(r["nations"]))])
         if r["groups"]:
             facts.append(["Group", "; ".join(r["groups"][:3])])
         if r["last_modified"]:
             facts.append(["Register entry updated", r["last_modified"][:10]])
         if r.get("url"):
             refs.insert(0, {"label": "FSA register entry", "url": r["url"].replace("http://", "https://")})
-        return {"status": st, "headline": "Authorised in Great Britain" if st == "authorised" else ", ".join(r["phases"]),
-                "facts": facts, "notes": r["notes"][:5] + [f"Terms: {t}" for t in r["terms"][:6]],
-                "refs": refs, "source": "uk_fsa", "match": "e_number",
-                "match_detail": "Matched by E-number in the FSA register."}
+        notes = r["notes"][:5] + r.get("phase_notes", [])
+        headline = "Authorised in Great Britain" if st == "authorised" else (
+            "; ".join(r.get("phase_notes", [])) or ", ".join(r["phases"]))
+        return {"status": st, "headline": headline, "facts": facts, "notes": notes, "refs": refs,
+                "source": "uk_fsa", "match": "e_number", "match_detail": "Matched by E-number in the FSA register."}
 
     def us_status(self, key, matches):
-        if self.parsed.get("us_fda_substances") is None:
+        us = self.parsed.get("us_fda_substances")
+        if us is None:
             return None
         src = self.sources["us_fda_substances"]
         refs = [{"label": "FDA Substances Added to Food", "url": src["page_url"]}]
+        if not matches and "Colours" in self._ent_classes.get(key, []):
+            return {"status": "not_authorised", "headline": "Not listed as a colour additive for food in the US",
+                    "refs": refs + [{"label": "21 CFR Part 73 and Part 74 (eCFR)", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A"}],
+                    "source": "us_fda_substances", "match": None,
+                    "match_detail": "Colour additives may only be used in US food if FDA lists them in 21 CFR 73 or 74. "
+                                    "No food listing was found by Colour Index number, CAS number or name."}
         if not matches:
             return {"status": "not_listed", "headline": "Not found in FDA's Substances Added to Food inventory",
                     "refs": refs, "source": "us_fda_substances", "match": None,
-                    "match_detail": "Searched by CAS number and known names. The inventory is not a complete list of substances that may be used."}
-        best = max(matches, key=lambda m: STATUS_RANK[m[0]["status"]])
+                    "match_detail": "Searched by Colour Index number, CAS number and known names. The inventory is not a complete list of substances that may be used."}
+        ent_key = match_key(self._ent_names.get(key, ""))
+        best = max(matches, key=lambda m: match_rank(m, ent_key))
         r = best[0]
         facts = [["FDA name", r["display"]]]
         cfr = sorted({c for m in matches for c in m[0]["cfr"]}, key=lambda s: tuple(int(x) for x in s.split(".")))
-        if cfr:
-            facts.append(["21 CFR", ", ".join(cfr[:8])])
-            for c in cfr[:4]:
+        food_cfr = [c for c in cfr if not re.match(r"^(73|74)\.\d{4}$", c) and not c.startswith(("175.", "176.", "177.", "178."))]
+        if food_cfr:
+            facts.append(["21 CFR (food uses)", ", ".join(food_cfr[:8])])
+            for c in food_cfr[:3]:
                 refs.append({"label": f"21 CFR {c} (eCFR)", "url": f"https://www.ecfr.gov/current/title-21/section-{c}"})
         effects = sorted({e for m in matches for e in m[0]["effects"]})
         if effects:
             facts.append(["Used for", ", ".join(effects[:6])])
         notes = []
+        if r.get("revocation"):
+            rv = r["revocation"]
+            refs.insert(0, {"label": f"Federal Register {rv['doc']}", "url": rv["url"]})
+            notes.append(f"{rv['title']} (Federal Register, published {rv['published']}"
+                         + (f"; effective {rv['effective']}" if rv.get("effective") else "") + ").")
+            if us.get("inventory_updated"):
+                notes.append(f"FDA's inventory (last updated {us['inventory_updated']}) may still list the old regulation.")
         if len(matches) > 1:
             notes.append("Matching FDA inventory entries: " + "; ".join(
                 f"{m[0]['display']} ({m[0]['headline']})" for m in matches[:12]))
@@ -353,10 +465,16 @@ class Build:
             return None
         base = "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted.html"
         if not matches:
-            return {"status": "not_authorised", "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
-                    "refs": [{"label": "Lists of Permitted Food Additives", "url": base}],
-                    "source": "ca_lists", "match": None,
-                    "match_detail": "Searched the 15 lists by name and known synonyms. If a list uses an unusual name, it may be missed — check the lists."}
+            refs = [{"label": "Lists of Permitted Food Additives", "url": base}]
+            if "Colours" in self._ent_classes.get(key, []):
+                return {"status": "not_authorised", "headline": "Not on Health Canada's List of Permitted Food Colours",
+                        "refs": refs, "source": "ca_lists", "match": None,
+                        "match_detail": "Food colours must be on List 3 to be used in Canada. The list was searched by name and known synonyms."}
+            return {"status": "not_listed", "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+                    "refs": refs, "source": "ca_lists", "match": None,
+                    "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate "
+                                    "or modified starches) are treated as food ingredients in Canada and are not on these lists, so "
+                                    "this does not show that the substance is banned."}
         lists = {}
         for r, how in matches:
             for L in r["lists"]:
@@ -369,161 +487,225 @@ class Build:
             facts.append(["Purpose of use", "; ".join(purposes)])
         refs = [{"label": f"List {L['no']}: {L['title'].replace('List of Permitted ', '')}", "url": L["url"]}
                 for L in sorted(lists.values(), key=lambda x: x["no"])][:4]
-        notes = [f"{L['title']}: item{'s' if len(L['items']) > 1 else ''} {', '.join(L['items'][:8])}" for L in
-                 sorted(lists.values(), key=lambda x: x["no"]) if L["items"]]
+        notes = [f"{L['title']}: item{'s' if len(L['items']) > 1 else ''} {', '.join(L['items'][:8])}"
+                 for L in sorted(lists.values(), key=lambda x: x["no"]) if L["items"]]
         how = matches[0][1]
+        first = lists[min(lists)]
         return {"status": "authorised",
-                "headline": f"On {len(lists)} of Health Canada's permitted lists" if len(lists) > 1 else f"On Health Canada's {lists[min(lists)]['title']}",
+                "headline": f"On {len(lists)} of Health Canada's permitted lists" if len(lists) > 1
+                else f"On the {first['title']}",
                 "facts": facts, "notes": notes, "refs": refs, "source": "ca_lists", "match": how,
                 "match_detail": f"Matched to Health Canada's lists by {how}."}
 
-    # ------------------------------------------------------------ main
+    # ------------------------------------------------------------ run
     def run(self) -> int:
         self.parse("eu_annex2", parse_eu.parse_all)
         self.parse("uk_fsa", parse_uk.parse_all)
         self.parse("us_fda_substances", parse_us.parse_all)
         self.parse("ca_lists", parse_ca.parse_all)
-        self.parsed["wikidata"] = {"by_e": {}, "rows": 0}  # replaced by EU specifications (see parse_specs)
+        self.parse("eu_specs", parse_specs.parse_all)
+        self.parse("us_fr_revocations", parse_fr.parse_all)
         self.validate()
+        self.apply_revocations()
 
-        ents = self.entities()
-        by_name, by_cas = self.name_index(ents)
-        us_m, us_stats = self.match_us(ents, by_name, by_cas)
-        ca_m, ca_stats = self.match_ca(ents, by_name)
+        ents = self.build_entities()
+        self._ent_names = {k: e["name"] for k, e in ents.items()}
+        self._ent_classes = {k: e["classes"] for k, e in ents.items()}
+        by_name, by_cas, by_ci = self.build_index(ents)
+        us_m, us_stats, us_unmatched = self.match_us(ents, by_name, by_cas, by_ci)
 
-        # Add Wikidata-only E-numbers (not on EU/UK lists) when a US or Canadian record links to them.
-        wd = (self.parsed.get("wikidata") or {}).get("by_e", {})
-        for k in set(us_m) | set(ca_m):
-            if k in ents or k not in wd:
+        # US-only entities: prohibited/revoked FDA substances, plus a reviewed list of notable ones
+        us_only = set(self.curated.get("us_only") or [])
+        missing = us_only - {r["name"] for r in us_unmatched}
+        for n in sorted(missing):
+            self.log["us_only_not_found_or_matched"].append(n)
+        for r in us_unmatched:
+            notable_status = (r["status"] in ("prohibited", "delisted", "phase_out") and "NLFG" not in r["flags"]
+                              and "lake" not in r["key"])
+            notable_use = r["name"] in us_only
+            if not (notable_status or notable_use):
                 continue
-            r = wd[k]
-            p = e_parts("E" + k[1:].replace("-", "(") + (")" if "-" in k else ""))
-            name = (r["labels"] or [k])[0]
-            ents[k] = {"id": k, "e": e_display(*p) if p else k.upper(), "sort": e_sort(*p) if p else k,
-                       "name": name[:1].upper() + name[1:], "names": r["labels"] + r["aliases"],
-                       "cas": r["cas"], "classes": [], "wikidata": r["qids"][0] if r["qids"] else None, "jur": {}}
+            sid = "us-" + re.sub(r"[^a-z0-9]+", "-", r["name"].lower()).strip("-")[:60]
+            if sid in ents:
+                us_m[sid].append((r, "FDA inventory entry"))
+                continue
+            ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": r["display"],
+                         "names": [r["display"]] + r["other_names"][:10], "cas": r["cas"], "ci": r["colour_index"],
+                         "classes": [], "jur": {}, "us_only": True}
+            us_m[sid] = [(r, "FDA inventory entry")]
+            for n in [r["name"]] + r["other_names"][:10]:
+                by_name[match_key(n)].add(sid)
 
-        # US-only entities: explicitly prohibited or delisted substances without an E-number.
-        for r in getattr(self, "us_unmatched", []):
-            if r["status"] in ("prohibited", "delisted") and "NLFG" not in r["flags"]:
-                sid = "us-" + re.sub(r"[^a-z0-9]+", "-", r["name"].lower()).strip("-")[:60]
-                if sid in ents:
-                    continue
-                ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": r["display"], "names": [r["display"]] + r["other_names"],
-                             "cas": r["cas"], "classes": [], "wikidata": None, "jur": {}, "us_only": True}
-                us_m[sid] = [(r, "FDA inventory entry")]
+        # FDA names of confidently matched records help match Canadian names
+        for k, ms in us_m.items():
+            for r, how in ms:
+                if how and not how.startswith("alternative") and r["status"] in ("authorised", "phase_out", "listed_noreg"):
+                    for n in [r["name"]] + r["other_names"][:15]:
+                        mk = match_key(n)
+                        if mk and len(mk) >= 5 and not re.search(r"\d{3,}", mk):
+                            by_name[mk].add(k)
+        ca_m, ca_stats, ca_unmatched = self.match_ca(ents, by_name)
+
+        # Canada-only entities: permitted in Canada, no counterpart on the EU/GB lists or among the
+        # notable US entries. Enzymes (5), starch-modifying agents (13), yeast foods (14) and
+        # carrier/extraction solvents (15) are left out: they are processing aids, not additives
+        # in the EU sense.
+        fda_by_key = defaultdict(list)
+        for r in us_unmatched:
+            for n in [r["name"]] + r["other_names"][:10]:
+                fda_by_key[match_key(n)].append(r)
+        ca_only = set(self.curated.get("ca_only") or [])
+        for r in ca_unmatched:
+            if r["name"] not in ca_only:
+                continue
+            cid = "ca-" + re.sub(r"[^a-z0-9]+", "-", norm_name(r["name"])).strip("-")[:60]
+            if cid in ents:
+                continue
+            ents[cid] = {"id": cid, "e": None, "sort": "~~" + cid, "name": r["name"], "names": list(r["names"]),
+                         "cas": [], "ci": [], "classes": [], "jur": {}, "ca_only": True}
+            self._ent_names[cid] = r["name"]
+            ca_m[cid].append((r, "Health Canada list entry"))
+            ca_stats["own entry"] += 1
+            ca_stats["unmatched"] -= 1
+            hits = []
+            for n in r["names"]:
+                hits.extend(fda_by_key.get(match_key(n), []))
+            seen = set()
+            for h in hits:
+                if id(h) not in seen:
+                    seen.add(id(h))
+                    us_m[cid].append((h, "name"))
 
         additives = []
         for k, ent in ents.items():
-            jur = {}
             prev = self.prev_by_id.get(k, {}).get("jur", {})
+            jur = {}
             for j, fn in (("eu", lambda: self.eu_status(k, ent)), ("gb", lambda: self.gb_status(k, ent)),
                           ("us", lambda: self.us_status(k, us_m.get(k, []))),
                           ("ca", lambda: self.ca_status(k, ca_m.get(k, [])))):
                 rec = fn()
-                if rec is None:  # source unavailable: keep previous value, marked stale
+                if rec is None:
                     rec = dict(prev.get(j, {"status": "unknown", "headline": "Source temporarily unavailable"}))
                     rec["stale"] = True
                 jur[j] = rec
-            # classes from US effects / Canada lists
             classes = list(dict.fromkeys(ent["classes"]))
             for r, _ in ca_m.get(k, []):
                 for c in r.get("classes", []):
                     if c not in classes:
                         classes.append(c)
-            aka = []
-            seen = {norm_name(ent["name"])}
-            for n in ent["names"] + [m[0]["display"] for m in us_m.get(k, [])] + [n for m in ca_m.get(k, []) for n in m[0]["names"]]:
-                nn = norm_name(n)
-                if nn and nn not in seen and len(n) <= 70:
-                    seen.add(nn)
+            if not classes:
+                eff = {e.lower() for r, _ in us_m.get(k, []) for e in r["effects"]}
+                for e, c in (("color or coloring adjunct", "Colours"), ("preservative", "Preservatives"),
+                             ("antioxidant", "Antioxidants"), ("non-nutritive sweetener", "Sweeteners"),
+                             ("emulsifier or emulsifier salt", "Emulsifiers, stabilisers, thickeners and gelling agents"),
+                             ("stabilizer or thickener", "Emulsifiers, stabilisers, thickeners and gelling agents"),
+                             ("dough strengthener", "Flour treatment agents"), ("flour treating agent", "Flour treatment agents")):
+                    if e in eff and c not in classes:
+                        classes.append(c)
+            aka, seen = [], {match_key(ent["name"])}
+            pool = ent["names"] + [m[0]["display"] for m in us_m.get(k, []) if m[0]["status"] != "delisted"] + \
+                [n for m in ca_m.get(k, []) for n in m[0]["names"]]
+            for n in pool:
+                mk = match_key(n)
+                if mk and mk not in seen and len(n) <= 60 and not n.upper().startswith("CI "):
+                    seen.add(mk)
                     aka.append(n)
-            cas = list(dict.fromkeys(ent["cas"] + [c for m in us_m.get(k, []) for c in m[0]["cas"]]))
-            a = {"id": k, "e": ent["e"], "sort": ent["sort"], "name": ent["name"], "aka": aka[:20],
-                 "cas": cas[:5], "classes": classes, "wikidata": ent["wikidata"], "jur": jur}
-            additives.append(a)
+            cas = list(dict.fromkeys(ent["cas"] + [c for m in us_m.get(k, []) for c in m[0]["cas"]
+                                                   if m[1] and not m[1].startswith("alternative")]))
+            additives.append({"id": k, "e": ent["e"], "sort": ent["sort"], "name": ent["name"], "aka": aka[:16],
+                              "cas": cas[:4], "classes": classes, "jur": jur})
         additives.sort(key=lambda a: a["sort"])
 
-        # changelog: compare statuses with the previous publication
+        # changelog
+        today = self.today.isoformat()
         changelog = read_json(PUBLISHED / "changelog.json", {"entries": [], "tracking_since": None})
-        today = now_iso()[:10]
+        changelog.setdefault("tracking_since", today)
         if not changelog.get("tracking_since"):
             changelog["tracking_since"] = today
-        if self.prev_by_id:
+        seen_ids = set()
+        same_method = self.prev.get("method_version") == METHOD_VERSION
+        if not same_method:
+            self.log["changelog"].append(f"method changed ({self.prev.get('method_version')} -> {METHOD_VERSION}); "
+                                         "differences not recorded as changes")
+            if not changelog.get("entries"):
+                changelog["tracking_since"] = today
+        if self.prev_by_id and same_method:
             for a in additives:
+                seen_ids.add(a["id"])
                 old = self.prev_by_id.get(a["id"])
+                if not old:
+                    continue
                 for j in JUR_ORDER:
-                    new_st = a["jur"][j].get("status")
                     if a["jur"][j].get("stale"):
                         continue
-                    old_st = (old or {}).get("jur", {}).get(j, {}).get("status") if old else None
-                    if old is None:
-                        continue  # new entity: recorded in 'added' notes, not as a status change
-                    if old_st and new_st and old_st != new_st and "unknown" not in (old_st, new_st):
+                    o, n = old["jur"].get(j, {}).get("status"), a["jur"][j].get("status")
+                    if o and n and o != n and "unknown" not in (o, n):
                         changelog["entries"].append({"date": today, "id": a["id"], "name": a["name"], "jur": j,
-                                                     "from": old_st, "to": new_st})
-        # keep 'updated' dates
+                                                     "from": o, "to": n})
         for a in additives:
             old = self.prev_by_id.get(a["id"])
-            if old and {j: old["jur"].get(j, {}).get("status") for j in JUR_ORDER} == {j: a["jur"][j].get("status") for j in JUR_ORDER}:
-                a["updated"] = old.get("updated", today)
-            else:
-                a["updated"] = today
+            same = old and all(old["jur"].get(j, {}).get("status") == a["jur"][j].get("status") for j in JUR_ORDER)
+            a["updated"] = old.get("updated", today) if same else today
 
-        # source metadata for the site
+        # sources
         src_out = {}
         for sid, cfg in self.sources.items():
             meta = read_json(RAW / sid / "meta.json", {}) or {}
             files = meta.get("files", {})
             f0 = next(iter(files.values()), {}) if files else {}
-            used = self.parsed.get(sid) is not None
+            url = cfg.get("page_url") or cfg.get("url") or ""
+            if sid in ("eu_annex2", "eu_specs") and f0.get("celex"):
+                url = cfg["html_url"].format(celex=f0["celex"])
+            if sid == "ca_lists":
+                url = "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted.html"
+            if sid == "uk_fsa":
+                url = "https://data.food.gov.uk/regulated-products"
             src_out[sid] = {
-                "title": cfg["title"], "publisher": cfg["publisher"],
-                "url": cfg.get("page_url") or cfg.get("url") or (cfg.get("base", "") + "") or cfg.get("discovery_urls", [""])[0],
+                "title": cfg["title"], "publisher": cfg["publisher"], "url": url,
                 "licence": cfg["licence"], "licence_url": cfg.get("licence_url", ""),
-                "attribution": cfg["attribution"],
-                "retrieved_at": meta.get("last_success"),
-                "content_changed_at": max((f.get("content_changed_at") or "" for f in files.values()), default=None) or None,
+                "attribution": cfg["attribution"], "retrieved_at": meta.get("last_success"),
+                "content_changed_at": max((f.get("content_changed_at") or "" for f in files.values()), default="") or None,
                 "version": f0.get("celex"),
-                "state": "ok" if used else "stale",
+                "state": "ok" if self.parsed.get(sid) is not None else "stale",
             }
             if meta.get("last_error"):
                 self.problems.append(f"{sid}: last fetch failed: {meta['last_error']}")
-        if src_out.get("ca_lists"):
-            src_out["ca_lists"]["url"] = "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted.html"
-        if src_out.get("eu_annex2") and self.parsed.get("eu_annex2"):
-            src_out["eu_annex2"]["url"] = self.sources["eu_annex2"]["html_url"].format(celex=self.parsed["eu_annex2"]["celex"])
 
         quality = []
-        n_us = sum(us_stats.values()) if us_stats else 0
-        if n_us:
-            quality.append(f"FDA inventory: {us_stats.get('matched', 0)} of {n_us} entries linked to an additive on this site "
-                           f"(most unlinked entries are flavourings and other substances without an E-number).")
-        n_ca = sum(ca_stats.values()) if ca_stats else 0
+        n_ca = sum(ca_stats.values())
         if n_ca:
-            quality.append(f"Health Canada lists: {ca_stats.get('matched', 0)} of {n_ca} listed additives linked to an E-number.")
-        write_json(INTERIM / "unmatched_us.json", [
-            {k: r[k] for k in ("name", "cas", "cfr", "status", "effects")} for r in getattr(self, "us_unmatched", [])])
-        write_json(INTERIM / "unmatched_ca.json", [
-            {"name": r["name"], "lists": [L["no"] for L in r["lists"]]} for r in getattr(self, "ca_unmatched", [])])
+            quality.append(f"Health Canada lists: {n_ca - ca_stats.get('unmatched', 0) - ca_stats.get('excluded', 0)} "
+                           f"of {n_ca} listed substances linked to an additive on this site; the rest are mostly "
+                           "enzymes, solvents and substances with no counterpart here.")
+        linked_us = sum(1 for a in additives if a["jur"]["us"].get("status") not in ("not_listed", "unknown"))
+        quality.append(f"FDA inventory: {linked_us} additives on this site are linked to at least one FDA inventory entry.")
+        n_e = sum(1 for a in additives if a.get("e"))
+        quality.append(f"{n_e} additives with an E-number (all entries on the EU and GB lists) and "
+                       f"{len(additives) - n_e} US substances without an E-number.")
 
-        published = {
-            "generated_at": now_iso(), "data_version": today, "sources": src_out,
-            "counts": self.counts() or self.prev.get("counts", {}), "quality": quality,
-            "additives": additives,
-        }
-        if not additives:
-            self.problems.append("No additives produced; nothing published")
+        write_json(INTERIM / "unmatched_us.json", [
+            {k: r[k] for k in ("name", "cas", "cfr", "status", "effects")} for r in us_unmatched
+            if r["status"] != "authorised" or not set(r["cfr"]) <= FLAVOUR_SECTIONS])
+        write_json(INTERIM / "unmatched_ca.json", [
+            {"name": r["name"], "lists": [L["no"] for L in r["lists"]]} for r in ca_unmatched])
+        write_json(INTERIM / "match_log.json", {"us": dict(us_stats), "ca": dict(ca_stats), **self.log})
+
+        published = {"generated_at": now_iso(), "data_version": today, "method_version": METHOD_VERSION,
+                     "sources": src_out,
+                     "counts": self.counts() or self.prev.get("counts", {}), "quality": quality,
+                     "additives": additives}
+        if len(additives) < 200:
+            self.problems.append(f"Only {len(additives)} additives produced; not published")
         else:
             write_json(PUBLISHED / "additives.json", published)
             write_json(PUBLISHED / "changelog.json", changelog)
         write_json(PUBLISHED / "health.json", {"at": now_iso(), "problems": self.problems,
-                                               "counts": self.counts(), "us_match": dict(us_stats or {}),
-                                               "ca_match": dict(ca_stats or {})})
-        print(f"{len(additives)} additives; US {dict(us_stats or {})}; CA {dict(ca_stats or {})}")
+                                               "counts": self.counts(), "us_match": dict(us_stats),
+                                               "ca_match": dict(ca_stats)})
+        print(f"{len(additives)} additives; US {dict(us_stats)}; CA {dict(ca_stats)}")
         for p in self.problems:
             print("PROBLEM", p)
-        return 0 if additives else 1
+        return 0 if len(additives) >= 200 else 1
 
 
 if __name__ == "__main__":

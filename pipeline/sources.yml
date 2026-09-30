@@ -42,16 +42,6 @@ us_fda_substances:
   attribution: "Source: U.S. Food and Drug Administration."
   critical: true
 
-us_fda_colors:
-  title: "Color Additive Status List"
-  publisher: "U.S. Food and Drug Administration"
-  kind: http
-  url: "https://www.fda.gov/industry/color-additive-inventories/color-additive-status-list"
-  file: "color-status.html"
-  licence: "U.S. Government work (not subject to copyright in the United States)"
-  licence_url: "https://www.fda.gov/about-fda/about-website/website-policies"
-  attribution: "Source: U.S. Food and Drug Administration."
-  critical: false
 
 ca_lists:
   title: "Lists of Permitted Food Additives"
@@ -92,4 +82,18 @@ eu_specs:
   licence: "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)"
   licence_url: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
   attribution: "© European Union, https://eur-lex.europa.eu/"
+  critical: false
+
+us_fr_revocations:
+  title: "Federal Register — FDA final rules and orders for 21 CFR parts 73, 74, 172, 173, 180, 184 and 189"
+  publisher: "Office of the Federal Register (U.S.)"
+  kind: fr_api
+  endpoint: "https://www.federalregister.gov/api/v1/documents.json"
+  page_url: "https://www.federalregister.gov/"
+  parts: [73, 74, 172, 173, 180, 184, 189]
+  since: "2015-01-01"
+  file: "rules.json"
+  licence: "U.S. Government work (not subject to copyright in the United States)"
+  licence_url: "https://www.federalregister.gov/reader-aids/policy/legal-status"
+  attribution: "Source: Federal Register (federalregister.gov)."
   critical: false

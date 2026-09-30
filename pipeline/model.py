@@ -57,9 +57,13 @@ STATUSES = {
         "Delisted / revoked", "Revoked", "no",
         "A previous authorisation was removed from the regulations.",
     ),
+    "listed_noreg": (
+        "In FDA inventory, no regulation cited", "Listed", "unknown",
+        "In FDA's Substances Added to Food inventory, but no regulation, GRAS listing or FEMA flavouring status is cited. FDA says inclusion does not mean approval.",
+    ),
     "not_listed": (
-        "Not in FDA inventory", "Not listed", "unknown",
-        "Not found in FDA's Substances Added to Food inventory. It may still be used legally under a GRAS determination; the inventory is not a complete list.",
+        "Not on the list", "Not listed", "unknown",
+        "Not found on this jurisdiction's list, but that list does not cover every permitted substance (US: substances generally recognized as safe; Canada: substances treated as food ingredients). Not counted as 'not allowed'.",
     ),
     "unknown": (
         "No data", "No data", "unknown",

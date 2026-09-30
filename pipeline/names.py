@@ -63,15 +63,27 @@ def e_base_key(text: str) -> str | None:
 _ROMAN_END = re.compile(r"\b(no|number)\s*\.?\s*(\d+)\b")
 
 
+GREEK = {"\u03b1": "alpha ", "\u03b2": "beta ", "\u03b3": "gamma ", "\u03b4": "delta ", "\u03b5": "epsilon ",
+         "\u03c9": "omega ", "\u03bc": "mu ",
+         "\u03c1": "p"}   # rho is used on some pages as a look-alike for "p-"
+
+
 def norm_name(name: str) -> str:
     """Aggressive normalisation for name matching."""
-    s = unicodedata.normalize("NFKD", name or "").encode("ascii", "ignore").decode()
+    s = name or ""
+    for g, r in GREEK.items():
+        s = s.replace(g, r)
+    s = s.replace("\u2032", "'").replace("\u2019", "'")
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     s = s.lower()
     s = s.replace("&", " and ")
     s = re.sub(r"\bf\s*d\s*(?:and|&)?\s*c\b", "fdc", s)
     s = re.sub(r"\bfd and c\b", "fdc", s)
     s = re.sub(r"[\*†‡]+", " ", s)           # footnote markers
-    s = re.sub(r"\([^)]*\)", " ", s)                  # parentheticals
+    # drop annotation parentheticals like "Carmine (Coccus cacti L.)" or "BHA (E 320)", but keep
+    # brackets that are part of a chemical name, e.g. "(4-hydroxyphenyl)propane"
+    s = re.sub(r"(^|\s)\([^()]*\)(?=\s|$|,|;)", " ", s)
+    s = s.replace("(", " ").replace(")", " ")
     s = _ROMAN_END.sub(r"\2", s)                       # "no. 40" -> "40"
     s = re.sub(r"[^a-z0-9]+", " ", s)
     s = re.sub(r"\b(the|of)\b", " ", s)
@@ -116,7 +128,9 @@ def title_case_chem(name: str) -> str:
             out.append(w.upper())
         elif w in small and not first:
             out.append(w)
-        elif re.fullmatch(r"[a-z]\d*", w) and not first:
+        elif re.fullmatch(r"[a-z]", w) and not first:
+            out.append(w.upper())
+        elif re.fullmatch(r"[a-z]\d+", w) and not first:
             out.append(w)
         else:
             out.append(w[:1].upper() + w[1:])

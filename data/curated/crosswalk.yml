@@ -1,0 +1,174 @@
+# Reviewed name matches: one-time build work, not recurring maintenance.
+#
+# names: extra aliases -> additive id (added to the matching index for all sources)
+# us:    FDA inventory name -> additive id, list of ids, or "none" to block a wrong automatic match
+# ca:    Health Canada list name -> additive id, list of ids, or "none"
+#
+# Every entry below links two official names for the same substance (or for a
+# substance covered by the EU E-number's definition). Where the match is broad
+# (for example, FDA "Turmeric" for E 100 curcumin), the site says the match
+# came from this reviewed table.
+
+names:
+  "Tartaric acid": e334
+  "L-Tartaric acid": e334
+  "Glucono delta lactone": e575
+  "Microcrystalline cellulose": e460
+  "Furcelleran": e407
+  "Furcellaran": e407
+  "Polyglycerol polyricinoleate": e476
+  "Dimethylpolysiloxane": e900
+  "Dimethyl polysiloxane": e900
+
+us:
+  "TURMERIC (CURCUMA LONGA L.)": e100
+  "TURMERIC, OLEORESIN (CURCUMA LONGA L.)": e100
+  "CARAMEL": [e150a, e150b, e150c, e150d]
+  "ANNATTO, EXTRACT (BIXA ORELLANA L.)": [e160b-i, e160b-ii]
+  "DEHYDRATED BEETS": e162
+  "GRAPE COLOR EXTRACT": e163
+  "IRON OXIDE": e172
+  "TOMATO LYCOPENE": e160d
+  "BETA-APO-8'-CAROTENAL": e160e
+  "CANTHAXANTHIN": e161g
+  "COCHINEAL EXTRACT (COCCUS CACTI L.)": e120
+  "CARMINE (COCCUS CACTI L.)": e120
+  "FD&C RED NO. 2": e123
+  "NISIN PREPARATION": e234
+  "TOCOPHEROLS": [e306, e307, e308, e309]
+  "SODIUM SALTS OF FATTY ACIDS": e470a
+  "POTASSIUM SALTS OF FATTY ACIDS": e470a
+  "CALCIUM SALTS OF FATTY ACIDS": e470a
+  "MAGNESIUM SALTS OF FATTY ACIDS": e470b
+  "PROPYLENE GLYCOL MONO- AND DIESTERS OF FATS AND FATTY ACIDS": e477
+  "SODIUM ALUMINUM PHOSPHATE, ACIDIC OR BASIC": e541
+  "CELLULOSE, MICROCRYSTALLINE": e460
+  "MONO- AND DIGLYCERIDES": e471
+  "MONO- AND DIGLYCERIDES, DIACETYLTARTARIC ACID ESTERS": e472e
+  "SUCROSE FATTY ACID ESTERS": e473
+  "POLYGLYCEROL ESTERS OF FATTY ACIDS": e475
+  "TARTARIC ACID, L": e334
+  "GLUCONO-DELTA LACTONE": e575
+  "GLYCINE": e640
+  "DIMETHYLPOLYSILOXANE": e900
+  "EDTA, CALCIUM DISODIUM": e385
+  "YELLOW PRUSSIATE OF SODA": e535
+  "CALCIUM CYCLAMATE": e952   # EU E 952 covers cyclamic acid and its sodium and calcium salts
+  "SODIUM CYCLAMATE": e952
+  "CYCLAMATE": e952
+  "PROPYL P-HYDROXYBENZOATE": none      # EU E 216 was removed; keep as its own US entry
+  # automatic matches that were wrong
+  "2-METHOXY-4-PROPYLPHENOL": none
+  "SODIUM (4-METHOXYBENZOYLOXY)ACETATE": none
+  "ETHYL ACRYLATE": none
+  "METHYL ACRYLATE": none
+  "ACRYLAMIDE-ACRYLIC ACID RESIN": none
+  "DECANOIC ACID": none
+  "PARAFFIN WAX": none
+
+ca:
+  "Allura Red": e129
+  "Amaranth": e123
+  "Brilliant Blue FCF": e133
+  "Erythrosine": e127
+  "Indigotine": e132
+  "Sunset Yellow FCF": e110
+  "Tartrazine": e102
+  "Cochineal": e120
+  "Iron Oxide": e172
+  "Lycopene Extract from Tomato": e160d
+  "Turmeric": e100
+  "Silver Metal": e174
+  "Aluminum Metal": e173
+  "Acacia Gum Modified with Octenyl Succinic Anhydride (OSA)": e423
+  "Acetylated Monoglycerides": e472a
+  "Acetylated Tartaric Acid Esters of Mono- and Diglycerides": e472e
+  "Lactylated Mono- and Diglycerides": e472b
+  "Mono- and Diglycerides": e471
+  "Monoglycerides": e471
+  "Furcelleran": e407
+  "Ammonium Furcelleran": e407
+  "Microcrystalline Cellulose": e460
+  "Polyglycerol Esters of Interesterified Castor Oil Fatty Acids": e476
+  "Potassium Pyrophosphate, Tetrabasic": e450
+  "Sodium Pyrophosphate, Tetrabasic": e450
+  "Sodium Pyrophosphate, Tribasic": e450
+  "Calcium Acid Pyrophosphate": e450
+  "Sodium Phosphate, Dibasic": e339
+  "Sodium Phosphate, Monobasic": e339
+  "Sodium Phosphate, Tribasic": e339
+  "Sodium Potassium Hexametaphosphate": e452
+  "Sodium Potassium Tripolyphosphate": e451
+  "Propylene Glycol Mono Fatty Acid Esters": e477
+  "Propylene Glycol Mono- and Diesters of Fat-Forming Fatty Acids": e477
+  "Dimethylpolysiloxane Formulations": e900
+  "Glucono δ-Lactone": e575
+  "Sodium Potassium Copper Chlorophyllin": e141
+  "Hydrogenated Starch Hydrolysates": e964
+  "Potassium Saccharin": e954
+  "Steviol Glycosides": e960a
+  "Potassium Acid Tartrate": e336
+  "Sodium Acid Tartrate": e335
+  "Sodium Aluminum Phosphate": e541
+  "Tartaric Acid": e334
+  "Methyl-ρ-Hydroxybenzoate": e218
+  "Sodium Salt of Methyl-ρ-Hydroxybenzoic Acid": e219
+  "Long-Chain Glycolipids": e246
+  "Tocopherols (α-Tocopherol; Tocopherols Concentrate, mixed)": [e306, e307]
+  "Glycine": e640
+  "Caramel": [e150a, e150b, e150c, e150d]
+  "Annatto": [e160b-i, e160b-ii]
+  "Paprika": e160c
+  "Sulphurous Acid": e220     # Canada lists sulphurous acid (sulphur dioxide dissolved in water)
+
+# Substances without an E-number that get their own page. They were chosen because
+# people look them up as "allowed in the US/Canada but not in the EU" and because
+# the EU and GB lists clearly do not cover them (several are former E-numbers that
+# the EU removed). US entries that FDA prohibits or has revoked are added automatically.
+us_only:
+  - "POTASSIUM BROMATE"            # former E 924
+  - "AZODICARBONAMIDE"             # former E 927a
+  - "BENZOYL PEROXIDE"             # former E 928
+  - "ACETONE PEROXIDES"
+  - "CHLORINE DIOXIDE"             # former E 926
+  - "PROPYL P-HYDROXYBENZOATE"     # propylparaben, former E 216
+  - "HEPTYLPARABEN"
+  - "ETHOXYQUIN"
+  - "CITRUS RED NO. 2"             # former E 121
+  - "ORANGE B"
+  - "FD&C GREEN NO. 3"             # Fast Green FCF, former E 143
+  - "DEHYDROACETIC ACID"           # former E 265
+  - "SODIUM DEHYDROACETATE"        # former E 266
+  - "DIOCTYL SODIUM SULFOSUCCINATE"
+  - "ANOXOMER"
+  - "CURDLAN"
+  - "SODIUM STEARYL FUMARATE"
+  - "SODIUM LAURYL SULFATE"
+  - "2,4,5-TRIHYDROXYBUTYROPHENONE"
+  - "4-HYDROXYMETHYL-2,6-DI-TERTBUTYLPHENOL"
+
+ca_only:
+  - "Acetone Peroxide"
+  - "Calcium Peroxide"
+  - "Chlorine"                     # former E 925
+  - "Chlorine Dioxide"             # former E 926
+  - "Potassium Persulphate"
+  - "Calcium Iodate"
+  - "Potassium Iodate"
+  - "Carbon Black"
+  - "Ethyl β-Apo-8'-Carotenoate"   # former E 160f
+  - "Sodium Sorbate"               # former E 201
+  - "Calcium Sorbate"              # former E 203
+  - "Sodium Salt of Propyl-ρ-Hydroxybenzoic Acid"  # former E 217
+  - "Disodium Ethylenediaminetetraacetate (Disodium EDTA)"
+  - "Monk Fruit Extract"
+  - "α-Cyclodextrin"
+  - "Sorbitan Trioleate"
+  - "Glycerol Ester of Gum Rosin"
+  - "Glycerol Ester of Tall Oil Rosin"
+  - "Stearyl Citrate"              # former E 484
+  - "Monoisopropyl Citrate"        # former E 384
+  - "Sodium Fumarate"              # former E 365
+  - "Potassium Fumarate"           # former E 366
+  - "Calcium Fumarate"             # former E 367
+  - "Magnesium Fumarate"

@@ -39,16 +39,18 @@
   </tbody>
 </table>
 </div>
-<p class="small">EUR-Lex content: © European Union, reuse authorised with acknowledgement of the source. UK data: contains public sector information licensed under the Open Government Licence v3.0. Canadian data: contains information licensed under the Open Government Licence – Canada. US FDA data: U.S. Government work. Wikidata: CC0.</p>
+<p class="small">EU legal texts: © European Union, reuse authorised with acknowledgement of the source (retrieved from the Publications Office's Cellar service). UK data: contains public sector information licensed under the Open Government Licence v3.0. Canadian data: contains information licensed under the Open Government Licence – Canada. FDA and Federal Register data: U.S. Government works.</p>
 
 <h2 id="matching">How additives are matched across sources</h2>
-<p>Each source names additives differently. The EU and UK use E-numbers, the FDA uses chemical names and CAS numbers, and Health Canada uses names only. Records are joined in this order:</p>
+<p>Each source names additives differently. The EU and UK use E-numbers, the FDA uses chemical names, CAS and Colour Index numbers, and Health Canada uses names only. Records are joined in this order:</p>
 <ol>
-  <li><strong>E-number</strong> (EU and UK lists).</li>
-  <li><strong>CAS registry number</strong> (FDA inventory, via Wikidata's E-number–CAS links).</li>
-  <li><strong>Exact name after normalisation</strong> (upper/lower case, punctuation, "FD&amp;C" spellings), using official names and Wikidata English names.</li>
-  <li><strong>A small reviewed match table</strong> for names that cannot be matched automatically, each with the reason.</li>
+  <li><strong>E-number</strong> (EU list and GB register).</li>
+  <li><strong>Colour Index number</strong> for colours (from the EU specifications, Regulation (EU) No 231/2012, and the FDA inventory's alternative names).</li>
+  <li><strong>CAS registry number</strong>, where the EU specifications give one.</li>
+  <li><strong>Name after normalisation</strong> (case, punctuation, plural forms, British/American spelling, "FD&amp;C" spellings), using the official names and the synonyms listed in the EU specifications.</li>
+  <li><strong>A small reviewed match table</strong> for names that cannot be matched automatically.</li>
 </ol>
+<p>US revocations that are newer than FDA's inventory are taken from final orders in the <a href="https://www.federalregister.gov/" rel="noopener">Federal Register</a> (for example, the revocation of FD&amp;C Red No. 3 for food, effective 15 January 2027).</p>
 <p>If a record cannot be matched, the site shows <em>No data</em> instead of guessing. On each additive page, a note under each status says how the match was made.</p>
 {% if quality %}
 <p>Current match rates:</p>

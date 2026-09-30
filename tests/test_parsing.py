@@ -64,16 +64,56 @@ def test_canada_page():
 
 
 def test_us_classify():
-    assert parse_us.classify([(189, 145)], set())[0] == "prohibited"
-    assert parse_us.classify([(74, 340)], set()) == ("authorised", "Certified colour additive (21 CFR 74)")
-    assert parse_us.classify([(81, 10)], set())[0] == "delisted"
-    assert parse_us.classify([(177, 1520)], set())[0] == "not_listed"
-    assert parse_us.classify([], {"NLFG"})[0] == "delisted"
+    assert parse_us.classify([(189, 145)], set(), False)[0] == "prohibited"
+    assert parse_us.classify([(74, 340)], set(), False)[0] == "authorised"
+    # Red No. 3 style: food listing plus a terminated provisional listing for lakes
+    assert parse_us.classify([(74, 1303), (74, 303), (81, 10)], set(), False)[0] == "authorised"
+    assert parse_us.classify([(81, 10), (81, 30)], {"DELISTED"}, False)[0] == "delisted"
+    assert parse_us.classify([(74, 1306)], set(), False)[0] == "not_authorised"   # drugs only
+    assert parse_us.classify([(177, 1520)], set(), False)[0] == "not_listed"
+    assert parse_us.classify([], {"NLFG"}, True)[0] == "delisted"
+    assert parse_us.classify([], set(), True)[0] == "authorised"
+    assert parse_us.classify([], set(), False)[0] == "listed_noreg"
 
 
 def test_us_html_grid():
-    body = b"""<table><tr><td>CAS Reg No (or other ID)</td><td>Substance</td><td>Used for (Technical Effect)</td><td>21 CFR</td></tr>
-      <tr><td>25956-17-6</td><td>FD&amp;C RED NO. 40</td><td>COLOR OR COLORING ADJUNCT</td><td>74.340</td></tr></table>"""
-    grid = parse_us.read_grid(body)
-    h = parse_us.find_header(grid)
-    assert grid[h + 1][1] == "FD&C RED NO. 40"
+    body = b"""<table><tr><td>CAS Reg No (or other ID)</td><td>Substance</td><td>Other Names</td>
+      <td>Used for (Technical Effect)</td><td>Reg col01</td><td>Reg col02</td><td>regs Labeling &amp; Standards </td></tr>
+      <tr><td> 25956-17-6</td><td> FD&amp;C RED NO. 40</td><td> &amp;diams; FD&amp;C RED NO. 40<br />&amp;diams; C.I. 16035<br />&amp;diams; ALLURA RED AC</td>
+      <td> COLOR OR COLORING ADJUNCT,<br /> FLAVOR ENHANCER</td><td>=T("74.1340")</td><td>=T("74.340")</td><td> 136.110</td></tr>
+      <tr><td> 5897-16-5</td><td> CALCIUM CYCLAMATE--PROHIBITED</td><td></td><td></td><td></td><td></td><td></td></tr></table>"""
+    records, header = parse_us.parse_grid(parse_us.read_grid(body))
+    red = records[0]
+    assert red["name"] == "FD&C RED NO. 40"
+    assert red["cfr"] == ["74.1340", "74.340"]          # standards of identity ignored
+    assert red["colour_index"] == ["16035"]
+    assert "ALLURA RED AC" in red["other_names"]
+    assert red["effects"] == ["Color or coloring adjunct", "Flavor enhancer"]
+    assert red["status"] == "authorised"
+    cyc = records[1]
+    assert cyc["name"] == "CALCIUM CYCLAMATE" and cyc["status"] == "prohibited"
+
+
+def test_eu_period_and_ranges():
+    from datetime import date
+    from pipeline import parse_eu
+    assert not parse_eu.period_applies("Period of application: until 31 July 2014", date(2026, 1, 1))
+    assert parse_eu.period_applies("Period of application: from 1 August 2014", date(2026, 1, 1))
+    assert not parse_eu.period_applies("Period of application: from 1 August 2030", date(2026, 1, 1))
+    assert parse_eu.range_key("E 334–337 and E 354") == "e334-337,e354"
+    assert parse_eu.expand_range("E 150a,b,d", []) == {"e150a", "e150b", "e150d"}
+    groups = {"R:e338-341,e343,e450-452": ["e338", "e339", "e452"]}
+    assert parse_eu.group_by_span("E 338-452", groups) == "R:e338-341,e343,e450-452"
+    listed = {"e310": {"name": "Propyl gallate"}, "e315": {"name": "Erythorbic acid"},
+              "e320": {"name": "Butylated hydroxyanisole (BHA)"}}
+    assert parse_eu.filter_by_name({"e310", "e315", "e320"}, "Propyl gallate, TBHQ, BHA and BHT", listed) == {"e310", "e320"}
+
+
+def test_fr_effective_date():
+    from datetime import date
+    from pipeline import parse_fr
+    doc = {"dates": "This order is effective January 15, 2027, and January 18, 2028. Submit objections by February 18, 2025."}
+    assert parse_fr.effective_date(doc) == date(2027, 1, 15)
+    rev = [{"norm_title": " revocation color additive listing use orange b casing ", "publication_date": "2026-07-23"}]
+    assert parse_fr.match_revocation({"key": "orange b", "other_names": []}, rev)
+    assert parse_fr.match_revocation({"key": "orange", "other_names": []}, rev) is None

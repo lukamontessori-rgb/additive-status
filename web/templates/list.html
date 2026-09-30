@@ -17,7 +17,8 @@
       <option value="">Any status</option>
       <option value="allowed">Allowed (incl. phase-out)</option>
       <option value="notallowed">Not allowed / prohibited / revoked</option>
-      <option value="not_listed">Not in FDA inventory</option>
+      {% if j in ('us', 'ca') %}<option value="not_listed">Not on the list (list is incomplete)</option>{% endif %}
+      {% if j == 'us' %}<option value="listed_noreg">In FDA inventory, no regulation</option>{% endif %}
       <option value="unknown">No data</option>
     </select>
   </div>

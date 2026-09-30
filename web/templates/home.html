@@ -67,7 +67,7 @@
 <section aria-labelledby="legend-h" class="legend">
   <h2 id="legend-h">How to read a status</h2>
   <dl>
-  {% for key in ['authorised', 'phase_out', 'not_authorised', 'prohibited', 'delisted', 'not_listed'] %}
+  {% for key in ['authorised', 'phase_out', 'not_authorised', 'prohibited', 'delisted', 'not_listed', 'listed_noreg'] %}
     <div><dt>{{ chip(key) }}</dt><dd>{{ STATUSES[key][3] }}</dd></div>
   {% endfor %}
   </dl>
