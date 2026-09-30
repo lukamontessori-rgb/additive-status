@@ -1,11 +1,11 @@
 {
- "at": "2026-09-30T20:36:24+00:00",
+ "at": "2026-09-30T20:42:31+00:00",
  "results": {
   "eu_annex2": "unchanged",
   "uk_fsa": "changed",
   "us_fda_substances": "unchanged",
   "ca_lists": "changed",
   "eu_specs": "unchanged",
-  "us_fr_revocations": "changed"
+  "us_fr_revocations": "unchanged"
  }
 }
