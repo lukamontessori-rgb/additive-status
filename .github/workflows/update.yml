@@ -31,6 +31,9 @@ jobs:
   data:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -46,10 +49,11 @@ jobs:
         # Failures are recorded in data/raw/*/meta.json and judged by build_data;
         # a failed source never overwrites its last good snapshot.
         continue-on-error: true
-        run: python -m pipeline.fetch
+        run: mkdir -p /tmp/ci && python -m pipeline.fetch 2>&1 | tee /tmp/ci/fetch.log
 
       - name: Commit raw snapshots
         run: |
+          exec > >(tee /tmp/ci/commit-raw.log) 2>&1
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/raw
@@ -60,13 +64,14 @@ jobs:
           fi
 
       - name: Build and validate data
-        run: python -m pipeline.build_data
+        run: python -m pipeline.build_data 2>&1 | tee /tmp/ci/build-data.log
 
       - name: Run tests
-        run: python -m pytest -q
+        run: python -m pytest -q 2>&1 | tee /tmp/ci/tests.log
 
       - name: Commit published data
         run: |
+          exec > >(tee /tmp/ci/commit-published.log) 2>&1
           git add data
           if ! git diff --cached --quiet; then
             git commit -m "Published data $(date -u +%F)"
@@ -75,10 +80,10 @@ jobs:
           fi
 
       - name: Build site
-        run: python -m web.build
+        run: python -m web.build 2>&1 | tee /tmp/ci/web-build.log
 
       - name: Check site
-        run: python -m web.check dist
+        run: python -m web.check dist 2>&1 | tee /tmp/ci/web-check.log
 
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -112,8 +117,16 @@ jobs:
               }
               return;
             }
+            let logs = '';
+            try {
+              for (const f of fs.readdirSync('/tmp/ci').sort()) {
+                const lines = fs.readFileSync('/tmp/ci/' + f, 'utf8').split('\n');
+                logs += `\n<details><summary>${f} (last lines)</summary>\n\n\`\`\`\n` +
+                  lines.slice(-80).join('\n').slice(-6000) + '\n\`\`\`\n</details>\n';
+              }
+            } catch (e) {}
             const body = `Run: ${run}\n\n` + problems.map(p => `- ${p}`).join('\n') +
-              '\n\nThe site keeps showing the last validated data until this is fixed.';
+              '\n\nThe site keeps showing the last validated data until this is fixed.\n' + logs;
             if (existing) {
               await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo,
                 issue_number: existing.number, body});
