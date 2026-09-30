@@ -2,7 +2,7 @@
  "title": "Regulation (EU) No 231/2012 laying down specifications for food additives — consolidated text",
  "publisher": "Publications Office of the European Union / European Commission",
  "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
- "last_attempt": "2026-09-30T21:03:57+00:00",
+ "last_attempt": "2026-09-30T21:08:09+00:00",
  "files": {
   "specs.html": {
    "url": "https://publications.europa.eu/resource/celex/02012R0231-20260818",
@@ -11,13 +11,14 @@
    "bytes": 4004029,
    "stored_as": "specs.html.gz",
    "sha256": "3bfb412c6e8e816abe27c1bd3eb56db9e8ec7af89e4a06db496728448c0ad518",
-   "fetched_at": "2026-09-30T21:04:01+00:00",
-   "content_changed_at": "2026-09-30T16:17:02+00:00",
+   "fingerprint": "87568fbb0bdc667f80fc754e8d8be6725bb73c796f3e6af5deef8713d7854b55",
+   "fetched_at": "2026-09-30T21:08:14+00:00",
+   "content_changed_at": "2026-09-30T21:08:14+00:00",
    "celex": "02012R0231-20260818",
    "versions_seen": "20121129,20130206,20130619,20130918,20140404,20140414,20140605,20140711,20141001,20141003,20150409,20150515,20151020,20161103,20170317,20170818,20180207,20180527,20180812,20181025,20191023,20200702,20210803,20220511,20220720,20220901,20221031,20230322,20230730,20231029,20240212,20240423,20241027,20250427,20251027,20260509,20260818",
    "notes": []
   }
  },
- "last_success": "2026-09-30T21:04:01+00:00",
+ "last_success": "2026-09-30T21:08:14+00:00",
  "last_error": null
 }
