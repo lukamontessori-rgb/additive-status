@@ -1,18 +1,26 @@
 {
- "at": "2026-09-30T16:17:09+00:00",
+ "at": "2026-09-30T20:36:31+00:00",
  "problems": [],
  "counts": {
   "eu_annex2": 339,
   "us_fda_substances": 3971,
-  "ca_lists": 452,
-  "uk_fsa": 333
+  "ca_lists": 454,
+  "uk_fsa": 333,
+  "eu_specs": 386
  },
  "us_match": {
-  "unmatched": 3535,
-  "matched": 436
+  "unmatched": 3691,
+  "name": 177,
+  "excluded by review": 8,
+  "CAS": 13,
+  "reviewed": 35,
+  "alternative": 34,
+  "Colour": 13
  },
  "ca_match": {
-  "unmatched": 320,
-  "matched": 132
+  "name": 214,
+  "unmatched": 165,
+  "reviewed": 53,
+  "own entry": 22
  }
 }
