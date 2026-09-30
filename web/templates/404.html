@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block main %}
+<h1>Page not found</h1>
+<p class="lede">This page does not exist. It may have been moved, or the address has a typo.</p>
+<form class="search big" role="search" action="{{ url('/additives/') }}" data-search>
+  <label for="q-404">Search for an additive instead</label>
+  <input id="q-404" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="E-number or name" aria-controls="q-404-results" aria-expanded="false" aria-autocomplete="list">
+  <button type="submit">Search</button>
+  <ul id="q-404-results" class="results" role="listbox" hidden></ul>
+</form>
+<p><a href="{{ url('/') }}">Home</a> · <a href="{{ url('/additives/') }}">All additives</a></p>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, additive_table %}
+{% block main %}
+{{ breadcrumbs([("All additives", "/additives/"), (c.name, None)]) }}
+<h1>{{ c.name }}</h1>
+<p class="lede">{{ c['items']|length }} additives in this group, with their status in the EU, UK (GB), US and Canada. The group is based on the function listed in the official sources; one additive can have several functions.</p>
+{{ additive_table(c['items']) }}
+{% endblock %}

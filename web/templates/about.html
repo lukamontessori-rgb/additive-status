@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, chip %}
+{% block main %}
+{{ breadcrumbs([("About", None)]) }}
+<article class="prose">
+<h1>Methods, sources and limits</h1>
+<p class="lede">{{ SITE_NAME }} puts the official food additive lists of four jurisdictions side by side, so you can see in one place whether an additive is allowed in the EU, Great Britain, the United States and Canada, and check each answer against its source.</p>
+
+<nav class="toc" aria-label="On this page">
+  <a href="#statuses">Statuses</a> · <a href="#systems">Legal systems</a> · <a href="#sources">Sources</a> · <a href="#matching">Matching</a> · <a href="#updates">Updates</a> · <a href="#limits">Limits</a> · <a href="#privacy">Privacy</a> · <a href="#contact">Corrections</a>
+</nav>
+
+<h2 id="statuses">What the statuses mean</h2>
+<dl class="defs">
+{% for key, s in STATUSES.items() %}
+  <div><dt>{{ chip(key) }}</dt><dd>{{ s[3] }}</dd></div>
+{% endfor %}
+</dl>
+<p>"Allowed" in lists and filters means <em>Authorised</em> or <em>Being phased out</em>. "Not allowed" means <em>Not authorised</em>, <em>Prohibited</em> or <em>Delisted / revoked</em>. <em>Not in FDA inventory</em> and <em>No data</em> are never counted as "not allowed".</p>
+
+<h2 id="systems">Four different legal systems</h2>
+<ul>{% for j in JUR_ORDER %}<li><strong>{{ JUR[j].name }}:</strong> {{ JUR[j].system_note }}</li>{% endfor %}</ul>
+<p>Because the systems differ, the same word can mean different things. For example, an additive missing from the EU list may not be used at all in the EU, but a substance missing from the FDA inventory may still be used legally in the US.</p>
+
+<h2 id="sources">Sources and licences</h2>
+<p>Every status on this site comes from one of these official or open sources. The data pipeline downloads them automatically; nothing is typed in by hand except a small, documented table of name matches.</p>
+<div class="table-wrap">
+<table class="grid sources">
+  <thead><tr><th scope="col">Source</th><th scope="col">Licence and attribution</th><th scope="col">Last downloaded</th><th scope="col">Content last changed</th></tr></thead>
+  <tbody>
+  {% for sid, s in sources.items() %}
+  <tr>
+    <th scope="row"><a href="{{ s.url }}" rel="noopener">{{ s.title }}</a><br><span class="muted small">{{ s.publisher }}{% if s.version %} · version {{ s.version }}{% endif %}</span></th>
+    <td>{% if s.licence_url %}<a href="{{ s.licence_url }}" rel="noopener">{{ s.licence }}</a>{% else %}{{ s.licence }}{% endif %}<br><span class="muted small">{{ s.attribution }}</span></td>
+    <td>{{ fmt_date(s.retrieved_at) }}{% if s.state and s.state != 'ok' %}<br><span class="chip t-warn"><span class="dot" aria-hidden="true"></span>{{ s.state }}</span>{% endif %}</td>
+    <td>{{ fmt_date(s.content_changed_at) }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="small">EUR-Lex content: © European Union, reuse authorised with acknowledgement of the source. UK data: contains public sector information licensed under the Open Government Licence v3.0. Canadian data: contains information licensed under the Open Government Licence – Canada. US FDA data: U.S. Government work. Wikidata: CC0.</p>
+
+<h2 id="matching">How additives are matched across sources</h2>
+<p>Each source names additives differently. The EU and UK use E-numbers, the FDA uses chemical names and CAS numbers, and Health Canada uses names only. Records are joined in this order:</p>
+<ol>
+  <li><strong>E-number</strong> (EU and UK lists).</li>
+  <li><strong>CAS registry number</strong> (FDA inventory, via Wikidata's E-number–CAS links).</li>
+  <li><strong>Exact name after normalisation</strong> (upper/lower case, punctuation, "FD&amp;C" spellings), using official names and Wikidata English names.</li>
+  <li><strong>A small reviewed match table</strong> for names that cannot be matched automatically, each with the reason.</li>
+</ol>
+<p>If a record cannot be matched, the site shows <em>No data</em> instead of guessing. On each additive page, a note under each status says how the match was made.</p>
+{% if quality %}
+<p>Current match rates:</p>
+<ul>{% for line in quality %}<li>{{ line }}</li>{% endfor %}</ul>
+{% endif %}
+
+<h2 id="updates">How the data stays current</h2>
+<ul>
+  <li>Every week an automated job downloads each source again and records its size, checksum and time.</li>
+  <li>The new data is parsed and checked: expected fields must be present, counts must not drop sharply, and key reference additives must still parse correctly.</li>
+  <li>If a check fails, the site keeps showing the last data that passed, and the problem is reported automatically. Broken data is not published.</li>
+  <li>Status differences between the new and the previous version are recorded on the <a href="{{ url('/changes/') }}">changes page</a>.</li>
+</ul>
+
+<h2 id="limits">What this site does not cover</h2>
+<ul>
+  <li><strong>Not legal advice.</strong> Statuses are simplified summaries. Conditions of use (which foods, what maximum levels, purity criteria, labelling duties) are shown only in part. Always check the official source.</li>
+  <li><strong>US state laws</strong> (for example California or West Virginia dye laws) are not included: there is no structured official source for them. The US column shows federal status only.</li>
+  <li><strong>GRAS substances</strong> used in the US without notification are not in the FDA inventory and cannot be shown.</li>
+  <li><strong>Safety values</strong> such as the acceptable daily intake (ADI) are not shown, because the licence of the main open database of these values does not allow republishing adapted data. Links to the official assessments are given where available.</li>
+  <li><strong>Flavourings, enzymes and processing aids</strong> are covered only where they appear in the additive lists used here.</li>
+  <li><strong>Northern Ireland</strong> follows EU food additive rules; see the EU column.</li>
+</ul>
+
+<h2 id="privacy">Privacy</h2>
+<p>This site sets no cookies, has no accounts, no ads and no third-party trackers. The web host keeps standard server logs.</p>
+
+<h2 id="contact">Corrections</h2>
+<p>If you find a wrong status or a bad match, please open an issue{% if REPO_URL and REPO_URL != 'https://github.com/' %} on <a href="{{ REPO_URL }}/issues">the project's GitHub page</a>{% endif %}, with a link to the official source.</p>
+</article>
+{% endblock %}

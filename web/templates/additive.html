@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from "_macros.html" import chip, breadcrumbs, additive_table %}
+{% block main %}
+{{ breadcrumbs([("All additives", "/additives/"), ((a.e ~ " " if a.e else "") ~ a.name, None)]) }}
+
+<article class="additive">
+  <header class="entity-head">
+    <h1>{% if a.e %}<span class="enum big">{{ a.e }}</span> {% endif %}{{ a.name }}</h1>
+    {% if a.aka %}<p class="aka"><span class="muted">Also called:</span> {{ a.aka[:10]|join(' · ') }}</p>{% endif %}
+    <p class="ids">
+      {% if a.classes %}<span>{% for c in a.classes %}{% set cp = (CLASSES|selectattr('name', 'equalto', c)|first) %}{% if cp %}<a href="{{ url(cp.path) }}">{{ c }}</a>{% else %}{{ c }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif %}
+      {% for cas in a.cas[:3] %}<span>CAS {{ cas }}</span>{% endfor %}
+      {% if a.wikidata %}<span><a href="https://www.wikidata.org/wiki/{{ a.wikidata }}" rel="noopener">Wikidata {{ a.wikidata }}</a></span>{% endif %}
+    </p>
+  </header>
+
+  <p class="answer">{{ a.summary }}</p>
+
+  <section aria-labelledby="status-h">
+    <h2 id="status-h" class="sr">Status by jurisdiction</h2>
+    <div class="jur-grid">
+    {% for j in JUR_ORDER %}{% set r = a.jur.get(j, {}) %}{% set st = r.get('status', 'unknown') %}
+      <section class="jur-card s-{{ STATUSES.get(st, STATUSES['unknown'])[2] }}" aria-labelledby="j-{{ j }}">
+        <h3 id="j-{{ j }}"><span class="jname">{{ JUR[j].name }}</span></h3>
+        <p class="jstatus">{{ chip(st) }}</p>
+        {% if r.headline %}<p class="headline">{{ r.headline }}</p>{% endif %}
+        {% if r.facts %}
+        <dl class="facts">
+          {% for label, value in r.facts %}<div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>{% endfor %}
+        </dl>
+        {% endif %}
+        {% if r.refs %}
+        <p class="refs">{% for ref in r.refs %}<a href="{{ ref.url }}" rel="noopener">{{ ref.label }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>
+        {% endif %}
+        {% if r.match_detail %}<p class="match muted small">{{ r.match_detail }}</p>{% endif %}
+      </section>
+    {% endfor %}
+    </div>
+  </section>
+
+  {% set detailed = [] %}
+  {% for j in JUR_ORDER %}{% if a.jur.get(j, {}).get('notes') %}{% set _ = detailed.append(j) %}{% endif %}{% endfor %}
+  {% if detailed %}
+  <section aria-labelledby="details-h">
+    <h2 id="details-h">Conditions and notes</h2>
+    {% for j in detailed %}{% set r = a.jur[j] %}
+    <details class="notes"{% if loop.first and r.notes|length < 6 %} open{% endif %}>
+      <summary>{{ JUR[j].name }} <span class="muted small">({{ r.notes|length }} item{{ '' if r.notes|length == 1 else 's' }})</span></summary>
+      <ul>{% for n in r.notes %}<li>{{ n }}</li>{% endfor %}</ul>
+    </details>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if in_sets %}
+  <section aria-labelledby="diff-h">
+    <h2 id="diff-h">Where the rules differ</h2>
+    <ul class="pill-list">{% for s in in_sets %}<li><a href="{{ url(s.path) }}">{{ s.short }}</a></li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+
+  <section aria-labelledby="hist-h">
+    <h2 id="hist-h">Status history</h2>
+    {% if changes %}
+    <ol class="timeline">
+      {% for c in changes|sort(attribute='date', reverse=True) %}
+      <li><time datetime="{{ c.date }}">{{ fmt_date(c.date) }}</time> — {{ JUR[c.jur].short }}: {{ STATUSES.get(c['from'], STATUSES['unknown'])[0] }} → <strong>{{ STATUSES.get(c.to, STATUSES['unknown'])[0] }}</strong>{% if c.note %}. {{ c.note }}{% endif %}</li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="muted">No status change detected since tracking started. <a href="{{ url('/changes/') }}">See all changes</a>.</p>
+    {% endif %}
+  </section>
+
+  <details class="systems">
+    <summary>Why the same additive can have different statuses</summary>
+    <ul>{% for j in JUR_ORDER %}<li><strong>{{ JUR[j].name }}:</strong> {{ JUR[j].system_note }}</li>{% endfor %}</ul>
+    <p>A different status is a legal fact, not a safety verdict. Regulators assess different evidence, at different times, under different laws.</p>
+  </details>
+
+  {% if related %}
+  <section aria-labelledby="rel-h">
+    <h2 id="rel-h">Related additives</h2>
+    {{ additive_table(related) }}
+  </section>
+  {% endif %}
+
+  <p class="checked muted small">Data checked {{ fmt_date(generated_at) }}. Statuses summarise the official sources linked above — check them before making decisions. <a href="{{ url('/about/') }}#statuses">What the statuses mean</a>.</p>
+</article>
+{% endblock %}

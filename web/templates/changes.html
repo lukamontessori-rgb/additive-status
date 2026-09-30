@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs %}
+{% block main %}
+{{ breadcrumbs([("Changes", None)]) }}
+<h1>Recent changes</h1>
+<p class="lede">Every week the official sources are downloaded again and compared with the previous version. When an additive's status changes in any jurisdiction, it is recorded here with the date it was detected.</p>
+{% if tracking_since %}<p class="muted">Tracking since {{ fmt_date(tracking_since) }}. Changes that happened before that date are not listed here; the official sources hold the full history.</p>{% endif %}
+{% if entries %}
+<div class="table-wrap">
+<table class="grid">
+  <thead><tr><th scope="col">Detected</th><th scope="col">Additive</th><th scope="col">Where</th><th scope="col">Change</th></tr></thead>
+  <tbody>
+  {% for c in entries %}{% set a = by_id.get(c.id) %}
+  <tr>
+    <td><time datetime="{{ c.date }}">{{ fmt_date(c.date) }}</time></td>
+    <th scope="row">{% if a %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% else %}{{ c.name or c.id }}{% endif %}</th>
+    <td>{{ JUR[c.jur].short }}</td>
+    <td>{{ STATUSES.get(c['from'], STATUSES['unknown'])[0] }} → <strong>{{ STATUSES.get(c.to, STATUSES['unknown'])[0] }}</strong>{% if c.note %}<br><span class="muted small">{{ c.note }}</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="empty">No status changes detected yet.</p>
+{% endif %}
+{% endblock %}

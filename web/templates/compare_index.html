@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs %}
+{% block main %}
+{{ breadcrumbs([("Where the rules differ", None)]) }}
+<h1>Where food additive rules differ</h1>
+<p class="lede">Each list shows additives that are allowed in one jurisdiction but not allowed in another. "Not in the FDA inventory" is not counted as "not allowed", because US law also permits substances that are generally recognized as safe (GRAS) without listing them.</p>
+<div class="cards">
+{% for s in sets %}
+  <a class="card" href="{{ url(s.path) }}">
+    <span class="card-num">{{ s['items']|length }}</span>
+    <span class="card-title">{{ s.title }}</span>
+    <span class="card-sub">{% for a in s['items'][:4] %}{{ a.e or a.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if s['items']|length > 4 %}…{% endif %}</span>
+  </a>
+{% endfor %}
+</div>
+{% if not sets %}<p class="empty">No differences found in the current data.</p>{% endif %}
+{% endblock %}

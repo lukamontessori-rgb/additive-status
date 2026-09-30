@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% from "_macros.html" import chip, additive_table %}
+{% block head %}
+<script type="application/ld+json">{{ ld_json({"@context": "https://schema.org", "@type": "WebSite", "name": SITE_NAME, "url": abs_url('/'),
+  "potentialAction": {"@type": "SearchAction", "target": abs_url('/additives/') ~ "?q={search_term_string}", "query-input": "required name=search_term_string"}})|safe }}</script>
+{% endblock %}
+{% block main %}
+<section class="hero">
+  <h1>Is this food additive allowed?</h1>
+  <p class="lede">Search any E-number or name. See its official status in the <strong>EU</strong>, the <strong>UK (GB)</strong>, the <strong>US</strong> and <strong>Canada</strong>, side by side, with links to the sources.</p>
+  <form class="search big" role="search" action="{{ url('/additives/') }}" data-search>
+    <label class="sr" for="q-home">Search additives</label>
+    <input id="q-home" name="q" type="search" autocomplete="off" spellcheck="false" autofocus
+           placeholder="Try E171, Red 40, aspartame, potassium bromate…" aria-controls="q-home-results" aria-expanded="false" aria-autocomplete="list">
+    <button type="submit">Search</button>
+    <ul id="q-home-results" class="results" role="listbox" hidden></ul>
+  </form>
+  {% if examples %}
+  <p class="examples"><span class="muted">Examples:</span>
+    {% for a in examples %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% endfor %}
+  </p>
+  {% endif %}
+</section>
+
+<section class="stats" aria-label="Key numbers">
+  <div><strong>{{ total }}</strong><span>additives tracked</span></div>
+  <div><strong>{{ diff_count }}</strong><span>allowed in one place, not in another</span></div>
+  {% for j in JUR_ORDER %}<div><strong>{{ counts[j] }}</strong><span>allowed in {{ JUR[j].short }}</span></div>{% endfor %}
+</section>
+
+{% if compare %}
+<section aria-labelledby="diff-h">
+  <h2 id="diff-h">Where the rules differ</h2>
+  <div class="cards">
+  {% for s in compare %}
+    <a class="card" href="{{ url(s.path) }}">
+      <span class="card-num">{{ s['items']|length }}</span>
+      <span class="card-title">{{ s.short }}</span>
+      <span class="card-sub">{% for a in s['items'][:3] %}{{ a.e or a.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if s['items']|length > 3 %}…{% endif %}</span>
+    </a>
+  {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section aria-labelledby="recent-h">
+  <h2 id="recent-h">Recent changes</h2>
+  {% if recent %}
+  <ol class="timeline">
+    {% for c in recent %}{% set a = by_id.get(c.id) %}
+    <li><time datetime="{{ c.date }}">{{ fmt_date(c.date) }}</time> — {% if a %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% else %}{{ c.id }}{% endif %}, {{ JUR[c.jur].short }}: {{ STATUSES.get(c['from'], STATUSES['unknown'])[0] }} → <strong>{{ STATUSES.get(c.to, STATUSES['unknown'])[0] }}</strong></li>
+    {% endfor %}
+  </ol>
+  <p><a href="{{ url('/changes/') }}">All changes →</a></p>
+  {% else %}
+  <p class="muted">The official sources are checked every week. Status changes will be listed here as they are detected. <a href="{{ url('/changes/') }}">About change tracking</a>.</p>
+  {% endif %}
+</section>
+
+{% if classes %}
+<section aria-labelledby="cls-h">
+  <h2 id="cls-h">Browse by type</h2>
+  <ul class="pill-list">{% for c in classes %}<li><a href="{{ url(c.path) }}">{{ c.name }} <span class="muted">{{ c.count }}</span></a></li>{% endfor %}</ul>
+</section>
+{% endif %}
+
+<section aria-labelledby="legend-h" class="legend">
+  <h2 id="legend-h">How to read a status</h2>
+  <dl>
+  {% for key in ['authorised', 'phase_out', 'not_authorised', 'prohibited', 'delisted', 'not_listed'] %}
+    <div><dt>{{ chip(key) }}</dt><dd>{{ STATUSES[key][3] }}</dd></div>
+  {% endfor %}
+  </dl>
+  <p class="muted small">A status is a legal fact about one jurisdiction's list, not a judgement about safety. <a href="{{ url('/about/') }}">Methods and limits</a>.</p>
+</section>
+{% endblock %}

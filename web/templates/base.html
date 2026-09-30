@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ description|default(TAGLINE) }}">
+{% if noindex %}<meta name="robots" content="noindex">{% else %}<link rel="canonical" href="{{ abs_url(path) }}">{% endif %}
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0f5e57">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ SITE_NAME }}">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ description|default(TAGLINE) }}">
+{% if not noindex %}<meta property="og:url" content="{{ abs_url(path) }}">{% endif %}
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+<link rel="stylesheet" href="{{ asset('style.css') }}">
+<script>window.SITE={base:{{ url('/')|tojson }},index:{{ SEARCH_INDEX_URL|tojson }}};</script>
+<script src="{{ asset('app.js') }}" defer></script>
+{% block head %}{% endblock %}
+</head>
+<body{% if home %} class="home"{% endif %}>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="{{ url('/') }}" aria-label="{{ SITE_NAME }} home">
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 32 32"><rect x="2" y="2" width="12" height="12" rx="3" class="b1"/><rect x="18" y="2" width="12" height="12" rx="3" class="b2"/><rect x="2" y="18" width="12" height="12" rx="3" class="b3"/><rect x="18" y="18" width="12" height="12" rx="3" class="b4"/></svg>
+      <span>{{ SITE_NAME }}</span>
+    </a>
+    {% if not home %}
+    <form class="search mini" role="search" action="{{ url('/additives/') }}" data-search>
+      <label class="sr" for="q-top">Search additives</label>
+      <input id="q-top" name="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="E-number or name, e.g. E171, Red 40" aria-controls="q-top-results" aria-expanded="false" aria-autocomplete="list">
+      <ul id="q-top-results" class="results" role="listbox" hidden></ul>
+    </form>
+    {% endif %}
+    <nav class="nav" aria-label="Main">
+      <a href="{{ url('/additives/') }}">All additives</a>
+      <a href="{{ url('/compare/') }}">Differences</a>
+      <a href="{{ url('/changes/') }}">Changes</a>
+      <a href="{{ url('/about/') }}">About</a>
+    </nav>
+  </div>
+</header>
+<main id="main" class="wrap">
+{% block main %}{% endblock %}
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p><strong>Not legal advice.</strong> This site summarises official lists and links to them. Always check the official source before making decisions.</p>
+    <p>Data from the European Union (EUR-Lex), the UK Food Standards Agency, the U.S. Food and Drug Administration, Health Canada and Wikidata.
+       Data checked: {{ fmt_date(generated_at) }}. <a href="{{ url('/about/') }}#sources">Sources and licences</a> · <a href="{{ url('/data/') }}">Download the data</a>{% if REPO_URL and REPO_URL != 'https://github.com/' %} · <a href="{{ REPO_URL }}">Source code</a>{% endif %}</p>
+    <p class="muted">Free, no ads, no tracking cookies, no accounts. Independent project — not affiliated with any government agency.</p>
+  </div>
+</footer>
+</body>
+</html>

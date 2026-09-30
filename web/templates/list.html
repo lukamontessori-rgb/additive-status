@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, status_cells %}
+{% block main %}
+{{ breadcrumbs([("All additives", None)]) }}
+<h1>All food additives</h1>
+<p class="lede">{{ additives|length }} additives. Type to filter, or choose a status for each jurisdiction. Click a name for sources and conditions.</p>
+
+<form class="filters" id="filters" onsubmit="return false">
+  <div class="f-q">
+    <label for="fq">Filter by name, E-number or CAS</label>
+    <input id="fq" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="e.g. 102, tartrazine, sorbate">
+  </div>
+  {% for j in JUR_ORDER %}
+  <div>
+    <label for="f-{{ j }}">{{ JUR[j].short }}</label>
+    <select id="f-{{ j }}" data-j="{{ loop.index0 }}">
+      <option value="">Any status</option>
+      <option value="allowed">Allowed (incl. phase-out)</option>
+      <option value="notallowed">Not allowed / prohibited / revoked</option>
+      <option value="not_listed">Not in FDA inventory</option>
+      <option value="unknown">No data</option>
+    </select>
+  </div>
+  {% endfor %}
+  <div>
+    <label for="f-class">Type</label>
+    <select id="f-class">
+      <option value="">All types</option>
+      {% for c in CLASSES %}<option value="{{ c.name }}">{{ c.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="f-actions">
+    <button type="button" id="f-diff" aria-pressed="false">Only where rules differ</button>
+    <button type="reset" id="f-reset">Reset</button>
+  </div>
+</form>
+<p id="f-count" class="muted" role="status" aria-live="polite">{{ additives|length }} shown</p>
+
+<div class="table-wrap">
+<table class="grid" id="all">
+  <thead><tr>
+    <th scope="col">Additive</th>
+    {% for j in JUR_ORDER %}<th scope="col" class="jcol"><abbr title="{{ JUR[j].name }}">{{ JUR[j].short }}</abbr></th>{% endfor %}
+  </tr></thead>
+  <tbody>
+  {% for a in additives %}
+  <tr data-q="{{ ([a.e or '', a.name] + a.aka + a.cas)|join('|')|lower }}" data-c="{{ a.classes|join('|') }}" data-d="{{ 1 if a.differs else 0 }}">
+    <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{% if a.e %}<span class="enum">{{ a.e }}</span> {% endif %}{{ a.name }}</a></th>
+    {{ status_cells(a) }}
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<p id="f-empty" class="empty" hidden>No additive matches these filters. <button type="button" onclick="document.getElementById('f-reset').click()">Clear filters</button></p>
+<p class="muted small"><a href="{{ url('/data/') }}">Download this table as CSV or JSON</a>.</p>
+{% endblock %}

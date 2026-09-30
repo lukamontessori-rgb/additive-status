@@ -1,0 +1,47 @@
+{% macro chip(status, short=False) -%}
+{% set s = STATUSES.get(status, STATUSES['unknown']) %}
+{% if short %}<span class="chip t-{{ s[2] }}" title="{{ s[0] }}: {{ s[3] }}"><span class="dot" aria-hidden="true"></span><span class="lbl-l">{{ s[1] }}</span><span class="lbl-s" aria-hidden="true">{{ TINY.get(status, '–') }}</span></span>{% else %}<span class="chip t-{{ s[2] }}" title="{{ s[3] }}"><span class="dot" aria-hidden="true"></span>{{ s[0] }}</span>{% endif %}
+{%- endmacro %}
+
+{% macro status_cells(a) -%}
+{% for j in JUR_ORDER %}{% set st = a.jur.get(j, {}).get('status', 'unknown') %}
+<td data-j="{{ j }}" data-s="{{ st }}">{{ chip(st, True) }}</td>
+{% endfor %}
+{%- endmacro %}
+
+{% macro additive_table(items, caption=None, show_class=False) -%}
+<div class="table-wrap">
+<table class="grid">
+  {% if caption %}<caption>{{ caption }}</caption>{% endif %}
+  <thead><tr>
+    <th scope="col">Additive</th>
+    {% if show_class %}<th scope="col">Type</th>{% endif %}
+    {% for j in JUR_ORDER %}<th scope="col" class="jcol"><abbr title="{{ JUR[j].name }}">{{ JUR[j].short }}</abbr></th>{% endfor %}
+  </tr></thead>
+  <tbody>
+  {% for a in items %}
+  <tr>
+    <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{% if a.e %}<span class="enum">{{ a.e }}</span> {% endif %}{{ a.name }}</a></th>
+    {% if show_class %}<td class="muted small">{{ a.classes|join(', ') }}</td>{% endif %}
+    {{ status_cells(a) }}
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{%- endmacro %}
+
+{% macro source_link(sid) -%}
+{% set s = sources.get(sid) %}
+{% if s %}<a href="{{ s.url }}" rel="noopener">{{ s.title }}</a>{% else %}{{ sid }}{% endif %}
+{%- endmacro %}
+
+{% macro breadcrumbs(items) -%}
+<nav class="crumbs" aria-label="Breadcrumb"><ol>
+  <li><a href="{{ url('/') }}">Home</a></li>
+  {% for label, href in items %}
+  <li>{% if href %}<a href="{{ url(href) }}">{{ label }}</a>{% else %}<span aria-current="page">{{ label }}</span>{% endif %}</li>
+  {% endfor %}
+</ol></nav>
+<script type="application/ld+json">{{ ld_breadcrumbs(items)|safe }}</script>
+{%- endmacro %}
