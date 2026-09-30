@@ -3,15 +3,14 @@
 # its licence and the attribution line we must show.
 
 eu_annex2:
-  title: "Regulation (EC) No 1333/2008 on food additives — consolidated text (EUR-Lex)"
+  title: "Regulation (EC) No 1333/2008 on food additives — consolidated text"
   publisher: "Publications Office of the European Union / European Commission"
   kind: eurlex_latest
   celex_base: "02008R1333"
-  discovery_urls:
-    - "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008R1333"
-    - "https://eur-lex.europa.eu/eli/reg/2008/1333/oj/eng"
   sparql_endpoint: "https://publications.europa.eu/webapi/rdf/sparql"
+  cellar_url: "https://publications.europa.eu/resource/celex/{celex}"
   html_url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:{celex}"
+  must_contain: "ANNEX II"
   file: "annex2.html"
   licence: "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)"
   licence_url: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
@@ -30,16 +29,6 @@ uk_fsa:
   attribution: "Contains public sector information licensed under the Open Government Licence v3.0 (Food Standards Agency)."
   critical: false
 
-uk_legislation:
-  title: "Regulation (EC) No 1333/2008 as it applies in Great Britain — Annex II (legislation.gov.uk)"
-  publisher: "The National Archives (UK)"
-  kind: http
-  url: "https://www.legislation.gov.uk/eur/2008/1333/annex/II/data.xml"
-  file: "annex2.xml"
-  licence: "Open Government Licence v3.0"
-  licence_url: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-  attribution: "Contains public sector information licensed under the Open Government Licence v3.0 (legislation.gov.uk)."
-  critical: false
 
 us_fda_substances:
   title: "Substances Added to Food inventory (formerly EAFUS)"
@@ -90,14 +79,17 @@ ca_lists:
   attribution: "Contains information licensed under the Open Government Licence – Canada (Health Canada)."
   critical: true
 
-wikidata:
-  title: "Wikidata — items with an E number (P628)"
-  publisher: "Wikimedia Foundation / Wikidata contributors"
-  kind: sparql
-  endpoint: "https://query.wikidata.org/sparql"
-  query_file: "wikidata_enumbers.rq"
-  file: "enumbers.json"
-  licence: "CC0 1.0 (public domain dedication)"
-  licence_url: "https://www.wikidata.org/wiki/Wikidata:Licensing"
-  attribution: "Identifier cross-references from Wikidata (CC0)."
+eu_specs:
+  title: "Regulation (EU) No 231/2012 laying down specifications for food additives — consolidated text"
+  publisher: "Publications Office of the European Union / European Commission"
+  kind: eurlex_latest
+  celex_base: "02012R0231"
+  sparql_endpoint: "https://publications.europa.eu/webapi/rdf/sparql"
+  cellar_url: "https://publications.europa.eu/resource/celex/{celex}"
+  html_url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:{celex}"
+  must_contain: "CAS"
+  file: "specs.html"
+  licence: "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)"
+  licence_url: "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html"
+  attribution: "© European Union, https://eur-lex.europa.eu/"
   critical: false

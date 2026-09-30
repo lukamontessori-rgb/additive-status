@@ -3,21 +3,25 @@
 Rules this script follows:
 * Only public URLs, no credentials, no cookies, no browser automation.
 * robots.txt is checked before every request; a disallowed URL is skipped.
+* Bot-protection challenges are reported, never bypassed.
 * A failed or suspicious download never overwrites the last good file.
 * Every file gets provenance in meta.json (URL, time, size, SHA-256).
+* Snapshots are stored gzip-compressed (deterministic, so unchanged data
+  gives an unchanged file).
 
 Usage:  python -m pipeline.fetch [source_id ...]
-Exit code is 0 unless a *critical* source has never been fetched successfully.
 """
 from __future__ import annotations
 
+import gzip
+import json
 import re
 import sys
 import traceback
 from pathlib import Path
 
 from pipeline.common import (
-    PIPELINE, RAW, get_with_retry, load_sources, now_iso, read_json,
+    RAW, get_with_retry, load_sources, now_iso, read_json,
     robots_allowed, session, sha256_bytes, write_json,
 )
 
@@ -41,6 +45,8 @@ def checked_get(sess, url: str, *, min_bytes: int = 200, **kw):
     if not robots_allowed(sess, url):
         raise FetchError(f"robots.txt disallows {url}")
     r = get_with_retry(sess, url, **kw)
+    if r.status_code == 202 or r.headers.get("x-amzn-waf-action"):
+        raise FetchError(f"Bot-protection challenge (HTTP {r.status_code}) at {url}; not bypassed")
     if r.status_code != 200:
         raise FetchError(f"HTTP {r.status_code} for {url}")
     body = r.content
@@ -53,21 +59,25 @@ def checked_get(sess, url: str, *, min_bytes: int = 200, **kw):
 
 def store(src_dir: Path, filename: str, body: bytes, url: str, final_url: str,
           content_type: str, meta: dict, extra: dict | None = None) -> bool:
-    """Write file if content changed. Returns True if changed."""
+    """Write filename.gz if the content changed. Returns True if changed."""
     files = meta.setdefault("files", {})
     old = files.get(filename, {})
     digest = sha256_bytes(body)
-    changed = old.get("sha256") != digest or not (src_dir / filename).exists()
+    target = src_dir / (filename + ".gz")
+    changed = old.get("sha256") != digest or not target.exists()
     if changed:
         src_dir.mkdir(parents=True, exist_ok=True)
-        tmp = src_dir / (filename + ".tmp")
-        tmp.write_bytes(body)
-        tmp.replace(src_dir / filename)
+        tmp = src_dir / (filename + ".gz.tmp")
+        tmp.write_bytes(gzip.compress(body, compresslevel=9, mtime=0))
+        tmp.replace(target)
+        if (src_dir / filename).exists():
+            (src_dir / filename).unlink()
     entry = {
         "url": url,
         "final_url": final_url,
         "content_type": content_type,
         "bytes": len(body),
+        "stored_as": filename + ".gz",
         "sha256": digest,
         "fetched_at": now_iso(),
         "content_changed_at": now_iso() if changed else old.get("content_changed_at"),
@@ -103,7 +113,6 @@ def fetch_http_multi(sess, sid, cfg, src_dir, meta):
 
 
 def fetch_fsa_paged(sess, sid, cfg, src_dir, meta):
-    import json
     items, offset, size = [], 0, int(cfg.get("page_size", 500))
     top_meta = None
     for _ in range(100):  # hard stop
@@ -120,79 +129,83 @@ def fetch_fsa_paged(sess, sid, cfg, src_dir, meta):
         raise FetchError("Paging did not terminate")
     if not items:
         raise FetchError("No items returned")
+    items.sort(key=lambda it: json.dumps(it.get("@id", ""), sort_keys=True))
     body = json.dumps({"meta": top_meta, "items": items}, ensure_ascii=False,
                       indent=1, sort_keys=True).encode("utf-8")
     return [store(src_dir, cfg["file"], body, cfg["url"], cfg["url"],
                   "application/json", meta, {"items": len(items)})]
 
 
-CELEX_RE = re.compile(r"0?2008R1333-(\d{8})")
-
-
 def discover_latest_celex(sess, cfg) -> tuple[str, str]:
-    found: set[str] = set()
-    notes = []
-    for url in cfg.get("discovery_urls", []):
-        try:
-            r = checked_get(sess, url, min_bytes=1000)
-            found.update(CELEX_RE.findall(r.text))
-        except Exception as e:
-            notes.append(f"{url}: {e}")
-    if not found and cfg.get("sparql_endpoint"):
-        q = ('PREFIX cdm: <http://publications.europa.eu/ontology/cdm#> '
-             'SELECT DISTINCT ?c WHERE { ?w cdm:resource_legal_id_celex ?c . '
-             'FILTER(STRSTARTS(STR(?c), "02008R1333-")) }')
-        try:
-            r = get_with_retry(sess, cfg["sparql_endpoint"],
-                               params={"query": q, "format": "application/sparql-results+json"},
-                               headers={"Accept": "application/sparql-results+json"})
-            if r.ok:
-                for b in r.json()["results"]["bindings"]:
-                    m = CELEX_RE.search(b["c"]["value"])
-                    if m:
-                        found.add(m.group(1))
-            else:
-                notes.append(f"sparql HTTP {r.status_code}")
-        except Exception as e:
-            notes.append(f"sparql: {e}")
+    """Find the newest consolidated version via the Publications Office SPARQL endpoint."""
+    base = cfg["celex_base"]
+    q = ('PREFIX cdm: <http://publications.europa.eu/ontology/cdm#> '
+         'SELECT DISTINCT ?c WHERE { ?w cdm:resource_legal_id_celex ?c . '
+         f'FILTER(STRSTARTS(STR(?c), "{base}-")) }}')
+    url = cfg["sparql_endpoint"]
+    if not robots_allowed(sess, url):
+        raise FetchError(f"robots.txt disallows {url}")
+    r = get_with_retry(sess, url, params={"query": q, "format": "application/sparql-results+json"},
+                       headers={"Accept": "application/sparql-results+json"})
+    if r.status_code != 200:
+        raise FetchError(f"SPARQL HTTP {r.status_code}")
+    found = set()
+    for b in r.json()["results"]["bindings"]:
+        v = b["c"]["value"]
+        if v.startswith(base + "-") and re.fullmatch(r"\d{8}", v[len(base) + 1:]):
+            found.add(v)
     if not found:
-        raise FetchError("Could not discover consolidated versions: " + "; ".join(notes))
-    latest = max(found)
-    return f"{cfg['celex_base']}-{latest}", ",".join(sorted(found))
+        raise FetchError(f"No consolidated versions found for {base}")
+    latest = max(found, key=lambda c: c[-8:])
+    return latest, ",".join(sorted(c[-8:] for c in found))
+
+
+def download_cellar(sess, celex: str, cfg) -> tuple[bytes, str]:
+    """Download the English XHTML/HTML manifestation from the Cellar REST service."""
+    url = cfg["cellar_url"].format(celex=celex)
+    headers = {"Accept": "application/xhtml+xml, text/html;q=0.9", "Accept-Language": "eng"}
+    if not robots_allowed(sess, url):
+        raise FetchError(f"robots.txt disallows {url}")
+    r = get_with_retry(sess, url, headers=headers, timeout=300)
+    if r.status_code == 300:
+        links = re.findall(r'href="([^"]+/resource/cellar/[^"]+)"', r.text)
+        links = [l for l in links if "pdf" not in l.lower()]
+        if not links:
+            raise FetchError(f"Cellar returned 300 with no usable links for {celex}")
+        r = get_with_retry(sess, links[0], headers=headers, timeout=300)
+    if r.status_code != 200:
+        raise FetchError(f"Cellar HTTP {r.status_code} for {celex}")
+    if looks_like_challenge(r.content):
+        raise FetchError("Cellar response looks like a challenge page")
+    return r.content, r.url
 
 
 def fetch_eurlex_latest(sess, sid, cfg, src_dir, meta):
     celex, all_versions = discover_latest_celex(sess, cfg)
-    url = cfg["html_url"].format(celex=celex)
-    r = checked_get(sess, url, min_bytes=200000, timeout=300)
-    text = r.content
-    # Sanity: the page must really be the consolidated regulation with Annex II.
-    if b"ANNEX II" not in text and b"Annex II" not in text:
-        raise FetchError("Downloaded EUR-Lex page has no Annex II")
-    return [store(src_dir, cfg["file"], text, url, r.url,
-                  r.headers.get("content-type", ""), meta,
-                  {"celex": celex, "versions_seen": all_versions})]
-
-
-def fetch_sparql(sess, sid, cfg, src_dir, meta):
-    query = (PIPELINE / cfg["query_file"]).read_text(encoding="utf-8")
-    url = cfg["endpoint"]
-    if not robots_allowed(sess, url):
-        raise FetchError(f"robots.txt disallows {url}")
-    r = get_with_retry(sess, url, params={"query": query},
-                       headers={"Accept": "application/sparql-results+json"}, timeout=180)
-    if r.status_code != 200:
-        raise FetchError(f"SPARQL HTTP {r.status_code}")
-    data = r.json()
-    n = len(data.get("results", {}).get("bindings", []))
-    if n < 100:
-        raise FetchError(f"SPARQL returned only {n} rows")
-    import json
-    # Sort rows so the file only changes when the data changes.
-    rows = sorted(data["results"]["bindings"], key=lambda b: json.dumps(b, sort_keys=True))
-    data["results"]["bindings"] = rows
-    body = json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True).encode("utf-8")
-    return [store(src_dir, cfg["file"], body, url, url, "application/json", meta, {"rows": n})]
+    must = cfg.get("must_contain", "").encode()
+    errors: list[str] = []
+    body, final = None, None
+    try:
+        body, final = download_cellar(sess, celex, cfg)
+        if must and must not in body:
+            errors.append(f"cellar document lacks {must!r} ({len(body)} bytes)")
+            body = None
+    except Exception as e:
+        errors.append(f"cellar: {e}")
+    if body is None:
+        url = cfg["html_url"].format(celex=celex)
+        try:
+            r = checked_get(sess, url, min_bytes=100000, timeout=300)
+            if must and must not in r.content:
+                raise FetchError(f"EUR-Lex page lacks {must!r}")
+            body, final = r.content, r.url
+        except Exception as e:
+            errors.append(f"eur-lex: {e}")
+    if body is None or len(body) < 100000:
+        raise FetchError("; ".join(errors) or "document too small")
+    return [store(src_dir, cfg["file"], body, cfg["cellar_url"].format(celex=celex), final,
+                  "text/html", meta, {"celex": celex, "versions_seen": all_versions,
+                                      "notes": errors})]
 
 
 FETCHERS = {
@@ -200,7 +213,6 @@ FETCHERS = {
     "http_multi": fetch_http_multi,
     "fsa_paged": fetch_fsa_paged,
     "eurlex_latest": fetch_eurlex_latest,
-    "sparql": fetch_sparql,
 }
 
 

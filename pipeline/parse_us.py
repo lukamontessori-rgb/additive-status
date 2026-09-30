@@ -9,7 +9,7 @@ import csv
 import io
 import re
 
-from pipeline.common import RAW, read_json
+from pipeline.common import RAW, read_json, read_raw
 from pipeline.htmltable import parse as parse_html, table_to_grid
 from pipeline.names import find_cas, norm_name, title_case_chem
 
@@ -95,9 +95,8 @@ def classify(sections: list[tuple[int, int]], flags: set[str]) -> tuple[str, str
 
 
 def parse_all() -> dict:
-    f = RAW / "us_fda_substances" / "substances.xls"
     meta = read_json(RAW / "us_fda_substances" / "meta.json", {}) or {}
-    grid = read_grid(f.read_bytes())
+    grid = read_grid(read_raw("us_fda_substances", "substances.xls"))
     h = find_header(grid)
     header = [c.strip() for c in grid[h]]
     c_cas = col(header, "cas")

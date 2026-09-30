@@ -1,7 +1,9 @@
 """Parse the FSA Regulated Products register (food additive authorisations)."""
 from __future__ import annotations
 
-from pipeline.common import RAW, read_json
+import json
+
+from pipeline.common import RAW, read_json, read_raw
 from pipeline.names import e_display, e_id, e_parts
 
 
@@ -30,7 +32,7 @@ def first(v, default=""):
 
 
 def parse_all() -> dict:
-    data = read_json(RAW / "uk_fsa" / "authorisations.json")
+    data = json.loads(read_raw("uk_fsa", "authorisations.json"))
     meta = read_json(RAW / "uk_fsa" / "meta.json", {}) or {}
     records = {}
     unparsed = []

@@ -8,7 +8,7 @@ from __future__ import annotations
 import re
 from collections import OrderedDict
 
-from pipeline.common import RAW, load_sources, read_json
+from pipeline.common import RAW, load_sources, raw_exists, read_json, read_raw
 from pipeline.htmltable import parse, table_to_grid
 from pipeline.names import norm_name
 
@@ -105,11 +105,10 @@ def parse_all() -> dict:
     records: "OrderedDict[str, dict]" = OrderedDict()
     per_list = {}
     for key, page in cfg["pages"].items():
-        f = RAW / "ca_lists" / f"{key}.html"
-        if not f.exists():
-            raise FileNotFoundError(f)
+        if not raw_exists("ca_lists", f"{key}.html"):
+            raise FileNotFoundError(f"ca_lists/{key}.html")
         url = cfg["base"] + page
-        rows = parse_page(key, f.read_bytes(), url)
+        rows = parse_page(key, read_raw("ca_lists", f"{key}.html"), url)
         per_list[key] = len(rows)
         for r in rows:
             k = norm_name(r["name"])

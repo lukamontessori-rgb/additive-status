@@ -59,6 +59,22 @@ def write_json(path: Path, obj, indent: int | None = 1) -> None:
     tmp.replace(path)
 
 
+def read_raw(sid: str, filename: str) -> bytes:
+    """Read a raw snapshot; snapshots are stored gzip-compressed (filename.gz)."""
+    import gzip
+    gz = RAW / sid / (filename + ".gz")
+    if gz.exists():
+        return gzip.decompress(gz.read_bytes())
+    plain = RAW / sid / filename
+    if plain.exists():
+        return plain.read_bytes()
+    raise FileNotFoundError(str(gz))
+
+
+def raw_exists(sid: str, filename: str) -> bool:
+    return (RAW / sid / (filename + ".gz")).exists() or (RAW / sid / filename).exists()
+
+
 def session() -> requests.Session:
     s = requests.Session()
     s.headers.update({

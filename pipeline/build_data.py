@@ -13,7 +13,7 @@ from collections import Counter, defaultdict
 
 import yaml
 
-from pipeline import parse_ca, parse_eu, parse_uk, parse_us, parse_wikidata
+from pipeline import parse_ca, parse_eu, parse_uk, parse_us
 from pipeline.common import CURATED, INTERIM, PUBLISHED, RAW, load_sources, now_iso, read_json, write_json
 from pipeline.model import JUR_ORDER
 from pipeline.names import e_display, e_id, e_parts, e_sort, name_variants, norm_name
@@ -383,7 +383,7 @@ class Build:
         self.parse("uk_fsa", parse_uk.parse_all)
         self.parse("us_fda_substances", parse_us.parse_all)
         self.parse("ca_lists", parse_ca.parse_all)
-        self.parse("wikidata", parse_wikidata.parse_all)
+        self.parsed["wikidata"] = {"by_e": {}, "rows": 0}  # replaced by EU specifications (see parse_specs)
         self.validate()
 
         ents = self.entities()

@@ -17,7 +17,7 @@ from collections import OrderedDict, defaultdict
 
 from lxml import html as lhtml
 
-from pipeline.common import RAW, read_json
+from pipeline.common import RAW, read_json, read_raw
 from pipeline.htmltable import cell_text, table_to_grid
 from pipeline.names import e_display, e_id, e_parts, e_sort
 
@@ -199,9 +199,8 @@ def parse_html(body: bytes) -> dict:
 
 
 def parse_all() -> dict:
-    f = RAW / "eu_annex2" / "annex2.html"
     meta = read_json(RAW / "eu_annex2" / "meta.json", {}) or {}
-    out = parse_html(f.read_bytes())
+    out = parse_html(read_raw("eu_annex2", "annex2.html"))
     out["meta"] = meta
     out["celex"] = (meta.get("files", {}).get("annex2.html", {}) or {}).get("celex")
     return out
