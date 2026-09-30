@@ -1,12 +1,13 @@
 {
- "at": "2026-09-30T21:08:26+00:00",
+ "at": "2026-09-30T21:24:39+00:00",
  "problems": [],
  "counts": {
   "eu_annex2": 339,
   "us_fda_substances": 3971,
   "ca_lists": 454,
   "uk_fsa": 333,
-  "eu_specs": 386
+  "eu_specs": 386,
+  "anz_code": 310
  },
  "us_match": {
   "unmatched": 3691,
