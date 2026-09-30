@@ -7,6 +7,7 @@
   <header class="entity-head">
     <h1>{% if a.e %}<span class="enum big">{{ a.e }}</span> {% endif %}{{ a.name }}</h1>
     {% if a.aka %}<p class="aka"><span class="muted">Also called:</span> {{ a.aka[:10]|join(' · ') }}</p>{% endif %}
+    {% if a.former_e %}<p class="aka"><span class="muted">Former EU number:</span> {{ a.former_e }} <span class="muted">(no longer on the EU list)</span></p>{% endif %}
     <p class="ids">
       {% if a.classes %}<span>{% for c in a.classes %}{% set cp = (CLASSES|selectattr('name', 'equalto', c)|first) %}{% if cp %}<a href="{{ url(cp.path) }}">{{ c }}</a>{% else %}{{ c }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif %}
       {% for cas in a.cas[:3] %}<span>CAS {{ cas }}</span>{% endfor %}

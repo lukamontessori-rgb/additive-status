@@ -29,7 +29,7 @@ EU_CLASS = {"Colours": "Colours", "Sweeteners": "Sweeteners"}
 FLAVOUR_SECTIONS = {"172.510", "172.515"}
 GENERIC_KEYS = {"fatty acid", "wax", "gum", "starch", "caramel", "color", "colour", "extract", "oil", "resin",
                 "polymer", "salt", "acid", "ester", "glyceride", "sugar", "vinegar"}
-MATCH_QUALITY = {"reviewed": 5, "Colour": 4, "CAS": 4, "name": 3, "alternative": 2, "FDA": 3}
+MATCH_QUALITY = {"reviewed": 5, "Colour": 4, "CAS": 4, "name": 3, "alternative": 2, "FDA": 3, "Federal": 5}
 
 
 def match_rank(m, ent_key: str):
@@ -458,7 +458,9 @@ class Build:
                 f"{m[0]['display']} ({m[0]['headline']})" for m in matches[:12]))
         return {"status": r["status"], "headline": r["headline"], "facts": facts, "notes": notes,
                 "refs": refs, "source": "us_fda_substances", "match": best[1],
-                "match_detail": f"Matched to the FDA inventory by {best[1]}."}
+                "match_detail": ("Status taken from a Federal Register final rule; the substance is no longer in FDA's inventory."
+                                 if (best[1] or "").startswith("Federal Register") else
+                                 f"Matched to the FDA inventory by {best[1]}.")}
 
     def ca_status(self, key, matches):
         if self.parsed.get("ca_lists") is None:
@@ -515,7 +517,15 @@ class Build:
         us_m, us_stats, us_unmatched = self.match_us(ents, by_name, by_cas, by_ci)
 
         # US-only entities: prohibited/revoked FDA substances, plus a reviewed list of notable ones
-        us_only = set(self.curated.get("us_only") or [])
+        def _entries(key):
+            out = {}
+            for it in self.curated.get(key) or []:
+                it = {"name": it} if isinstance(it, str) else dict(it)
+                out[it["name"]] = it
+            return out
+        us_only_info = _entries("us_only")
+        ca_only_info = _entries("ca_only")
+        us_only = set(us_only_info)
         missing = us_only - {r["name"] for r in us_unmatched}
         for n in sorted(missing):
             self.log["us_only_not_found_or_matched"].append(n)
@@ -529,11 +539,39 @@ class Build:
             if sid in ents:
                 us_m[sid].append((r, "FDA inventory entry"))
                 continue
+            info = us_only_info.get(r["name"], {})
             ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": r["display"],
-                         "names": [r["display"]] + r["other_names"][:10], "cas": r["cas"], "ci": r["colour_index"],
-                         "classes": [], "jur": {}, "us_only": True}
+                         "names": [r["display"]] + info.get("aka", []) + r["other_names"][:10], "cas": r["cas"],
+                         "ci": r["colour_index"], "classes": [], "jur": {}, "us_only": True,
+                         "former_e": info.get("former_e")}
             us_m[sid] = [(r, "FDA inventory entry")]
             for n in [r["name"]] + r["other_names"][:10]:
+                by_name[match_key(n)].add(sid)
+
+        # Revoked substances known only from the Federal Register (no longer in FDA's inventory)
+        fr = self.parsed.get("us_fr_revocations")
+        for item in (self.curated.get("us_fr_entities") or []):
+            doc = next((r for r in (fr or {}).get("revocations", []) if r["document_number"] == item["doc"]), None)
+            if not doc:
+                self.log["us_fr_entities_missing"].append(item["doc"])
+                continue
+            sid = "us-" + re.sub(r"[^a-z0-9]+", "-", item["name"].lower()).strip("-")
+            eff = doc["effective"]
+            rec = {"name": item["name"].upper(), "display": item["name"], "other_names": item.get("aka", []),
+                   "cas": [], "effects": [], "cfr": [], "flags": [], "colour_index": [],
+                   "status": "phase_out" if eff and eff > self.today else "delisted",
+                   "headline": (f"Authorisation revoked; ends {eff.strftime('%-d %B %Y')}" if eff and eff > self.today
+                                else f"Authorisation revoked{(' — effective ' + eff.strftime('%-d %B %Y')) if eff else ''}"),
+                   "key": match_key(item["name"]),
+                   "revocation": {"title": doc["title"], "url": doc["url"], "published": doc["publication_date"],
+                                  "effective": eff.isoformat() if eff else None, "doc": doc["document_number"]}}
+            ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": item["name"],
+                         "names": [item["name"]] + item.get("aka", []), "cas": [], "ci": [], "classes": [],
+                         "jur": {}, "us_only": True}
+            self._ent_names[sid] = item["name"]
+            self._ent_classes[sid] = []
+            us_m[sid] = [(rec, "Federal Register final rule")]
+            for n in ents[sid]["names"]:
                 by_name[match_key(n)].add(sid)
 
         # FDA names of confidently matched records help match Canadian names
@@ -554,7 +592,7 @@ class Build:
         for r in us_unmatched:
             for n in [r["name"]] + r["other_names"][:10]:
                 fda_by_key[match_key(n)].append(r)
-        ca_only = set(self.curated.get("ca_only") or [])
+        ca_only = set(ca_only_info)
         for r in ca_unmatched:
             if r["name"] not in ca_only:
                 continue
@@ -562,7 +600,8 @@ class Build:
             if cid in ents:
                 continue
             ents[cid] = {"id": cid, "e": None, "sort": "~~" + cid, "name": r["name"], "names": list(r["names"]),
-                         "cas": [], "ci": [], "classes": [], "jur": {}, "ca_only": True}
+                         "cas": [], "ci": [], "classes": [], "jur": {}, "ca_only": True,
+                         "former_e": ca_only_info.get(r["name"], {}).get("former_e")}
             self._ent_names[cid] = r["name"]
             ca_m[cid].append((r, "Health Canada list entry"))
             ca_stats["own entry"] += 1
@@ -603,7 +642,9 @@ class Build:
                     if e in eff and c not in classes:
                         classes.append(c)
             aka, seen = [], {match_key(ent["name"])}
-            pool = ent["names"] + [m[0]["display"] for m in us_m.get(k, []) if m[0]["status"] != "delisted"] + \
+            pool = ent["names"] + [m[0]["display"] for m in us_m.get(k, [])
+                                   if m[0]["status"] != "delisted" and not (m[1] or "").startswith("alternative")
+                                   and "lake" not in m[0]["display"].lower()] + \
                 [n for m in ca_m.get(k, []) for n in m[0]["names"]]
             for n in pool:
                 mk = match_key(n)
@@ -612,8 +653,13 @@ class Build:
                     aka.append(n)
             cas = list(dict.fromkeys(ent["cas"] + [c for m in us_m.get(k, []) for c in m[0]["cas"]
                                                    if m[1] and not m[1].startswith("alternative")]))
-            additives.append({"id": k, "e": ent["e"], "sort": ent["sort"], "name": ent["name"], "aka": aka[:16],
-                              "cas": cas[:4], "classes": classes, "jur": jur})
+            item = {"id": k, "e": ent["e"], "sort": ent["sort"], "name": ent["name"], "aka": aka[:16],
+                    "cas": cas[:4], "classes": classes, "jur": jur}
+            if ent.get("former_e"):
+                item["former_e"] = ent["former_e"]
+                jur["eu"].setdefault("notes", []).append(
+                    f"This substance once had the EU number {ent['former_e']}, which is no longer on the EU list.")
+            additives.append(item)
         additives.sort(key=lambda a: a["sort"])
 
         # changelog

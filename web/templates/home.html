@@ -17,7 +17,7 @@
   </form>
   {% if examples %}
   <p class="examples"><span class="muted">Examples:</span>
-    {% for a in examples %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% endfor %}
+    {% for a in examples %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{% if a.e %}{{ a.e }} {% endif %}{{ a.name }}</a>{% endfor %}
   </p>
   {% endif %}
 </section>

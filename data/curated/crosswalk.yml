@@ -126,19 +126,19 @@ ca:
 # the EU and GB lists clearly do not cover them (several are former E-numbers that
 # the EU removed). US entries that FDA prohibits or has revoked are added automatically.
 us_only:
-  - "POTASSIUM BROMATE"            # former E 924
-  - "AZODICARBONAMIDE"             # former E 927a
-  - "BENZOYL PEROXIDE"             # former E 928
+  - {name: "POTASSIUM BROMATE", former_e: "E 924"}
+  - {name: "AZODICARBONAMIDE", former_e: "E 927a"}
+  - {name: "BENZOYL PEROXIDE", former_e: "E 928"}
   - "ACETONE PEROXIDES"
-  - "CHLORINE DIOXIDE"             # former E 926
-  - "PROPYL P-HYDROXYBENZOATE"     # propylparaben, former E 216
+  - {name: "CHLORINE DIOXIDE", former_e: "E 926"}
+  - {name: "PROPYL P-HYDROXYBENZOATE", former_e: "E 216", aka: ["Propylparaben"]}
   - "HEPTYLPARABEN"
   - "ETHOXYQUIN"
-  - "CITRUS RED NO. 2"             # former E 121
+  - {name: "CITRUS RED NO. 2", former_e: "E 121"}
   - "ORANGE B"
-  - "FD&C GREEN NO. 3"             # Fast Green FCF, former E 143
-  - "DEHYDROACETIC ACID"           # former E 265
-  - "SODIUM DEHYDROACETATE"        # former E 266
+  - {name: "FD&C GREEN NO. 3", former_e: "E 143", aka: ["Fast Green FCF"]}
+  - {name: "DEHYDROACETIC ACID", former_e: "E 265"}
+  - {name: "SODIUM DEHYDROACETATE", former_e: "E 266"}
   - "DIOCTYL SODIUM SULFOSUCCINATE"
   - "ANOXOMER"
   - "CURDLAN"
@@ -150,25 +150,31 @@ us_only:
 ca_only:
   - "Acetone Peroxide"
   - "Calcium Peroxide"
-  - "Chlorine"                     # former E 925
-  - "Chlorine Dioxide"             # former E 926
+  - {name: "Chlorine", former_e: "E 925"}
+  - {name: "Chlorine Dioxide", former_e: "E 926"}
   - "Potassium Persulphate"
   - "Calcium Iodate"
   - "Potassium Iodate"
   - "Carbon Black"
-  - "Ethyl β-Apo-8'-Carotenoate"   # former E 160f
-  - "Sodium Sorbate"               # former E 201
-  - "Calcium Sorbate"              # former E 203
-  - "Sodium Salt of Propyl-ρ-Hydroxybenzoic Acid"  # former E 217
+  - {name: "Ethyl β-Apo-8'-Carotenoate", former_e: "E 160f"}
+  - {name: "Sodium Sorbate", former_e: "E 201"}
+  - {name: "Calcium Sorbate", former_e: "E 203"}
+  - {name: "Sodium Salt of Propyl-ρ-Hydroxybenzoic Acid", former_e: "E 217"}
   - "Disodium Ethylenediaminetetraacetate (Disodium EDTA)"
   - "Monk Fruit Extract"
   - "α-Cyclodextrin"
   - "Sorbitan Trioleate"
   - "Glycerol Ester of Gum Rosin"
   - "Glycerol Ester of Tall Oil Rosin"
-  - "Stearyl Citrate"              # former E 484
-  - "Monoisopropyl Citrate"        # former E 384
-  - "Sodium Fumarate"              # former E 365
-  - "Potassium Fumarate"           # former E 366
-  - "Calcium Fumarate"             # former E 367
+  - {name: "Stearyl Citrate", former_e: "E 484"}
+  - {name: "Monoisopropyl Citrate", former_e: "E 384"}
+  - {name: "Sodium Fumarate", former_e: "E 365"}
+  - {name: "Potassium Fumarate", former_e: "E 366"}
+  - {name: "Calcium Fumarate", former_e: "E 367"}
   - "Magnesium Fumarate"
+
+# Revoked US uses that are no longer in FDA's inventory at all, taken from Federal Register final rules.
+us_fr_entities:
+  - doc: "2024-14300"
+    name: "Brominated vegetable oil"
+    aka: ["BVO"]

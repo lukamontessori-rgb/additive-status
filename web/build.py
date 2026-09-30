@@ -225,7 +225,7 @@ class Builder:
         for a in self.additives:
             rows.append({
                 "i": a["id"], "e": a.get("e") or "", "n": a["name"],
-                "k": a.get("aka", [])[:12], "c": a.get("cas", [])[:3],
+                "k": ([a["former_e"]] if a.get("former_e") else []) + a.get("aka", [])[:12], "c": a.get("cas", [])[:3],
                 "s": [a["jur"].get(j, {}).get("status", "unknown") for j in JUR_ORDER],
             })
         body = json.dumps(rows, ensure_ascii=False, separators=(",", ":"))
@@ -361,8 +361,8 @@ class Builder:
                 if allowed(a["jur"].get(j, {}).get("status", "")):
                     counts[j] += 1
         diff_count = sum(1 for a in self.additives if a["differs"])
-        examples = [self.by_id[i] for i in ("e171", "e129", "e102", "e924", "e950", "e123")
-                    if i in self.by_id]
+        examples = [self.by_id[i] for i in ("e171", "e129", "e127", "us-potassium-bromate", "e951",
+                                            "us-brominated-vegetable-oil", "e621") if i in self.by_id]
         recent = sorted(self.changelog.get("entries", []), key=lambda e: e.get("date", ""), reverse=True)[:6]
         self.page("/", "home.html", priority=1.0,
                   page_title=f"{SITE_NAME}: is this food additive allowed in the EU, UK, US or Canada?",

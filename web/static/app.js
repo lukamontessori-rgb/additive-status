@@ -9,7 +9,8 @@
 
   function norm(s) {
     return String(s || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "")
-      .replace(/&/g, " and ").replace(/fd\s*and\s*c/g, "fdc").replace(/[^a-z0-9]+/g, " ").trim();
+      .replace(/&/g, " and ").replace(/fd\s*and\s*c/g, "fdc").replace(/\b(no|number|nr)\.?\s*(?=\d)/g, "")
+      .replace(/[^a-z0-9]+/g, " ").trim();
   }
   function compact(s) { return norm(s).replace(/ /g, ""); }
   // "E 129", "e129", "129", "E-129" -> "e129"; "E 160a(ii)" -> "e160aii"
@@ -41,8 +42,11 @@
       }).then(function (rows) {
         INDEX = rows.map(function (r) {
           var names = [r.n].concat(r.k || []);
-          return { r: r, ek: r.e ? enumKey(r.e) : "", nn: norm(r.n), names: names.map(norm),
-                   words: names.map(norm).join(" ").split(" "), cas: (r.c || []).map(compact) };
+          var nn = names.map(norm);
+          return { r: r, ek: r.e ? enumKey(r.e) : "", nn: norm(r.n), names: nn,
+                   padded: nn.map(function (x) { return " " + x + " "; }),
+                   compacts: nn.map(function (x) { return x.replace(/ /g, ""); }),
+                   words: nn.join(" ").split(" "), cas: (r.c || []).map(compact) };
         });
         return INDEX;
       }).catch(function (e) { indexPromise = null; throw e; });
@@ -53,12 +57,17 @@
   function score(item, q, qe, qc, qwords) {
     if (!q) return 0;
     if (item.ek && (qe === item.ek)) return 100;
+    if (/^e\d{3}/.test(qe) && item.compacts.indexOf(qe) >= 0) return 96;   // former E-number in other names
     if (item.ek && qe.length >= 4 && item.ek.indexOf(qe) === 0) return 92 - (item.ek.length - qe.length);
     if (item.cas.indexOf(qc) >= 0) return 95;
+    if (q.length < 2 && !/^\d/.test(q)) return 0;
     if (item.nn === q) return 90;
     if (item.names.indexOf(q) >= 0) return 88;
-    if (item.nn.indexOf(q) === 0) return 80;
-    for (var i = 1; i < item.names.length; i++) if (item.names[i].indexOf(q) === 0) return 72;
+    var phrase = " " + q + " ";
+    if (item.padded[0].indexOf(" " + q) === 0 && item.padded[0].charAt(q.length + 1) === " ") return 82;
+    if (item.padded.some(function (x) { return x.indexOf(phrase) >= 0; })) return 74;
+    if (item.nn.indexOf(q) === 0) return 70;
+    for (var i = 1; i < item.names.length; i++) if (item.names[i].indexOf(q) === 0) return 64;
     // every query word is a prefix of some name word
     var all = qwords.every(function (w) { return item.words.some(function (x) { return x.indexOf(w) === 0; }); });
     if (all) return 60;
