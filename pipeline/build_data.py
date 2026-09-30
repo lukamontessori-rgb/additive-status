@@ -54,6 +54,39 @@ def match_variants(name: str) -> set[str]:
                      for w in v.split()) for v in name_variants(name)}
 
 
+FUNCTION_WORDS = [
+    ("colo", "colour"), ("preserv", "preservative"), ("antimicrobial", "preservative"), ("antioxid", "antioxidant"),
+    ("sweeten", "sweetener"), ("emulsif", "emulsifier"), ("stabili", "stabiliser"), ("thicken", "thickener"),
+    ("gelling", "gelling agent"), ("ph control", "acidity regulator"), ("acidity", "acidity regulator"),
+    ("acidulant", "acidity regulator"), ("acid-reacting", "acidity regulator"), ("flavor enhancer", "flavour enhancer"),
+    ("flavour enhancer", "flavour enhancer"), ("flavoring", "flavouring"), ("flavouring", "flavouring"),
+    ("leavening", "raising agent"), ("raising", "raising agent"), ("anticaking", "anti-caking agent"),
+    ("anti-caking", "anti-caking agent"), ("free-flow", "anti-caking agent"), ("humectant", "humectant"),
+    ("firming", "firming agent"), ("glazing", "glazing agent"), ("polishing", "glazing agent"),
+    ("surface-finishing", "glazing agent"), ("dough strengthener", "flour treatment agent"),
+    ("flour treat", "flour treatment agent"), ("bleaching", "flour treatment agent"), ("maturing", "flour treatment agent"),
+    ("sequestr", "sequestrant"), ("chelat", "sequestrant"), ("nutrient supplement", "nutrient"), ("texturiz", "texturiser"),
+    ("bulking", "bulking agent"), ("antifoam", "anti-foaming agent"), ("anti-foam", "anti-foaming agent"),
+    ("foaming", "foaming agent"), ("propellant", "propellant"), ("packaging gas", "packaging gas"),
+    ("curing", "curing agent"), ("drying agent", "drying agent"), ("solvent", "carrier or solvent"),
+    ("carrier", "carrier or solvent"), ("enzyme", "enzyme"), ("processing aid", "processing aid"),
+    ("modified starch", "modified starch"), ("starch-modif", "starch-modifying agent"), ("yeast food", "yeast food"),
+]
+
+
+def canonical_function(raw: str) -> str | None:
+    t = (raw or "").lower()
+    for key, name in FUNCTION_WORDS:
+        if key in t:
+            return name
+    return None
+
+
+def key_label(k: str) -> str:
+    m = re.match(r"e(\d+)([a-z]?)(?:-([ivx]+))?$", k)
+    return e_display(int(m.group(1)), m.group(2) or "", m.group(3) or "") if m else k
+
+
 def base_key(k: str) -> str:
     m = re.match(r"(e\d+[a-z]?)", k)
     return m.group(1) if m else k
@@ -499,6 +532,127 @@ class Build:
                 "facts": facts, "notes": notes, "refs": refs, "source": "ca_lists", "match": how,
                 "match_detail": f"Matched to Health Canada's lists by {how}."}
 
+    # ------------------------------------------------------------ details and overview
+    def details(self, key, ent, us_matches, ca_matches) -> dict:
+        """Official facts for the additive page: identity, EU conditions of use, Canadian foods and limits."""
+        out: dict = {}
+        specs = (self.parsed.get("eu_specs") or {}).get("entries", {})
+        mine = [sp for sk, sp in sorted(specs.items()) if sk == key or base_key(sk) == key and sk.startswith(key + "-")]
+        if mine:
+            main = specs.get(key) or mine[0]
+            ident = {"definition": main.get("definition", ""), "description": main.get("description", ""),
+                     "formula": main.get("formula", [])[:4], "einecs": main.get("einecs", [])[:4],
+                     "colour_index": main.get("colour_index", [])[:2], "synonyms": main.get("synonyms", [])[:6],
+                     "spec_title": main["title"].capitalize() if main["title"].isupper() else main["title"]}
+            if len(mine) > 1 or key not in specs:
+                ident["parts"] = [{"key": sp["key"], "label": key_label(sp["key"]),
+                                   "title": sp["title"].capitalize() if sp["title"].isupper() else sp["title"],
+                                   "description": sp.get("description", "")[:200]} for sp in mine[:8]]
+            out["identity"] = {k: v for k, v in ident.items() if v}
+        eu = self.parsed.get("eu_annex2")
+        if eu:
+            rows = eu.get("use_rows", {}).get(key) or []
+            m = re.match(r"(e\d+[a-z]?)-", key)
+            if not rows and m:
+                rows = eu.get("use_rows", {}).get(m.group(1)) or []
+            seen, uses = set(), []
+            for r in sorted(rows, key=lambda r: [int(x) for x in r["cat"].split(".")]):
+                sig = (r["cat"], r["level"], r["restr"], r.get("group"))
+                if sig in seen:
+                    continue
+                seen.add(sig)
+                uses.append({"cat": r["cat"], "cat_name": eu["categories"].get(r["cat"], ""), "level": r["level"],
+                             "restr": r["restr"], "notes": r.get("foot_text", [])[:3], "group": r.get("group"),
+                             "entry": r["entry"] if r["entry"] != (ent.get("e") or "") and not r.get("group") else ""})
+            if uses:
+                out["eu_uses"] = uses[:150]
+        ca_lists = []
+        for r, _ in ca_matches:
+            for L in r["lists"]:
+                if L.get("rows"):
+                    ca_lists.append({"no": L["no"], "title": L["title"], "url": L["url"], "listed_as": r["name"],
+                                     "rows": L["rows"][:30]})
+        if ca_lists:
+            out["ca_uses"] = sorted(ca_lists, key=lambda x: x["no"])[:6]
+        functions = []
+
+        def add(raw):
+            f = canonical_function(raw)
+            if f and f not in functions:
+                functions.append(f)
+        # Most reliable first: EU list section, then Canada's function-based lists, then the
+        # first technical effects of the best FDA match (FDA effect lists are long and noisy).
+        if "Colours" in ent["classes"]:
+            add("colour")
+        if "Sweeteners" in ent["classes"]:
+            add("sweetener")
+        for r, _ in ca_matches:
+            for L in r["lists"]:
+                if L["no"] in (5, 13, 14, 15):
+                    continue  # processing aids and reagents, not the additive's own function
+                if L["no"] in (4, 8):
+                    for p in L["purposes"][:2]:
+                        add(p)
+                else:
+                    add(L["title"].replace("List of Permitted ", ""))
+        good = [m for m in us_matches if m[1] and not m[1].startswith("alternative")]
+        if good:
+            ent_key = match_key(ent["name"])
+            best = max(good, key=lambda m: match_rank(m, ent_key))[0]
+            for e in best["effects"][: (1 if functions else 2)]:
+                add(e)
+        out["functions"] = functions[:3]
+        return out
+
+    def overview(self, a: dict) -> list[str]:
+        """A few plain sentences built only from the data on the page."""
+        from pipeline.model import JURISDICTIONS
+        sents = []
+        name = a["name"] + (f" ({a['e']})" if a.get("e") else "")
+        fn = a.get("functions", [])
+        if fn:
+            fl = fn[:3]
+            fs = fl[0] if len(fl) == 1 else ", ".join(fl[:-1]) + " and " + fl[-1]
+            sents.append(f"{name} is a food additive. The official lists give {'this use' if len(fl) == 1 else 'these uses'}: {fs}.")
+        else:
+            sents.append(f"{name} is a food additive.")
+        ident = a.get("identity", {})
+        if ident.get("description"):
+            d = ident["description"].split(". ")[0].rstrip(".")
+            if len(d) <= 220:
+                sents.append(f"The EU specification describes it as: \u201c{d}.\u201d")
+        eu = a["jur"]["eu"]
+        cat_names = (self.parsed.get("eu_annex2") or {}).get("categories", {})
+        if eu.get("status") == "authorised" and a.get("eu_uses"):
+            tops = []
+            for u in a["eu_uses"]:
+                top = u["cat"].split(".")[0].zfill(2) if u["cat"] != "0" else "0"
+                nm = "all foods" if top in ("0", "00") else re.sub(r"\s*\(.*$", "", cat_names.get(top, "")).strip()
+                if nm and nm.lower() not in [t.lower() for t in tops]:
+                    tops.append(nm)
+            n = len({u["cat"] for u in a["eu_uses"]})
+            ex = "; ".join(t[0].lower() + t[1:] for t in tops[:4])
+            sents.append(f"In the EU it may be used in {n} food categor{'y' if n == 1 else 'ies'}"
+                         + (f", in these food groups: {ex}" if ex else "") + ("…" if len(tops) > 4 else "."))
+        elif eu.get("status") in ("not_authorised", "delisted") and a.get("e"):
+            h = eu.get("headline", "").rstrip(".")
+            sents.append(f"In the EU: {h[0].lower() + h[1:]}." if h else "")
+        for h in (a.get("eu_history") or [])[-1:]:
+            d = date.fromisoformat(h["date"])
+            sents.append(f"EU history: {h['change'].lower()} in the consolidated text of {d.strftime('%-d %B %Y')}.")
+        us = a["jur"]["us"]
+        fda = next((f[1] for f in us.get("facts", []) if f[0] == "FDA name"), None)
+        if us.get("status") in ("authorised", "phase_out", "delisted", "prohibited") and fda:
+            sents.append(f"In the US it is listed as {fda}: {us['headline'][0].lower() + us['headline'][1:]}.")
+        elif us.get("status") == "not_authorised":
+            sents.append(f"In the US: {us['headline'][0].lower() + us['headline'][1:]}.")
+        ca = a["jur"]["ca"]
+        if ca.get("status") == "authorised":
+            listed = next((f[1] for f in ca.get("facts", []) if f[0] == "Listed as"), None)
+            sents.append(f"Canada permits it{(' as ' + listed) if listed and listed.lower() != a['name'].lower() else ''} "
+                         f"({ca['headline'][0].lower() + ca['headline'][1:]}).")
+        return [x for x in sents if x]
+
     # ------------------------------------------------------------ run
     def run(self) -> int:
         self.parse("eu_annex2", parse_eu.parse_all)
@@ -659,6 +813,7 @@ class Build:
                 item["former_e"] = ent["former_e"]
                 jur["eu"].setdefault("notes", []).append(
                     f"This substance once had the EU number {ent['former_e']}, which is no longer on the EU list.")
+            item.update(self.details(k, ent, us_m.get(k, []), ca_m.get(k, [])))
             additives.append(item)
         additives.sort(key=lambda a: a["sort"])
 
@@ -679,6 +834,8 @@ class Build:
                 eu_hist_all.append({**item, "id": a["id"]})
             if evs:
                 a["eu_history"] = evs
+        for a in additives:
+            a["overview"] = self.overview(a)
         vs = sorted(hist.get("versions", {}))
         eu_history_meta = {"versions": len(vs), "first": vs[0] if vs else None, "last": vs[-1] if vs else None,
                            "skipped": len(hist.get("skipped", {}))}

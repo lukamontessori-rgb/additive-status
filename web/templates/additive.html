@@ -17,6 +17,13 @@
 
   <p class="answer">{{ a.summary }}</p>
 
+  {% if a.overview %}
+  <section aria-labelledby="ov-h" class="overview">
+    <h2 id="ov-h">Overview</h2>
+    <p>{{ a.overview|join(' ') }}</p>
+  </section>
+  {% endif %}
+
   <section aria-labelledby="status-h">
     <h2 id="status-h" class="sr">Status by jurisdiction</h2>
     <div class="jur-grid">
@@ -38,6 +45,72 @@
     {% endfor %}
     </div>
   </section>
+
+  {% if a.identity %}{% set idn = a.identity %}
+  <section aria-labelledby="id-h">
+    <h2 id="id-h">What it is</h2>
+    <dl class="facts wide">
+      {% if idn.description %}<div><dt>Appearance</dt><dd>{{ idn.description }}</dd></div>{% endif %}
+      {% if idn.definition %}<div><dt>Definition</dt><dd>{{ idn.definition }}</dd></div>{% endif %}
+      {% if idn.formula %}<div><dt>Chemical formula</dt><dd>{{ idn.formula|join('; ') }}</dd></div>{% endif %}
+      {% if idn.synonyms %}<div><dt>Synonyms</dt><dd>{{ idn.synonyms|join('; ') }}</dd></div>{% endif %}
+      {% if idn.einecs %}<div><dt>EINECS</dt><dd>{{ idn.einecs|join(', ') }}</dd></div>{% endif %}
+      {% if a.cas %}<div><dt>CAS number</dt><dd>{{ a.cas|join(', ') }}</dd></div>{% endif %}
+      {% if idn.colour_index %}<div><dt>Colour Index</dt><dd>{{ idn.colour_index|join(', ') }}</dd></div>{% endif %}
+    </dl>
+    {% if idn.parts %}
+    <p class="small">The EU specifications cover these forms:</p>
+    <ul class="small">{% for p in idn.parts %}<li><strong>{{ p.label }}</strong> {{ p.title }}{% if p.description %} — {{ p.description }}{% endif %}</li>{% endfor %}</ul>
+    {% endif %}
+    <p class="muted small">From the EU specifications for food additives, <a href="{{ sources.eu_specs.url if sources.eu_specs else '#' }}" rel="noopener">Regulation (EU) No 231/2012</a>.</p>
+  </section>
+  {% endif %}
+
+  {% if a.eu_uses %}
+  <section aria-labelledby="euuse-h">
+    <h2 id="euuse-h">Where it may be used in the EU</h2>
+    <details class="uses"{% if a.eu_uses|length <= 12 %} open{% endif %}>
+      <summary>{{ a.eu_uses|length }} condition{{ '' if a.eu_uses|length == 1 else 's' }} of use in {{ a.eu_uses|map(attribute='cat')|unique|list|length }} food categor{{ 'y' if a.eu_uses|map(attribute='cat')|unique|list|length == 1 else 'ies' }}</summary>
+      <div class="table-wrap">
+      <table class="grid uses-table">
+        <thead><tr><th scope="col">Food category</th><th scope="col">Maximum level (mg/kg or mg/l)</th><th scope="col">Restrictions and notes</th></tr></thead>
+        <tbody>
+        {% for u in a.eu_uses %}
+        <tr>
+          <td><span class="enum">{{ u.cat }}</span> {{ u.cat_name }}</td>
+          <td>{{ u.level or '—' }}{% if u.group %}<br><span class="muted small">via Group {{ u.group }}</span>{% elif u.entry %}<br><span class="muted small">as {{ u.entry }}</span>{% endif %}</td>
+          <td>{{ u.restr }}{% for n in u.notes %}<br><span class="muted small">{{ n }}</span>{% endfor %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </details>
+    <p class="muted small">From Annex II, Part E of Regulation (EC) No 1333/2008 (consolidated version {{ sources.eu_annex2.version if sources.eu_annex2 else '' }}). "Quantum satis" means no maximum level is set; use only as much as needed.</p>
+  </section>
+  {% endif %}
+
+  {% if a.ca_uses %}
+  <section aria-labelledby="cause-h">
+    <h2 id="cause-h">Where it may be used in Canada</h2>
+    {% for L in a.ca_uses %}
+    <details class="uses"{% if loop.first and L.rows|length <= 4 %} open{% endif %}>
+      <summary>{{ L.title }} <span class="muted small">(listed as {{ L.listed_as }}; {{ L.rows|length }} entr{{ 'y' if L.rows|length == 1 else 'ies' }})</span></summary>
+      <div class="table-wrap">
+      <table class="grid uses-table">
+        <thead><tr><th scope="col">Item</th><th scope="col">Permitted in or upon</th><th scope="col">Maximum level and conditions</th></tr></thead>
+        <tbody>
+        {% for r in L.rows %}
+        <tr><td>{{ r.item }}</td><td>{{ r.foods or '—' }}</td><td>{{ r.max or '—' }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      <p class="small"><a href="{{ L.url }}" rel="noopener">Official list on canada.ca</a></p>
+    </details>
+    {% endfor %}
+  </section>
+  {% endif %}
 
   {% set detailed = [] %}
   {% for j in JUR_ORDER %}{% if a.jur.get(j, {}).get('notes') %}{% set _ = detailed.append(j) %}{% endif %}{% endfor %}

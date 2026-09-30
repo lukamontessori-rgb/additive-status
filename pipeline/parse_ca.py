@@ -73,9 +73,12 @@ def parse_page(key: str, body: bytes, url: str) -> list[dict]:
         header = grid[h_idx]
         c_item = _col(header, "item")
         c_add = _col(header, "additive")
-        c_food = _col(header, "permitted in", "food")
-        if c_food == c_add:
-            c_food = None
+        c_food = None
+        for i, h in enumerate(header):
+            hl = re.sub(r"column \d+:?", "", h.lower()).strip()
+            if i != c_add and ("permitted in" in hl or hl == "food" or hl.endswith(" food") or hl.startswith("food\n")):
+                c_food = i
+                break
         c_purpose = _col(header, "purpose")
         c_max = _col(header, "maximum", "level")
         if c_add is None:
@@ -119,7 +122,11 @@ def parse_all() -> dict:
             if r["name"] not in rec["names"]:
                 rec["names"].append(r["name"])
             L = rec["lists"].setdefault(key, {"no": int(key), "title": LIST_TITLES[key], "url": url,
-                                              "items": [], "purposes": [], "food_rows": 0})
+                                              "items": [], "purposes": [], "food_rows": 0, "rows": []})
+            row = {"item": r["item"], "foods": re.sub(r"\s+", " ", r["foods"] or "").strip()[:700],
+                   "max": re.sub(r"\s+", " ", r["max"] or "").strip()[:500]}
+            if (row["foods"] or row["max"]) and row not in L["rows"] and len(L["rows"]) < 60:
+                L["rows"].append(row)
             if r["item"] and r["item"] not in L["items"]:
                 L["items"].append(r["item"])
             for p in re.split(r"\n|;", r["purpose"] or ""):

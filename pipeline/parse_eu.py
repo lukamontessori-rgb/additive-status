@@ -205,6 +205,9 @@ def parse_html(body: bytes, today: date | None = None) -> dict:
     use_marks: dict[str, set[str]] = defaultdict(set)    # key -> markers of rows that mention it
     group_uses: dict[str, set[str]] = defaultdict(set)
     categories: "OrderedDict[str, str]" = OrderedDict()
+    use_rows: dict[str, list[dict]] = defaultdict(list)
+    group_rows: dict[str, list[dict]] = defaultdict(list)
+    cat_notes: dict[str, dict[str, str]] = {}
     footnotes_b: dict[str, str] = {}
     parts_seen = []
     unresolved: dict[str, int] = defaultdict(int)
@@ -319,14 +322,23 @@ def parse_html(body: bytes, today: date | None = None) -> dict:
                     continue
                 e_cell = MARK_RE.sub("", rest[0]).strip()
                 name = rest[1] if len(rest) > 1 else ""
-                if re.match(r"^\(\d+\)\s*:", name) or MARK_RE.match(name):
-                    continue  # footnote text or marker spilling over a rowspan
+                fm = re.match(r"^\((\d+)\)\s*:\s*(.+)$", name, re.S)
+                if fm:  # footnote text for this food category
+                    cat_notes.setdefault(cat, {}).setdefault(fm.group(1), re.sub(r"\s+", " ", fm.group(2)).strip()[:600])
+                    continue
+                if MARK_RE.match(name):
+                    continue  # marker spilling over a rowspan
                 restriction = rest[4] if len(rest) > 4 else ""
                 applies = period_applies(restriction, today)
+                row_info = {"cat": cat, "level": MARK_RE.sub("", rest[2]).strip() if len(rest) > 2 else "",
+                            "foot": re.findall(r"\((\d+)\)", rest[3]) if len(rest) > 3 else [],
+                            "restr": re.sub(r"\s+", " ", MARK_RE.sub("", restriction)).strip()[:500],
+                            "entry": e_cell, "entry_name": re.sub(r"\s+", " ", MARK_RE.sub("", name)).strip()[:160]}
                 gm = GROUP_RE.match(e_cell)
                 if gm:
                     if applies:
                         group_uses[gm.group(1).upper()].add(cat)
+                        group_rows[gm.group(1).upper()].append(row_info)
                     continue
                 if not E_CELL_RE.match(e_cell):
                     continue
@@ -347,12 +359,21 @@ def parse_html(body: bytes, today: date | None = None) -> dict:
                         keys = {e_id(*p), e_id(p[0], p[1])}
                 for k in keys:
                     (uses if applies else expired)[k].add(cat)
+                    if applies:
+                        use_rows[k].append(row_info)
                     if marker:
                         use_marks[k].add(marker)
 
     for g, cats in group_uses.items():
         for k in groups.get(g, ()):
             uses[k] |= cats
+            for r in group_rows.get(g, []):
+                use_rows[k].append({**r, "group": g})
+    # attach footnote texts to each row
+    for k, rows in use_rows.items():
+        for r in rows:
+            notes = cat_notes.get(r["cat"], {})
+            r["foot_text"] = [notes[n] for n in r["foot"] if n in notes]
 
     full = re.sub(r"\s+", " ", doc.text_content())
     b_start = full.find("LIST OF ALL ADDITIVES")
@@ -388,6 +409,7 @@ def parse_html(body: bytes, today: date | None = None) -> dict:
         "group_uses": {g: sorted(v) for g, v in group_uses.items()},
         "categories": categories, "acts": acts, "parts_seen": parts_seen,
         "notes": notes, "unresolved_ranges": dict(unresolved), "annex3": sorted(annex3),
+        "use_rows": {k: v for k, v in use_rows.items()},
     }
 
 

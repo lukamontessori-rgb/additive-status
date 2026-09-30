@@ -30,7 +30,9 @@ def parse_html(body: bytes) -> dict:
                 key = e_id(int(m.group(1)), m.group(2) or "", m.group(3) or "")
                 title = m.group(4).strip()
                 cur = entries.setdefault(key, {"key": key, "title": title, "synonyms": [], "cas": [],
-                                               "einecs": [], "colour_index": [], "chem_names": []})
+                                               "einecs": [], "colour_index": [], "chem_names": [],
+                                               "definition": "", "description": "", "formula": [],
+                                               "functional_class": ""})
             continue
         if cur is None:
             continue
@@ -58,6 +60,17 @@ def parse_html(body: bytes) -> dict:
                 for n in re.findall(r"\b\d{5}\b", value):
                     if n not in cur["colour_index"]:
                         cur["colour_index"].append(n)
+            elif label == "definition" and not cur["definition"]:
+                cur["definition"] = re.sub(r"\s+", " ", value)[:1500]
+            elif label == "description" and not cur["description"]:
+                cur["description"] = re.sub(r"\s+", " ", value)[:600]
+            elif label.startswith("chemical formula"):
+                for f in value.split("\n"):
+                    f = re.sub(r"^(I|II|III|IV|V)\.?\s+", "", f).strip()
+                    if f and len(f) < 60 and f not in cur["formula"]:
+                        cur["formula"].append(f)
+            elif label.startswith("functional class") and not cur["functional_class"]:
+                cur["functional_class"] = value[:200]
             elif label.startswith("chemical name"):
                 for s in value.split("\n"):
                     s = re.sub(r"^(I|II|III|IV|V)\s+", "", s).strip()

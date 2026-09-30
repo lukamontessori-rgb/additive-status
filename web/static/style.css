@@ -206,3 +206,13 @@ table.sources td, table.sources th { font-size: .9rem; }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
 
 h3.subh { font-size: 1rem; margin: 14px 0 4px; color: var(--muted); }
+
+.overview p { max-width: 80ch; font-size: 1.02rem; }
+.facts.wide { font-size: .95rem; max-width: 900px; }
+.facts.wide div { grid-template-columns: 170px 1fr; }
+@media (max-width: 560px) { .facts.wide div { grid-template-columns: 1fr; gap: 0; } }
+details.uses { padding: 8px 12px; }
+details.uses .table-wrap { margin-top: 8px; }
+.uses-table td { font-size: .9rem; }
+.uses-table td:first-child { min-width: 220px; }
+@media (max-width: 640px) { .uses-table td:first-child { min-width: 160px; } }
