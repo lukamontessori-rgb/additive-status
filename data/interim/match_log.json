@@ -1,14 +1,5 @@
 {
- "at": "2026-09-30T20:54:45+00:00",
- "problems": [],
- "counts": {
-  "eu_annex2": 339,
-  "us_fda_substances": 3971,
-  "ca_lists": 454,
-  "uk_fsa": 333,
-  "eu_specs": 386
- },
- "us_match": {
+ "us": {
   "unmatched": 3691,
   "name": 177,
   "excluded by review": 8,
@@ -17,10 +8,14 @@
   "alternative": 34,
   "Colour": 13
  },
- "ca_match": {
+ "ca": {
   "name": 214,
   "unmatched": 165,
   "reviewed": 53,
   "own entry": 22
- }
+ },
+ "revocations_applied": [
+  "FD&C RED NO. 3: 2025-00830 (2027-01-15)",
+  "ORANGE B: 2026-14910 (2026-09-08)"
+ ]
 }
