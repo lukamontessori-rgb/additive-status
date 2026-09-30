@@ -1,0 +1,2038 @@
+[
+ {
+  "name": "Calcium Phosphate, Tribasic",
+  "lists": [
+   1,
+   4,
+   8,
+   10,
+   12,
+   14
+  ]
+ },
+ {
+  "name": "Calcium Stearate",
+  "lists": [
+   1,
+   8
+  ]
+ },
+ {
+  "name": "Magnesium Carbonate",
+  "lists": [
+   1,
+   8,
+   10
+  ]
+ },
+ {
+  "name": "Magnesium Stearate",
+  "lists": [
+   1,
+   8
+  ]
+ },
+ {
+  "name": "Microcrystalline Cellulose",
+  "lists": [
+   1,
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Propylene Glycol",
+  "lists": [
+   1,
+   8,
+   15
+  ]
+ },
+ {
+  "name": "Acetone Peroxide",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Ammonium Persulphate",
+  "lists": [
+   2,
+   8
+  ]
+ },
+ {
+  "name": "Azodicarbonamide",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Benzoyl Peroxide",
+  "lists": [
+   2,
+   8
+  ]
+ },
+ {
+  "name": "Calcium Iodate",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Calcium Peroxide",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Chlorine",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Chlorine Dioxide",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "L-Cysteine Hydrochloride",
+  "lists": [
+   2,
+   11
+  ]
+ },
+ {
+  "name": "Potassium Iodate",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Potassium Persulphate",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Sodium Stearyl Fumarate",
+  "lists": [
+   2
+  ]
+ },
+ {
+  "name": "Alkanet",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Allura RedFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Aluminum Metal",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "AmaranthFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Annatto",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "β-Apo-8'-Carotenal",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Beet Red",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Brilliant Blue FCFFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Caramel",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Carbon Black",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Carotene",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Charcoal",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Chlorophyll",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Citrus Red No. 2Footnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Cochineal",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "ErythrosineFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Ethyl β-Apo-8'-Carotenoate",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Fast Green FCFFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "IndigotineFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Iron Oxide",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Limestone, Ground",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Lycopene Extract from Tomato",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Orchil",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Paprika",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Ponceau SXFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Potassium Aluminum Silicate-Based Iron Oxide",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Potassium Aluminum Silicate-Based Titanium Dioxide",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Potassium Aluminum Silicate-Based Titanium Dioxide and Iron Oxide",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Riboflavin",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Saffron",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Saunderswood",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Silver Metal",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Sodium Copper Chlorophyllin",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Spirulina Extract",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Sunset Yellow FCFFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "TartrazineFootnote",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Turmeric",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Xanthophyll",
+  "lists": [
+   3
+  ]
+ },
+ {
+  "name": "Acacia Gum",
+  "lists": [
+   4,
+   7,
+   8
+  ]
+ },
+ {
+  "name": "Acacia Gum Modified with Octenyl Succinic Anhydride (OSA)",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Acetylated Monoglycerides",
+  "lists": [
+   4,
+   7,
+   8
+  ]
+ },
+ {
+  "name": "Acetylated Tartaric Acid Esters of Mono- and Diglycerides",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Ammonium Carrageenan",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Ammonium Furcelleran",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Ammonium Salt of Phosphorylated Glyceride",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Arabinogalactan",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Baker's Yeast Glycan",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Calcium Carrageenan",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Calcium Citrate",
+  "lists": [
+   4,
+   6,
+   10,
+   12,
+   14
+  ]
+ },
+ {
+  "name": "Calcium Furcelleran",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Calcium Glycerophosphate",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Calcium Hypophosphite",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Calcium Phosphate, Dibasic",
+  "lists": [
+   4,
+   6,
+   8,
+   10,
+   14
+  ]
+ },
+ {
+  "name": "Carob Bean Gum",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Citric Acid Esters of Mono- and Diglycerides",
+  "lists": [
+   4,
+   11,
+   15
+  ]
+ },
+ {
+  "name": "α-Cyclodextrin",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Furcelleran",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Gelatin",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Hydroxylated Lecithin",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Hydroxypropyl Methylcellulose",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Lactylated Mono- and Diglycerides",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Lactylic Esters of Fatty Acids",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Lecithin",
+  "lists": [
+   4,
+   8,
+   11
+  ]
+ },
+ {
+  "name": "Methyl Ethyl Cellulose",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Methylcellulose",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Mono- and Diglycerides",
+  "lists": [
+   4,
+   8,
+   15
+  ]
+ },
+ {
+  "name": "Monoglycerides",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Monosodium Salts of Phosphorylated Mono- and Diglycerides",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Oat Gum",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Pectin",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Polyglycerol Esters of Interesterified Castor Oil Fatty Acids",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Polysorbate 60",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Polysorbate 65",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Polysorbate 80",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Potassium Carrageenan",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Potassium Citrate",
+  "lists": [
+   4,
+   10
+  ]
+ },
+ {
+  "name": "Potassium Furcelleran",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Potassium Phosphate, Dibasic",
+  "lists": [
+   4,
+   8,
+   10,
+   12,
+   14
+  ]
+ },
+ {
+  "name": "Potassium Phosphate, Tribasic",
+  "lists": [
+   4,
+   10
+  ]
+ },
+ {
+  "name": "Potassium Pyrophosphate, Tetrabasic",
+  "lists": [
+   4,
+   8,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Potassium Stearate",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Potassium Tripolyphosphate",
+  "lists": [
+   4,
+   8,
+   10,
+   12,
+   13
+  ]
+ },
+ {
+  "name": "Propylene Glycol Alginate",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Propylene Glycol Mono Fatty Acid Esters",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Sodium Acid Pyrophosphate",
+  "lists": [
+   4,
+   8,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Carboxymethyl Cellulose",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Sodium Carrageenan",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Sodium Citrate",
+  "lists": [
+   4,
+   8,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Furcelleran",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Sodium Hexametaphosphate",
+  "lists": [
+   4,
+   8,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Phosphate, Dibasic",
+  "lists": [
+   4,
+   8,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Phosphate, Monobasic",
+  "lists": [
+   4,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Phosphate, Tribasic",
+  "lists": [
+   4,
+   8,
+   10
+  ]
+ },
+ {
+  "name": "Sodium Potassium Hexametaphosphate",
+  "lists": [
+   4,
+   8,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Potassium Tripolyphosphate",
+  "lists": [
+   4,
+   8,
+   10,
+   12,
+   13
+  ]
+ },
+ {
+  "name": "Sodium Pyrophosphate, Tetrabasic",
+  "lists": [
+   4,
+   8,
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Pyrophosphate, Tribasic",
+  "lists": [
+   4,
+   8,
+   12
+  ]
+ },
+ {
+  "name": "Sodium Stearate",
+  "lists": [
+   4,
+   8
+  ]
+ },
+ {
+  "name": "Sodium Tartrate",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Sodium Tripolyphosphate",
+  "lists": [
+   4,
+   8,
+   10,
+   12,
+   13
+  ]
+ },
+ {
+  "name": "Sorbitan Trioleate",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Stearyl Monoglyceridyl Citrate",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Sucrose Monoesters of Lauric, Palmitic or Stearic Acid",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Tamarind Gum",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "Tragacanth Gum",
+  "lists": [
+   4
+  ]
+ },
+ {
+  "name": "α-Acetolactate Decarboxylase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Acid Prolyl Endopeptidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Aminopeptidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Amylase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Asparaginase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Bromelain",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Carboxypeptidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Carboxypeptidase D",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Catalase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Cellulase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Chymosin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Chymosin A",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Chymosin B",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Cyprosin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Ficin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Glucanase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Glucoamylase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Glucose Isomerase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Glucose Oxidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Glutaminase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Hemicellulase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Hexose Oxidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Inulinase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Lactase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Leucyl Aminopeptidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Lipase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Lipoxidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Lysophospholipase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Maltogenic α-Amylase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Maltotetraohydrolase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Mannanase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Milk Coagulating Enzyme",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Pancreatin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Papain",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Pectin Lyase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Pectinase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Pectinesterase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Pentosanase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Pepsin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Peroxidase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Phospholipase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Phospholipase A1",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Polygalacturonase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Protease",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Protein-Glutaminase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Pullulanase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Rennet",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Subtilisin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Thermolysin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Transglutaminase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Trypsin",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Urease",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Xylanase",
+  "lists": [
+   5
+  ]
+ },
+ {
+  "name": "Calcium Phosphate, Monobasic",
+  "lists": [
+   6,
+   10,
+   12,
+   14
+  ]
+ },
+ {
+  "name": "Potassium Aluminum Sulphate",
+  "lists": [
+   6,
+   8,
+   10
+  ]
+ },
+ {
+  "name": "Sodium Aluminum Sulphate",
+  "lists": [
+   6,
+   8,
+   10
+  ]
+ },
+ {
+  "name": "Gum Benzoin",
+  "lists": [
+   7
+  ]
+ },
+ {
+  "name": "Mineral Oil",
+  "lists": [
+   7,
+   8
+  ]
+ },
+ {
+  "name": "Petrolatum",
+  "lists": [
+   7,
+   8
+  ]
+ },
+ {
+  "name": "Spermaceti Wax",
+  "lists": [
+   7
+  ]
+ },
+ {
+  "name": "Zein",
+  "lists": [
+   7
+  ]
+ },
+ {
+  "name": "n-Butane",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Caffeine",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Caffeine Citrate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Castor Oil",
+  "lists": [
+   8,
+   15
+  ]
+ },
+ {
+  "name": "Chloropentafluoroethane",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Copper Gluconate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Copper Sulphate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Dimethylpolysiloxane Formulations",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Dioctyl Sodium Sulfosuccinate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Ethoxyquin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Glucono δ-Lactone",
+  "lists": [
+   8,
+   10
+  ]
+ },
+ {
+  "name": "Glycerol Ester of Gum Rosin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Glycerol Ester of Tall Oil Rosin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Glycerol Ester of Wood Rosin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Hydrogen Peroxide",
+  "lists": [
+   8,
+   13
+  ]
+ },
+ {
+  "name": "Ice Structuring Protein Type III HPLC 12",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Lactococcus Lactis DSM 11037",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Lanolin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "L-Lysine Monohydrochloride",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Magnesium Sulphate",
+  "lists": [
+   8,
+   10,
+   13
+  ]
+ },
+ {
+  "name": "Monoacetin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Octafluorocyclobutane",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Oxystearin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Ozone",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Pancreas Extract",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Paraffin Wax",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Saponin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Sodium Bicarbonate",
+  "lists": [
+   8,
+   10,
+   13
+  ]
+ },
+ {
+  "name": "Sodium Carbonate",
+  "lists": [
+   8,
+   10,
+   13
+  ]
+ },
+ {
+  "name": "Sodium Carboxymethyl Cellulose, Cross-Linked",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Sodium Hydrogen Malate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Sodium Lauryl Sulphate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Sodium Methyl Sulphate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Sodium Potassium Copper Chlorophyllin",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Sodium Silicate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Sodium Sulphate",
+  "lists": [
+   8,
+   14
+  ]
+ },
+ {
+  "name": "Sodium Thiosulphate",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Stearic Acid",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Tannic Acid",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Yeast Mannoproteins",
+  "lists": [
+   8
+  ]
+ },
+ {
+  "name": "Acesulfame Potassium",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Calcium Saccharin",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Hydrogenated Starch Hydrolysates",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Maltitol",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Maltitol syrup",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Monk Fruit Extract",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Potassium Saccharin",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Saccharin",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Sodium Saccharin",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Sorbitol",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Sorbitol Syrup",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Steviol Glycosides",
+  "lists": [
+   9
+  ]
+ },
+ {
+  "name": "Ammonium Aluminum Sulphate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Ammonium Bicarbonate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Ammonium Carbonate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Ammonium Citrate, Dibasic",
+  "lists": [
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Ammonium Citrate, Monobasic",
+  "lists": [
+   10,
+   12
+  ]
+ },
+ {
+  "name": "Ammonium Phosphate, Dibasic",
+  "lists": [
+   10,
+   14
+  ]
+ },
+ {
+  "name": "Ammonium Phosphate, Monobasic",
+  "lists": [
+   10,
+   14
+  ]
+ },
+ {
+  "name": "Calcium Acid Pyrophosphate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Calcium Fumarate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Magnesium Citrate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Magnesium Fumarate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Magnesium Phosphate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Manganese Sulphate",
+  "lists": [
+   10,
+   14
+  ]
+ },
+ {
+  "name": "Potassium Acid Tartrate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Potassium Bicarbonate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Potassium Carbonate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Potassium Fumarate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Potassium Sulphate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Potassium Tartrate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Sodium Acetate",
+  "lists": [
+   10,
+   11,
+   13
+  ]
+ },
+ {
+  "name": "Sodium Acid Tartrate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Sodium Aluminum Phosphate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Sodium Bisulphate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Sodium Fumarate",
+  "lists": [
+   10
+  ]
+ },
+ {
+  "name": "Sulphurous Acid",
+  "lists": [
+   10,
+   11
+  ]
+ },
+ {
+  "name": "Ascorbyl Palmitate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Ascorbyl Stearate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Calcium Sorbate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Carnobacterium Divergens M35",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Carnobacterium Maltaromaticum CB1",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Chitosan (average molecular weight 90 to 120 kDa and degree of deacetylation not less than 80%)",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Gum Guaiacum",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Lecithin Citrate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Leuconostoc Carnosum 4010",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Long-Chain Glycolipids",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Methyl-ρ-Hydroxybenzoate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Modified Vinegar (a liquid or spray-dried mixture containing acetic acid and one or more of potassium acetate, potassium diacetate, sodium acetate or sodium diacetate, prepared by adding potassium bicarbonate or sodium bicarbonate, potassium carbonate or sodium carbonate, or potassium hydroxide or sodium hydroxide to vinegar)",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Monoglyceride Citrate",
+  "lists": [
+   11,
+   15
+  ]
+ },
+ {
+  "name": "Monoisopropyl Citrate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Potassium Acetate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Potassium Bisulphite",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Potassium Diacetate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Propyl-ρ-Hydroxybenzoate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Sodium Bisulphite",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Sodium Diacetate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Sodium Dithionite",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Sodium Salt of Methyl-ρ-Hydroxybenzoic Acid",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Sodium Salt of Propyl-ρ-Hydroxybenzoic Acid",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Sodium Sorbate",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Tocopherols (α-Tocopherol; Tocopherols Concentrate, mixed)",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Wood Smoke",
+  "lists": [
+   11
+  ]
+ },
+ {
+  "name": "Calcium Disodium Ethylenediaminetetraacetate (Calcium Disodium EDTA)",
+  "lists": [
+   12
+  ]
+ },
+ {
+  "name": "Calcium Phytate",
+  "lists": [
+   12
+  ]
+ },
+ {
+  "name": "Disodium Ethylenediaminetetraacetate (Disodium EDTA)",
+  "lists": [
+   12
+  ]
+ },
+ {
+  "name": "Glycine",
+  "lists": [
+   12
+  ]
+ },
+ {
+  "name": "Potassium Phosphate, Monobasic",
+  "lists": [
+   12,
+   14
+  ]
+ },
+ {
+  "name": "Stearyl Citrate",
+  "lists": [
+   12
+  ]
+ },
+ {
+  "name": "Acetic Anhydride",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Calcium Hypochlorite",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Nitric Acid",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Octenyl Succinic Anhydride (OSA)",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Peracetic Acid",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Phosphorus Oxychloride",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Potassium Permanganate",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Propylene Oxide",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Sodium Chlorite",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Sodium Hypochlorite",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Sodium Trimetaphosphate",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Succinic Anhydride",
+  "lists": [
+   13
+  ]
+ },
+ {
+  "name": "Ammonium Chloride",
+  "lists": [
+   14
+  ]
+ },
+ {
+  "name": "Ferrous Sulphate",
+  "lists": [
+   14
+  ]
+ },
+ {
+  "name": "Zinc Sulphate",
+  "lists": [
+   14
+  ]
+ },
+ {
+  "name": "Acetone",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "2-Butanone",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "1,3-Butylene Glycol",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Dichloromethane",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Ethanol",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Ethanol Denatured with Methanol",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Ethyl Acetate",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Glyceryl Tributyrate",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Hexane",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Isopropanol",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Methanol",
+  "lists": [
+   15
+  ]
+ },
+ {
+  "name": "Propylene Glycol Mono- and Diesters of Fat-Forming Fatty Acids",
+  "lists": [
+   15
+  ]
+ }
+]
