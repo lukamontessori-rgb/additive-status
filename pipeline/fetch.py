@@ -243,7 +243,23 @@ def fetch_fr_api(sess, sid, cfg, src_dir, meta):
                   meta, {"documents": len(docs)})]
 
 
+def fetch_discover_file(sess, sid, cfg, src_dir, meta):
+    """Find the current file link on a publisher's page, then download it."""
+    from urllib.parse import urljoin
+    page = checked_get(sess, cfg["page_url"], min_bytes=2000)
+    links = re.findall(cfg["link_regex"], page.text)
+    if not links:
+        raise FetchError(f"No link matching {cfg['link_regex']} on {cfg['page_url']}")
+    url = urljoin(cfg["page_url"], links[0])
+    r = checked_get(sess, url, min_bytes=100000, timeout=300)
+    if cfg.get("magic") and not r.content.startswith(cfg["magic"].encode()):
+        raise FetchError(f"Downloaded file does not start with {cfg['magic']!r}")
+    return [store(src_dir, cfg["file"], r.content, url, r.url, r.headers.get("content-type", ""), meta,
+                  {"document_url": url})]
+
+
 FETCHERS = {
+    "discover_file": fetch_discover_file,
     "fr_api": fetch_fr_api,
     "http": fetch_http,
     "http_multi": fetch_http_multi,
