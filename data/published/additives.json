@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-30T20:36:31+00:00",
+ "generated_at": "2026-09-30T20:42:38+00:00",
  "data_version": "2026-09-30",
  "method_version": "2026-09-30.2",
  "sources": {
@@ -10,7 +10,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-09-30T20:35:40+00:00",
+   "retrieved_at": "2026-09-30T20:41:48+00:00",
    "content_changed_at": "2026-09-30T16:16:07+00:00",
    "version": "02008R1333-20260818",
    "state": "ok"
@@ -22,8 +22,8 @@
    "licence": "Open Government Licence v3.0",
    "licence_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
    "attribution": "Contains public sector information licensed under the Open Government Licence v3.0 (Food Standards Agency).",
-   "retrieved_at": "2026-09-30T20:35:41+00:00",
-   "content_changed_at": "2026-09-30T20:35:41+00:00",
+   "retrieved_at": "2026-09-30T20:41:49+00:00",
+   "content_changed_at": "2026-09-30T20:41:49+00:00",
    "version": null,
    "state": "ok"
   },
@@ -34,7 +34,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.fda.gov/about-fda/about-website/website-policies",
    "attribution": "Source: U.S. Food and Drug Administration.",
-   "retrieved_at": "2026-09-30T20:35:45+00:00",
+   "retrieved_at": "2026-09-30T20:41:53+00:00",
    "content_changed_at": "2026-09-30T16:16:12+00:00",
    "version": null,
    "state": "ok"
@@ -46,8 +46,8 @@
    "licence": "Open Government Licence – Canada",
    "licence_url": "https://open.canada.ca/en/open-government-licence-canada",
    "attribution": "Contains information licensed under the Open Government Licence – Canada (Health Canada).",
-   "retrieved_at": "2026-09-30T20:36:18+00:00",
-   "content_changed_at": "2026-09-30T20:36:18+00:00",
+   "retrieved_at": "2026-09-30T20:42:25+00:00",
+   "content_changed_at": "2026-09-30T20:42:25+00:00",
    "version": null,
    "state": "ok"
   },
@@ -58,7 +58,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-09-30T20:36:23+00:00",
+   "retrieved_at": "2026-09-30T20:42:30+00:00",
    "content_changed_at": "2026-09-30T16:17:02+00:00",
    "version": "02012R0231-20260818",
    "state": "ok"
@@ -70,7 +70,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.federalregister.gov/reader-aids/policy/legal-status",
    "attribution": "Source: Federal Register (federalregister.gov).",
-   "retrieved_at": "2026-09-30T20:36:24+00:00",
+   "retrieved_at": "2026-09-30T20:42:31+00:00",
    "content_changed_at": "2026-09-30T20:36:24+00:00",
    "version": null,
    "state": "ok"
@@ -85,8 +85,8 @@
  },
  "quality": [
   "Health Canada lists: 289 of 454 listed substances linked to an additive on this site; the rest are mostly enzymes, solvents and substances with no counterpart here.",
-  "FDA inventory: 307 additives on this site are linked to at least one FDA inventory entry.",
-  "340 additives with an E-number (all entries on the EU and GB lists) and 64 US substances without an E-number."
+  "FDA inventory: 308 additives on this site are linked to at least one FDA inventory entry.",
+  "340 additives with an E-number (all entries on the EU and GB lists) and 65 US substances without an E-number."
  ],
  "additives": [
   {
@@ -561,8 +561,7 @@
    "sort": "0102 00",
    "name": "Tartrazine",
    "aka": [
-    "FD&C Yellow No. 5",
-    "FD&C Yellow No. 5, Aluminum Lake"
+    "FD&C Yellow No. 5"
    ],
    "cas": [
     "1934-21-0",
@@ -936,8 +935,7 @@
    "aka": [
     "Sunset Yellow Fcf",
     "Orange Yellow S",
-    "FD&C Yellow No. 6",
-    "FD&C Yellow No. 6, Aluminum Lake"
+    "FD&C Yellow No. 6"
    ],
    "cas": [
     "2783-94-0",
@@ -2409,7 +2407,6 @@
    "name": "Indigotine, Indigo carmine",
    "aka": [
     "FD&C Blue No. 2",
-    "FD&C Blue No. 2, Aluminum Lake",
     "Indigotine"
    ],
    "cas": [
@@ -2622,8 +2619,7 @@
    "sort": "0133 00",
    "name": "Brilliant Blue FCF",
    "aka": [
-    "FD&C Blue No. 1",
-    "FD&C Blue No. 1, Aluminum Lake"
+    "FD&C Blue No. 1"
    ],
    "cas": [
     "3844-45-9",
@@ -7084,7 +7080,7 @@
       ],
       [
        "Group",
-       "Group I; Group II: Food colours authorised at quantum satis"
+       "Group II: Food colours authorised at quantum satis; Group I"
       ],
       [
        "Register entry updated",
@@ -8268,7 +8264,7 @@
       ],
       [
        "Group",
-       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200 – 202: Sorbic acid – potassium sorbate (SA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
       ],
       [
        "Register entry updated",
@@ -8507,7 +8503,7 @@
       ],
       [
        "Group",
-       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 200 – 202: Sorbic acid – potassium sorbate (SA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
       ],
       [
        "Register entry updated",
@@ -8711,7 +8707,7 @@
       ],
       [
        "Group",
-       "E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 210–213: Benzoic acid — benzoates (BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -9115,7 +9111,7 @@
       ],
       [
        "Group",
-       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 210–213: Benzoic acid — benzoates (BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
       ],
       [
        "Register entry updated",
@@ -9307,7 +9303,7 @@
       ],
       [
        "Group",
-       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 210–213: Benzoic acid — benzoates (BA)"
       ],
       [
        "Register entry updated",
@@ -9449,7 +9445,7 @@
       ],
       [
        "Group",
-       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
       ],
       [
        "Register entry updated",
@@ -9579,7 +9575,7 @@
       ],
       [
        "Group",
-       "E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 214–219: p-hydroxybenzoates (PHB)"
       ],
       [
        "Register entry updated",
@@ -9715,7 +9711,7 @@
       ],
       [
        "Group",
-       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 214–219: p-hydroxybenzoates (PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
       ],
       [
        "Register entry updated",
@@ -9891,7 +9887,7 @@
       ],
       [
        "Group",
-       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 214–219: p-hydroxybenzoates (PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
       ],
       [
        "Register entry updated",
@@ -15737,8 +15733,7 @@
    "sort": "0296 00",
    "name": "Malic acid",
    "aka": [
-    "Pomalous acid",
-    "L-Malic Acid"
+    "Pomalous acid"
    ],
    "cas": [
     "617-48-1"
@@ -18658,8 +18653,7 @@
    "name": "Tertiary-butyl hydroquinone (TBHQ)",
    "aka": [
     "Tertiary-Butylhydroquinone (Tbhq)",
-    "TBHQ",
-    "Tert-Butylhydroquinone"
+    "TBHQ"
    ],
    "cas": [],
    "classes": [
@@ -22822,9 +22816,9 @@
     "Tripotassium Phosphate",
     "Tribasic potassium phosphate",
     "Tripotassium orthophosphate",
-    "Potassium Phosphate, Monobasic",
+    "Potassium Phosphate, Dibasic",
     "Potassium Phosphate, Tribasic",
-    "Potassium Phosphate, Dibasic"
+    "Potassium Phosphate, Monobasic"
    ],
    "cas": [
     "7758-11-4"
@@ -23372,8 +23366,7 @@
     "Magnesiumhydrogenphosphate",
     "Magnesiumphosphate, dibasic",
     "Dimagnesium orthophosphate",
-    "Secondary magnesiumphosphate",
-    "Magnesium Phosphate, Tribasic"
+    "Secondary magnesiumphosphate"
    ],
    "cas": [],
    "classes": [
@@ -26009,9 +26002,7 @@
    "e": "E 401",
    "sort": "0401 00",
    "name": "Sodium alginate",
-   "aka": [
-    "Alginate, Sodium"
-   ],
+   "aka": [],
    "cas": [],
    "classes": [
     "Emulsifiers, stabilisers, thickeners and gelling agents"
@@ -26263,9 +26254,7 @@
    "e": "E 402",
    "sort": "0402 00",
    "name": "Potassium alginate",
-   "aka": [
-    "Alginate, Potassium"
-   ],
+   "aka": [],
    "cas": [],
    "classes": [
     "Emulsifiers, stabilisers, thickeners and gelling agents"
@@ -26505,9 +26494,7 @@
    "e": "E 403",
    "sort": "0403 00",
    "name": "Ammonium alginate",
-   "aka": [
-    "Alginate, Ammonium"
-   ],
+   "aka": [],
    "cas": [],
    "classes": [
     "Emulsifiers, stabilisers, thickeners and gelling agents"
@@ -26750,8 +26737,7 @@
    "sort": "0404 00",
    "name": "Calcium alginate",
    "aka": [
-    "Calcium salt of alginate",
-    "Alginate, Calcium"
+    "Calcium salt of alginate"
    ],
    "cas": [],
    "classes": [
@@ -29944,7 +29930,7 @@
       ],
       [
        "Group",
-       "Group I; Group IV: Polyols"
+       "Group IV: Polyols; Group I"
       ],
       [
        "Register entry updated",
@@ -31202,8 +31188,7 @@
    "name": "Polyoxyethylene (40) stearate",
    "aka": [
     "Polyoxyl (40) stearate",
-    "Polyoxyethylene (40) monostearate",
-    "Polyoxyethylene 40 Monostearate"
+    "Polyoxyethylene (40) monostearate"
    ],
    "cas": [],
    "classes": [
@@ -32795,8 +32780,7 @@
    "sort": "0445 00",
    "name": "Glycerol esters of wood rosins",
    "aka": [
-    "Ester gum",
-    "Rosin, Wood, Glycerol Ester"
+    "Ester gum"
    ],
    "cas": [],
    "classes": [],
@@ -36909,7 +36893,6 @@
     "Acetoglycerides",
     "Acetylated mono- and diglycerides",
     "Acetic and fatty acid esters of glycerol",
-    "Monoglycerides, Acetylated",
     "Acetylated Monoglycerides"
    ],
    "cas": [],
@@ -37161,7 +37144,6 @@
    "aka": [
     "Lactic acid esters of mono- and diglycerides",
     "Lactoglycerides",
-    "Glyceryl-Lacto Esters of Fatty Acids",
     "Lactylated Mono- and Diglycerides"
    ],
    "cas": [],
@@ -42728,8 +42710,7 @@
    "name": "Stannous chloride",
    "aka": [
     "Tin chloride",
-    "Tin dichloride",
-    "Stannic Chloride"
+    "Tin dichloride"
    ],
    "cas": [
     "7772-99-8"
@@ -47680,7 +47661,7 @@
       ],
       [
        "Group",
-       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
+       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
       ],
       [
        "Register entry updated",
@@ -51317,7 +51298,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -51944,7 +51925,7 @@
       ],
       [
        "Group",
-       "E 626–635: Ribonucleotides; Group I"
+       "Group I; E 626–635: Ribonucleotides"
       ],
       [
        "Register entry updated",
@@ -52369,7 +52350,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -53393,7 +53374,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -54565,8 +54546,7 @@
    "aka": [
     "White wax",
     "Yellow wax",
-    "Beeswax",
-    "Beeswax, Bleached"
+    "Beeswax"
    ],
    "cas": [
     "8012-89-3"
@@ -54912,9 +54892,7 @@
    "e": "E 903",
    "sort": "0903 00",
    "name": "Carnauba wax",
-   "aka": [
-    "Carnauba Wax (Copernicia Cerifera (Arruda) Mart.)"
-   ],
+   "aka": [],
    "cas": [],
    "classes": [
     "Glazing agents"
@@ -55089,8 +55067,7 @@
    "name": "Shellac",
    "aka": [
     "Bleached shellac",
-    "White shellac",
-    "Shellac, Purified"
+    "White shellac"
    ],
    "cas": [],
    "classes": [
@@ -55266,8 +55243,7 @@
     "Hydrocarbon wax",
     "Fischer-Tropsch wax",
     "Synthetic wax",
-    "Synthetic paraffin",
-    "Petroleum Wax, Synthetic"
+    "Synthetic paraffin"
    ],
    "cas": [],
    "classes": [],
@@ -58512,7 +58488,7 @@
       ],
       [
        "Group",
-       "Group I; Group IV: Polyols"
+       "Group IV: Polyols; Group I"
       ],
       [
        "Register entry updated",
@@ -60686,7 +60662,7 @@
       ],
       [
        "Group",
-       "Group I; Group IV: Polyols"
+       "Group IV: Polyols; Group I"
       ],
       [
        "Register entry updated",
@@ -60914,7 +60890,7 @@
       ],
       [
        "Group",
-       "Group IV: Polyols; Group I"
+       "Group I; Group IV: Polyols"
       ],
       [
        "Register entry updated",
@@ -61140,7 +61116,7 @@
       ],
       [
        "Group",
-       "Group IV: Polyols; Group I"
+       "Group I; Group IV: Polyols"
       ],
       [
        "Register entry updated",
@@ -62048,8 +62024,7 @@
    "name": "Lysozyme",
    "aka": [
     "Lysozyme hydrochloride",
-    "Muramidase",
-    "Egg White Lysozyme"
+    "Muramidase"
    ],
    "cas": [],
    "classes": [
@@ -62614,8 +62589,7 @@
    "aka": [
     "Crospovidone",
     "Cross-linked polyvidone",
-    "Insoluble polyvinylpyrrolidone",
-    "Polyvinyl Polypyrrolidone"
+    "Insoluble polyvinylpyrrolidone"
    ],
    "cas": [],
    "classes": [],
@@ -64304,9 +64278,7 @@
    "e": "E 1413",
    "sort": "1413 00",
    "name": "Phosphated distarch phosphate",
-   "aka": [
-    "Starch, Food, Modified:  Phosphated Distarch Phosphate"
-   ],
+   "aka": [],
    "cas": [],
    "classes": [
     "Emulsifiers, stabilisers, thickeners and gelling agents"
@@ -64526,9 +64498,7 @@
    "e": "E 1414",
    "sort": "1414 00",
    "name": "Acetylated distarch phosphate",
-   "aka": [
-    "Starch, Food, Modified:  Acetylated Distarch Phosphate"
-   ],
+   "aka": [],
    "cas": [],
    "classes": [
     "Emulsifiers, stabilisers, thickeners and gelling agents"
@@ -64750,8 +64720,7 @@
    "sort": "1420 00",
    "name": "Acetylated starch",
    "aka": [
-    "Starch acetate",
-    "Starch, Food, Modified:  Starch Acetate"
+    "Starch acetate"
    ],
    "cas": [],
    "classes": [
@@ -64972,9 +64941,7 @@
    "e": "E 1422",
    "sort": "1422 00",
    "name": "Acetylated distarch adipate",
-   "aka": [
-    "Starch, Food, Modified:  Acetylated Distarch Adipate"
-   ],
+   "aka": [],
    "cas": [],
    "classes": [
     "Flour treatment agents"
@@ -65195,8 +65162,7 @@
    "sort": "1440 00",
    "name": "Hydroxy propyl starch",
    "aka": [
-    "Hydroxypropyl Starch",
-    "Starch, Food, Modified:  Hydroxypropyl Starch"
+    "Hydroxypropyl Starch"
    ],
    "cas": [],
    "classes": [
@@ -65417,8 +65383,7 @@
    "sort": "1442 00",
    "name": "Hydroxy propyl distarch phosphate",
    "aka": [
-    "Hydroxypropyl Distarch Phosphate",
-    "Starch, Food, Modified:  Hydroxypropyl Distarch Phosphate"
+    "Hydroxypropyl Distarch Phosphate"
    ],
    "cas": [],
    "classes": [
@@ -67495,7 +67460,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 927a, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -67573,6 +67541,7 @@
      "match_detail": "Matched to Health Canada's lists by name."
     }
    },
+   "former_e": "E 927a",
    "updated": "2026-09-30"
   },
   {
@@ -67608,7 +67577,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 928, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -67693,6 +67665,91 @@
      "source": "ca_lists",
      "match": "name",
      "match_detail": "Matched to Health Canada's lists by name."
+    }
+   },
+   "former_e": "E 928",
+   "updated": "2026-09-30"
+  },
+  {
+   "id": "us-brominated-vegetable-oil",
+   "e": null,
+   "sort": "~us-brominated-vegetable-oil",
+   "name": "Brominated vegetable oil",
+   "aka": [
+    "BVO"
+   ],
+   "cas": [],
+   "classes": [],
+   "jur": {
+    "eu": {
+     "status": "not_authorised",
+     "headline": "Not on the EU list of authorised food additives",
+     "refs": [
+      {
+       "label": "Regulation (EC) No 1333/2008, Annex II (EUR-Lex)",
+       "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02008R1333-20260818"
+      },
+      {
+       "label": "EU food additives database",
+       "url": "https://ec.europa.eu/food/food-feed-portal/screen/food-additives/search"
+      }
+     ],
+     "source": "eu_annex2",
+     "match": "name",
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+    },
+    "gb": {
+     "status": "not_authorised",
+     "headline": "Not in the GB register of authorised food additives",
+     "refs": [
+      {
+       "label": "FSA Regulated Products Register",
+       "url": "https://data.food.gov.uk/regulated-products"
+      }
+     ],
+     "source": "uk_fsa",
+     "match": "name",
+     "match_detail": "No E-number and no match in the Food Standards Agency register."
+    },
+    "us": {
+     "status": "delisted",
+     "headline": "Authorisation revoked — effective 2 August 2024",
+     "facts": [
+      [
+       "FDA name",
+       "Brominated vegetable oil"
+      ]
+     ],
+     "notes": [
+      "Revocation of Authorization for Use of Brominated Vegetable Oil in Food (Federal Register, published 2024-07-03; effective 2024-08-02).",
+      "FDA's inventory (last updated 2026-07-28) may still list the old regulation."
+     ],
+     "refs": [
+      {
+       "label": "Federal Register 2024-14300",
+       "url": "https://www.federalregister.gov/documents/2024/07/03/2024-14300/revocation-of-authorization-for-use-of-brominated-vegetable-oil-in-food"
+      },
+      {
+       "label": "FDA Substances Added to Food",
+       "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
+      }
+     ],
+     "source": "us_fda_substances",
+     "match": "Federal Register final rule",
+     "match_detail": "Status taken from a Federal Register final rule; the substance is no longer in FDA's inventory."
+    },
+    "ca": {
+     "status": "not_listed",
+     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "refs": [
+      {
+       "label": "Lists of Permitted Food Additives",
+       "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted.html"
+      }
+     ],
+     "source": "ca_lists",
+     "match": null,
+     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
     }
    },
    "updated": "2026-09-30"
@@ -68006,7 +68063,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 926, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -68084,6 +68144,7 @@
      "match_detail": "Matched to Health Canada's lists by name."
     }
    },
+   "former_e": "E 926",
    "updated": "2026-09-30"
   },
   {
@@ -68310,7 +68371,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 121, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -68388,6 +68452,7 @@
      "match_detail": "Matched to Health Canada's lists by name."
     }
    },
+   "former_e": "E 121",
    "updated": "2026-09-30"
   },
   {
@@ -68802,7 +68867,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 265, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -68863,6 +68931,7 @@
      "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
     }
    },
+   "former_e": "E 265",
    "updated": "2026-09-30"
   },
   {
@@ -69499,8 +69568,8 @@
    "sort": "~us-fd-c-green-no-3",
    "name": "FD&C Green No. 3",
    "aka": [
+    "Fast Green FCF",
     "C.I. FOOD GREEN 3, DISODIUM SALT",
-    "FAST GREEN FCF",
     "D&C GREEN NO. 3",
     "C.I. FOOD GREEN 3",
     "C.I. 42053",
@@ -69528,7 +69597,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 143, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -69610,6 +69682,7 @@
      "match_detail": "Matched to Health Canada's lists by name."
     }
    },
+   "former_e": "E 143",
    "updated": "2026-09-30"
   },
   {
@@ -70551,7 +70624,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 924, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -70612,6 +70688,7 @@
      "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
     }
    },
+   "former_e": "E 924",
    "updated": "2026-09-30"
   },
   {
@@ -70719,7 +70796,7 @@
    "sort": "~us-propyl-p-hydroxybenzoate",
    "name": "Propyl P-Hydroxybenzoate",
    "aka": [
-    "PROPYLPARABEN",
+    "Propylparaben",
     "BENZOIC ACID, 4-HYDROXY-, PROPYL ESTER",
     "PROPYL 4-HYDROXYBENZOATE",
     "BENZOIC ACID, P-HYDROXY-, PROPYL ESTER"
@@ -70746,7 +70823,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 216, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -70832,6 +70912,7 @@
      "match_detail": "Matched to Health Canada's lists by name."
     }
    },
+   "former_e": "E 216",
    "updated": "2026-09-30"
   },
   {
@@ -70961,7 +71042,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 266, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -71022,6 +71106,7 @@
      "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
     }
    },
+   "former_e": "E 266",
    "updated": "2026-09-30"
   },
   {
@@ -71476,7 +71561,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 367, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -71554,6 +71642,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 367",
    "updated": "2026-09-30"
   },
   {
@@ -71792,7 +71881,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 203, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -71870,6 +71962,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 203",
    "updated": "2026-09-30"
   },
   {
@@ -71987,7 +72080,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 925, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -72057,6 +72153,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 925",
    "updated": "2026-09-30"
   },
   {
@@ -72203,7 +72300,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 160f, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -72262,6 +72362,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 160f",
    "updated": "2026-09-30"
   },
   {
@@ -72707,7 +72808,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 384, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -72785,6 +72889,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 384",
    "updated": "2026-09-30"
   },
   {
@@ -72815,7 +72920,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 366, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -72893,6 +73001,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 366",
    "updated": "2026-09-30"
   },
   {
@@ -73139,7 +73248,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 365, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -73217,6 +73329,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 365",
    "updated": "2026-09-30"
   },
   {
@@ -73245,7 +73358,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 217, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -73304,6 +73420,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 217",
    "updated": "2026-09-30"
   },
   {
@@ -73334,7 +73451,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 201, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -73416,6 +73536,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 201",
    "updated": "2026-09-30"
   },
   {
@@ -73533,7 +73654,10 @@
      ],
      "source": "eu_annex2",
      "match": "name",
-     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+     "match_detail": "This substance has no E-number, and no entry on the EU list matches its names or identifiers.",
+     "notes": [
+      "This substance once had the EU number E 484, which is no longer on the EU list."
+     ]
     },
     "gb": {
      "status": "not_authorised",
@@ -73611,6 +73735,7 @@
      "match_detail": "Matched to Health Canada's lists by Health Canada list entry."
     }
    },
+   "former_e": "E 484",
    "updated": "2026-09-30"
   }
  ]
