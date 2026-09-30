@@ -57,14 +57,32 @@ def checked_get(sess, url: str, *, min_bytes: int = 200, **kw):
     return r
 
 
+def content_fingerprint(body: bytes, content_type: str, filename: str) -> str:
+    """SHA-256 of the meaningful content: for HTML, the text of the page body without scripts."""
+    if filename.endswith(".html") or "html" in (content_type or ""):
+        try:
+            from lxml import html as lhtml
+            doc = lhtml.fromstring(body)
+            for bad in doc.xpath("//script|//style|//noscript|//comment()|//head"):
+                bad.drop_tree()
+            text = re.sub(r"\s+", " ", doc.text_content())
+            return sha256_bytes(text.encode("utf-8"))
+        except Exception:
+            pass
+    return sha256_bytes(body)
+
+
 def store(src_dir: Path, filename: str, body: bytes, url: str, final_url: str,
           content_type: str, meta: dict, extra: dict | None = None) -> bool:
     """Write filename.gz if the content changed. Returns True if changed."""
     files = meta.setdefault("files", {})
     old = files.get(filename, {})
     digest = sha256_bytes(body)
+    fingerprint = content_fingerprint(body, content_type, filename)
     target = src_dir / (filename + ".gz")
-    changed = old.get("sha256") != digest or not target.exists()
+    # Web pages often carry session tokens or timestamps; only a change in the visible
+    # content (fingerprint) counts as a new snapshot.
+    changed = (old.get("fingerprint") or old.get("sha256")) != fingerprint or not target.exists()
     if changed:
         src_dir.mkdir(parents=True, exist_ok=True)
         tmp = src_dir / (filename + ".gz.tmp")
@@ -78,7 +96,8 @@ def store(src_dir: Path, filename: str, body: bytes, url: str, final_url: str,
         "content_type": content_type,
         "bytes": len(body),
         "stored_as": filename + ".gz",
-        "sha256": digest,
+        "sha256": digest if changed else old.get("sha256", digest),
+        "fingerprint": fingerprint,
         "fetched_at": now_iso(),
         "content_changed_at": now_iso() if changed else old.get("content_changed_at"),
     }
