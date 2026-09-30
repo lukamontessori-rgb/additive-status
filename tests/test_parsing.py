@@ -131,3 +131,27 @@ def test_eu_history_timeline_and_renumbering():
     assert "e960" not in ev and "e960a" not in ev          # split into e960a/e960b is not a change
     assert ev["e999"][0]["from"] == "X" and ev["e999"][0]["to"] == "A"
     assert "e100" not in ev
+
+
+def test_anz_codes_and_processing_aids():
+    from pipeline import parse_anz
+    assert parse_anz.norm_code("160a(i)") == "e160a-i"
+    assert parse_anz.norm_code("160b (ii)") == "e160b-ii"
+    pages = [
+        "S8—1 Name\nnumerical listing\n129 Allura red AC\n171 Titanium dioxide\n586 4-hexylresorcinol\n960 Steviol glycosides\n",
+        "S9—1 Name\n",
+        "S15—1 Name\n5 Confectionery\n586 4-hexylresorcinol GMP\n960 Steviol glycosides 300\n1 500 In the final food\n",
+        "S16—1 Name\nS16—2 Additives permitted at GMP\nS16—3 Colourings permitted at GMP\n171 Titanium dioxide\n"
+        "S16—4 Colourings permitted to a maximum level\nAllura red AC 129\n",
+        "S17—1 Name\n",
+        "S18—1 Name\nGenerally permitted processing aids\nargon\nHydrogen peroxide 5\nPotassium bromate Germination control in malting\n",
+        "S19—1 Name\n",
+    ]
+    p = parse_anz.parse_texts(pages)
+    assert p["colours_max"] == ["e129"] and p["colours_gmp"] == ["e171"]
+    assert "e586" in p["schedule15"] and "e960" in p["schedule15"]
+    assert parse_anz.status_of(p, "e129")[0] == "authorised"
+    assert parse_anz.status_of(p, "e102")[0] == "not_authorised"
+    assert parse_anz.processing_aid(p, ["Argon"]) == "argon"
+    assert parse_anz.processing_aid(p, ["Hydrogen"]) is None          # not "Hydrogen peroxide"
+    assert parse_anz.processing_aid(p, ["POTASSIUM BROMATE"]).startswith("Potassium bromate")

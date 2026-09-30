@@ -25,12 +25,10 @@ from pipeline.model import (
 
 WEB = ROOT / "web"
 SITE_NAME = "Additive Status"
-TAGLINE = "Food additive rules in the EU, UK, US and Canada — side by side"
+TAGLINE = "Food additive rules in the EU, UK, US, Canada and Australia/New Zealand — side by side"
 
-# Pairs of jurisdictions we build "allowed in A but not in B" pages for.
-PAIRS = [("us", "eu"), ("eu", "us"), ("gb", "eu"), ("eu", "gb"),
-         ("ca", "eu"), ("eu", "ca"), ("us", "ca"), ("ca", "us"),
-         ("us", "gb"), ("gb", "us")]
+# Every ordered pair of jurisdictions gets an "allowed in A but not in B" page.
+PAIRS = [(a, b) for a in JUR_ORDER for b in JUR_ORDER if a != b]
 
 
 def site_base() -> tuple[str, str]:
@@ -245,7 +243,7 @@ class Builder:
             if not items:
                 continue
             A, B = JURISDICTIONS[a_j]["short"], JURISDICTIONS[b_j]["short"]
-            the = lambda j: "" if j == "ca" else "the "
+            the = lambda j: "the " if j in ("eu", "gb", "us") else ""
             out.append({
                 "a": a_j, "b": b_j, "items": items,
                 "path": f"/compare/allowed-in-{a_j}-not-{b_j}/",

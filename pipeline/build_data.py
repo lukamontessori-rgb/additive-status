@@ -14,7 +14,7 @@ from datetime import date
 
 import yaml
 
-from pipeline import eu_history, parse_ca, parse_eu, parse_fr, parse_specs, parse_uk, parse_us
+from pipeline import eu_history, parse_anz, parse_ca, parse_eu, parse_fr, parse_specs, parse_uk, parse_us
 from pipeline.common import CURATED, INTERIM, PUBLISHED, RAW, load_sources, now_iso, read_json, write_json
 from pipeline.model import JUR_ORDER
 from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
@@ -158,6 +158,13 @@ class Build:
         uk = self.parsed.get("uk_fsa")
         if uk is not None and len(uk["records"]) < 250:
             self.drop("uk_fsa", f"only {len(uk['records'])} additives in the register")
+        anz = self.parsed.get("anz_code")
+        if anz is not None:
+            ok = (len(anz["names"]) >= 250 and len(anz["gmp"]) >= 100
+                  and parse_anz.status_of(anz, "e129")[0] == "authorised"
+                  and parse_anz.status_of(anz, "e171")[0] == "authorised")
+            if not ok:
+                self.drop("anz_code", f"{len(anz['names'])} codes, {len(anz['gmp'])} GMP additives or reference checks failed")
         sp = self.parsed.get("eu_specs")
         if sp is not None and len(sp["entries"]) < 250:
             self.drop("eu_specs", f"only {len(sp['entries'])} specification entries")
@@ -170,7 +177,7 @@ class Build:
     def counts(self) -> dict:
         c = {}
         for sid, key in (("eu_annex2", "listed"), ("us_fda_substances", "records"), ("ca_lists", "records"),
-                         ("uk_fsa", "records"), ("eu_specs", "entries")):
+                         ("uk_fsa", "records"), ("eu_specs", "entries"), ("anz_code", "names")):
             if self.parsed.get(sid):
                 c[sid] = len(self.parsed[sid][key])
         return c
@@ -532,6 +539,75 @@ class Build:
                 "facts": facts, "notes": notes, "refs": refs, "source": "ca_lists", "match": how,
                 "match_detail": f"Matched to Health Canada's lists by {how}."}
 
+    def anz_status(self, key, ent):
+        anz = self.parsed.get("anz_code")
+        if anz is None:
+            return None
+        refs = [{"label": "Standard 1.3.1 Food additives", "url": "https://www.legislation.gov.au/F2015L00396/latest/text"},
+                {"label": "Schedule 15 (Federal Register of Legislation)", "url": "https://www.legislation.gov.au/F2015L00439/latest/text"},
+                {"label": "Schedule 16", "url": "https://www.legislation.gov.au/F2015L00442/latest/text"},
+                {"label": "Schedule 8 (names and code numbers)", "url": "https://www.legislation.gov.au/F2015L00478/latest/text"}]
+        doc = ((anz.get("meta") or {}).get("files", {}).get("compilation.pdf", {}) or {}).get("document_url")
+        if doc:
+            refs.append({"label": "FSANZ Food Standards Code compilation (PDF)", "url": doc})
+        codes = []
+        if ent.get("e"):
+            codes.append((self.curated.get("anz_codes") or {}).get(key, key))
+        if ent.get("former_e"):
+            p = e_parts(ent["former_e"])
+            if p:
+                codes.append(f"e{p[0]}{p[1]}")
+        for code in codes:
+            st, reasons = parse_anz.status_of(anz, code)
+            if st == "authorised":
+                listed = anz["names"].get(code) or anz["names"].get(re.match(r"(e\d+[a-z]?)", code).group(1)) or []
+                num = code[1:].replace("-", "(") + (")" if "-" in code else "")
+                facts = [["INS number", num]]
+                if listed:
+                    facts.append(["Listed as", "; ".join(listed[:2])])
+                facts.append(["Permitted through", "; ".join(reasons)])
+                how = "INS number" + (" (reviewed table)" if code != key and ent.get("e") else "")
+                return {"status": "authorised", "headline": "Permitted as a food additive" if "GMP" in " ".join(reasons)
+                        or "maximum level" in " ".join(reasons) else "Permitted in specific foods (Schedule 15)",
+                        "facts": facts, "refs": refs, "source": "anz_code", "match": how,
+                        "match_detail": f"Matched by {how} in Schedules 8, 15 and 16."}
+        # substances listed by name only in Schedule 15
+        wanted = {match_key(n) for n in [ent["name"]] + ent.get("names", [])[:8]}
+        alias = (self.curated.get("anz_names") or {}).get(key)
+        if alias:
+            wanted.add(match_key(alias))
+        for nm in anz.get("schedule15_names", []):
+            if match_key(re.sub(r"\s*\(.*$", "", nm)) in wanted or match_key(nm) in wanted:
+                return {"status": "authorised", "headline": "Permitted in specific foods (Schedule 15, by name)",
+                        "facts": [["Listed as", nm]], "refs": refs, "source": "anz_code", "match": "name",
+                        "match_detail": "Schedule 15 lists this substance by name, without an INS number."}
+        for code, nms in anz["names"].items():
+            if any(match_key(n) in wanted for n in nms):
+                st, reasons = parse_anz.status_of(anz, code)
+                if st == "authorised":
+                    return {"status": "authorised", "headline": "Permitted as a food additive",
+                            "facts": [["INS number", code[1:]], ["Listed as", "; ".join(nms[:2])],
+                                      ["Permitted through", "; ".join(reasons)]],
+                            "refs": refs, "source": "anz_code", "match": "name",
+                            "match_detail": "Matched by name in Schedule 8."}
+        aid = parse_anz.processing_aid(anz, [ent["name"]] + ent.get("names", [])[:8])
+        if aid:
+            return {"status": "not_authorised",
+                    "headline": "Not a permitted food additive; permitted as a processing aid (Schedule 18)",
+                    "facts": [["Schedule 18 entry", aid[:160]]],
+                    "notes": ["A processing aid is used during manufacture for a technological purpose and does not "
+                              "perform that purpose in the final food. Standard 1.3.3 sets the conditions."],
+                    "refs": refs + [{"label": "Schedule 18 Processing aids", "url": "https://www.legislation.gov.au/F2015L00452/latest/text"}],
+                    "source": "anz_code", "match": "name",
+                    "match_detail": "Not in Schedule 15 or on the Schedule 16 lists; its name is listed in Schedule 18 (processing aids)."}
+        if ent.get("e") or ent.get("former_e"):
+            return {"status": "not_authorised", "headline": "Not permitted as a food additive in Australia and New Zealand",
+                    "refs": refs, "source": "anz_code", "match": "INS number",
+                    "match_detail": "Its INS number is not in Schedule 15 or on the Schedule 16 lists, and no entry matches its name."}
+        return {"status": "not_listed", "headline": "Not found in the Food Standards Code schedules",
+                "refs": refs, "source": "anz_code", "match": None,
+                "match_detail": "No INS number, and no Schedule 8, 15 or 16 entry matches its names. Processing aids and foods are regulated separately."}
+
     # ------------------------------------------------------------ details and overview
     def details(self, key, ent, us_matches, ca_matches) -> dict:
         """Official facts for the additive page: identity, EU conditions of use, Canadian foods and limits."""
@@ -661,6 +737,7 @@ class Build:
         self.parse("ca_lists", parse_ca.parse_all)
         self.parse("eu_specs", parse_specs.parse_all)
         self.parse("us_fr_revocations", parse_fr.parse_all)
+        self.parse("anz_code", parse_anz.parse_all)
         self.validate()
         self.apply_revocations()
 
@@ -775,7 +852,8 @@ class Build:
             jur = {}
             for j, fn in (("eu", lambda: self.eu_status(k, ent)), ("gb", lambda: self.gb_status(k, ent)),
                           ("us", lambda: self.us_status(k, us_m.get(k, []))),
-                          ("ca", lambda: self.ca_status(k, ca_m.get(k, [])))):
+                          ("ca", lambda: self.ca_status(k, ca_m.get(k, []))),
+                          ("anz", lambda: self.anz_status(k, ent))):
                 rec = fn()
                 if rec is None:
                     rec = dict(prev.get(j, {"status": "unknown", "headline": "Source temporarily unavailable"}))

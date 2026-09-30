@@ -37,7 +37,15 @@ JURISDICTIONS = {
     },
 }
 
-JUR_ORDER = ["eu", "gb", "us", "ca"]
+JURISDICTIONS["anz"] = {
+    "short": "Aus/NZ",
+    "name": "Australia and New Zealand",
+    "name_in": "Australia and New Zealand",
+    "system": "positive list",
+    "system_note": "Australia and New Zealand share one Food Standards Code. Under Standard 1.3.1 a food additive may be used only if Schedule 15 permits it for that food, or if it is on a Schedule 16 list (additives or colourings permitted at GMP or to a maximum level).",
+}
+
+JUR_ORDER = ["eu", "gb", "us", "ca", "anz"]
 
 # status key -> (label, short label, tone, description)
 STATUSES = {

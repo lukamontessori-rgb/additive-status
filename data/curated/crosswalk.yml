@@ -178,3 +178,24 @@ us_fr_entities:
   - doc: "2024-14300"
     name: "Brominated vegetable oil"
     aka: ["BVO"]
+
+# EU E-number -> INS code used in the Australia New Zealand Food Standards Code, where they differ
+anz_codes:
+  e160b-i: e160b
+  e160b-ii: e160b
+  e553a: e553
+  e553b: e553
+  e470a: e470
+  e470b: e470
+  e900: e900a
+  e960a: e960
+  e960b: e960
+  e960c: e960
+  e960d: e960
+  e999: e999-i
+
+# EU name -> name used in Schedule 15 rows that have no INS number
+anz_names:
+  e246: "Sweet osmanthus ear glycolipids"   # glycolipids from Dacryopinax spathularia
+  e1517: "Glycerol diacetate"
+  e1519: "Benzyl alcohol"
