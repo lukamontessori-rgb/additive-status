@@ -2,159 +2,159 @@
  "title": "Lists of Permitted Food Additives",
  "publisher": "Health Canada",
  "licence": "Open Government Licence – Canada",
- "last_attempt": "2026-09-30T20:41:53+00:00",
+ "last_attempt": "2026-09-30T20:46:24+00:00",
  "files": {
   "01.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/1-anticaking-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/1-anticaking-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 44225,
+   "bytes": 44224,
    "stored_as": "01.html.gz",
-   "sha256": "f6d795682c7cfb4f82868121b80838d8ee660814fbf01f0e19c80b16d0f80ae4",
-   "fetched_at": "2026-09-30T20:41:58+00:00",
-   "content_changed_at": "2026-09-30T20:41:58+00:00"
+   "sha256": "bbb94b3439e11700d4c61137af3ef7e23e18684e7a3b2cda25231df8ec047c1b",
+   "fetched_at": "2026-09-30T20:46:30+00:00",
+   "content_changed_at": "2026-09-30T20:46:30+00:00"
   },
   "02.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/2-bleaching-maturing-dough-conditioning-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/2-bleaching-maturing-dough-conditioning-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 30546,
+   "bytes": 30545,
    "stored_as": "02.html.gz",
-   "sha256": "b6cb71ff60e283a5999a319af6af4235fcc4a3d98124961fd75ea96efe9b11e8",
-   "fetched_at": "2026-09-30T20:41:59+00:00",
-   "content_changed_at": "2026-09-30T20:41:59+00:00"
+   "sha256": "b03064d5f24fc51a14b01f13e4f543abad93c7063bf035130cbd5f5af01254d2",
+   "fetched_at": "2026-09-30T20:46:31+00:00",
+   "content_changed_at": "2026-09-30T20:46:31+00:00"
   },
   "03.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/3-colouring-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/3-colouring-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 181987,
+   "bytes": 181986,
    "stored_as": "03.html.gz",
-   "sha256": "84f9b1684be72ef4517768283c75c0f15a92162c55ae8f7777ea0ab05bb59578",
-   "fetched_at": "2026-09-30T20:42:00+00:00",
-   "content_changed_at": "2026-09-30T20:42:00+00:00"
+   "sha256": "473351112a6a8e7f9fc476a969fc08d6bd0913912a22399dd5cd5a13f1d8e660",
+   "fetched_at": "2026-09-30T20:46:33+00:00",
+   "content_changed_at": "2026-09-30T20:46:33+00:00"
   },
   "04.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/4-emulsifying-gelling-stabilizing-thickening-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/4-emulsifying-gelling-stabilizing-thickening-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 387554,
+   "bytes": 387553,
    "stored_as": "04.html.gz",
-   "sha256": "3ec12a16b0ee333ed84ea9fd9c3b36c60da06d65b91026d8bb80fb5c146e7102",
-   "fetched_at": "2026-09-30T20:42:01+00:00",
-   "content_changed_at": "2026-09-30T20:42:01+00:00"
+   "sha256": "0fef7a5d1c545b78b437eaaa63ffc6ab7f2a29a0e5ac7a008ce33754e0ae36ee",
+   "fetched_at": "2026-09-30T20:46:35+00:00",
+   "content_changed_at": "2026-09-30T20:46:35+00:00"
   },
   "05.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/5-enzymes.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/5-enzymes.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 240305,
+   "bytes": 240304,
    "stored_as": "05.html.gz",
-   "sha256": "90fe70a072b7bf2790b11a81ffb2d802edf851e1c46181952de558b60cfc325e",
-   "fetched_at": "2026-09-30T20:42:05+00:00",
-   "content_changed_at": "2026-09-30T20:42:05+00:00"
+   "sha256": "3945ad07ff34b021e7b20e8ce066a98703dc25f8dac84bfc38b32c335776d128",
+   "fetched_at": "2026-09-30T20:46:37+00:00",
+   "content_changed_at": "2026-09-30T20:46:37+00:00"
   },
   "06.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/6-firming-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/6-firming-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 30413,
+   "bytes": 30412,
    "stored_as": "06.html.gz",
-   "sha256": "177806783b64e29106e66ae36c9de6a8317e22c720797393f09742ab5ea20c9d",
-   "fetched_at": "2026-09-30T20:42:07+00:00",
-   "content_changed_at": "2026-09-30T20:42:07+00:00"
+   "sha256": "50b1f3f54833b15e82ff3c3ddb0ec2efab2656ac4244ed34a06479187fcd4860",
+   "fetched_at": "2026-09-30T20:46:39+00:00",
+   "content_changed_at": "2026-09-30T20:46:39+00:00"
   },
   "07.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/7-glazing-polishing-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/7-glazing-polishing-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 24579,
+   "bytes": 24578,
    "stored_as": "07.html.gz",
-   "sha256": "41bef1871ad8f2e23fde1a3b1487fabcae87256033684e19c78b2463609cbe8c",
-   "fetched_at": "2026-09-30T20:42:09+00:00",
-   "content_changed_at": "2026-09-30T20:42:09+00:00"
+   "sha256": "33c35b254983e5e6c1a79dba3ab933a985f285b934387b334bcf3e771c404ee3",
+   "fetched_at": "2026-09-30T20:46:41+00:00",
+   "content_changed_at": "2026-09-30T20:46:41+00:00"
   },
   "08.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/8-other-accepted-uses.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/8-other-accepted-uses.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 103262,
+   "bytes": 103261,
    "stored_as": "08.html.gz",
-   "sha256": "c530fe34d5402bb86f17d546d4b822eb229b1134511ae60fbd68abf33c653f20",
-   "fetched_at": "2026-09-30T20:42:10+00:00",
-   "content_changed_at": "2026-09-30T20:42:10+00:00"
+   "sha256": "ffba662f0d6af51ed744d76d2c786224bc86ec2daa049df90005b406819d836d",
+   "fetched_at": "2026-09-30T20:46:44+00:00",
+   "content_changed_at": "2026-09-30T20:46:44+00:00"
   },
   "09.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/9-sweeteners.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/9-sweeteners.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 97801,
+   "bytes": 97800,
    "stored_as": "09.html.gz",
-   "sha256": "029c74311e4736c9bb6a1665f75c33d88640d8935339a7ccd4bf6545d876178e",
-   "fetched_at": "2026-09-30T20:42:13+00:00",
-   "content_changed_at": "2026-09-30T20:42:13+00:00"
+   "sha256": "f5cb0f694ba404d0e51beabc3cf2a3312263d7277843e522913e1e76ab88b699",
+   "fetched_at": "2026-09-30T20:46:46+00:00",
+   "content_changed_at": "2026-09-30T20:46:46+00:00"
   },
   "10.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/10-adjusting-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/10-adjusting-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 101793,
+   "bytes": 101792,
    "stored_as": "10.html.gz",
-   "sha256": "f5bf8547b15e54e1ea2f82dd60af96d656086b8a246c5b14b7f5af3a7c2c7525",
-   "fetched_at": "2026-09-30T20:42:15+00:00",
-   "content_changed_at": "2026-09-30T20:42:15+00:00"
+   "sha256": "ca83e647a9eba2ec7dd33e879703eecaeb67eaaea3ae029edd8e66c02ecaad0f",
+   "fetched_at": "2026-09-30T20:46:49+00:00",
+   "content_changed_at": "2026-09-30T20:46:49+00:00"
   },
   "11.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/11-preservatives.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/11-preservatives.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 267121,
+   "bytes": 267120,
    "stored_as": "11.html.gz",
-   "sha256": "727a65dc9983daa9352bdd7f9d3eee318ed2019e412b55188cf6738cde41c194",
-   "fetched_at": "2026-09-30T20:42:16+00:00",
-   "content_changed_at": "2026-09-30T20:42:16+00:00"
+   "sha256": "c714987bca5ad4ff25a368ef41504ad5d178f0c563fbc90c6d7e92bf4d5268a4",
+   "fetched_at": "2026-09-30T20:46:50+00:00",
+   "content_changed_at": "2026-09-30T20:46:50+00:00"
   },
   "12.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/12-sequestering-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/12-sequestering-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 113625,
+   "bytes": 113624,
    "stored_as": "12.html.gz",
-   "sha256": "6bb4f0fca287fd2bb6e35ed175f71b35139177238dc57a41cd7de510bd4666b2",
-   "fetched_at": "2026-09-30T20:42:18+00:00",
-   "content_changed_at": "2026-09-30T20:42:18+00:00"
+   "sha256": "1ed4e154d9f9573636b13f17df3dc60c16191f65bf3c852f5f09e0a073664e9d",
+   "fetched_at": "2026-09-30T20:46:51+00:00",
+   "content_changed_at": "2026-09-30T20:46:51+00:00"
   },
   "13.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/13-starch-modifying-agents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/13-starch-modifying-agents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 30060,
+   "bytes": 30059,
    "stored_as": "13.html.gz",
-   "sha256": "ad034f0818f97dd3f1bec39e4ec58615c178667ab51e2e1fd4ebec115854b797",
-   "fetched_at": "2026-09-30T20:42:19+00:00",
-   "content_changed_at": "2026-09-30T20:42:19+00:00"
+   "sha256": "6858d99f25fc7cf0d7e672b331cc87d85894116f3cab0500f3399d43dc92704a",
+   "fetched_at": "2026-09-30T20:46:52+00:00",
+   "content_changed_at": "2026-09-30T20:46:52+00:00"
   },
   "14.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/14-yeast-foods.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/14-yeast-foods.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 31877,
+   "bytes": 31876,
    "stored_as": "14.html.gz",
-   "sha256": "49ad62865d64f655b9314b78c939046beedd9492926949394f6be833c0205ef2",
-   "fetched_at": "2026-09-30T20:42:22+00:00",
-   "content_changed_at": "2026-09-30T20:42:22+00:00"
+   "sha256": "d03bb066ac87ee9a823f2ab637931319bd5d3593ecadc918e3c12e77fe81c516",
+   "fetched_at": "2026-09-30T20:46:54+00:00",
+   "content_changed_at": "2026-09-30T20:46:54+00:00"
   },
   "15.html": {
    "url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/15-carrier-extraction-solvents.html",
    "final_url": "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted/15-carrier-extraction-solvents.html",
    "content_type": "text/html;charset=utf-8",
-   "bytes": 40198,
+   "bytes": 40197,
    "stored_as": "15.html.gz",
-   "sha256": "f3991a6a18de48c55f2cbbbd6d4989afe8691fd757177d5a7a5147bce6ee710f",
-   "fetched_at": "2026-09-30T20:42:25+00:00",
-   "content_changed_at": "2026-09-30T20:42:25+00:00"
+   "sha256": "f485bb7586f314ef8bcadcbf309b504721e82097884c1dee76972d916fc85d5e",
+   "fetched_at": "2026-09-30T20:46:55+00:00",
+   "content_changed_at": "2026-09-30T20:46:55+00:00"
   }
  },
- "last_success": "2026-09-30T20:42:25+00:00",
+ "last_success": "2026-09-30T20:46:55+00:00",
  "last_error": null
 }
