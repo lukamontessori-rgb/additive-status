@@ -1,16 +1,16 @@
 {
  "us": {
   "unmatched": 3691,
-  "name": 177,
+  "name": 178,
   "excluded by review": 8,
   "CAS": 13,
   "reviewed": 35,
-  "alternative": 34,
+  "alternative": 33,
   "Colour": 13
  },
  "ca": {
-  "name": 214,
-  "unmatched": 165,
+  "name": 213,
+  "unmatched": 166,
   "reviewed": 53,
   "own entry": 22
  },
@@ -19,6 +19,6 @@
   "ORANGE B: 2026-14910 (2026-09-08)"
  ],
  "changelog": [
-  "method changed (2026-09-30.2 -> 2026-10-01.1); differences not recorded as changes"
+  "method changed (2026-10-01.1 -> 2026-10-01.2); differences not recorded as changes"
  ]
 }

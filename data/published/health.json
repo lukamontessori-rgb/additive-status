@@ -1,5 +1,5 @@
 {
- "at": "2026-10-01T06:06:55+00:00",
+ "at": "2026-10-01T06:09:37+00:00",
  "problems": [],
  "counts": {
   "eu_annex2": 339,
@@ -11,16 +11,16 @@
  },
  "us_match": {
   "unmatched": 3691,
-  "name": 177,
+  "name": 178,
   "excluded by review": 8,
   "CAS": 13,
   "reviewed": 35,
-  "alternative": 34,
+  "alternative": 33,
   "Colour": 13
  },
  "ca_match": {
-  "name": 214,
-  "unmatched": 165,
+  "name": 213,
+  "unmatched": 166,
   "reviewed": 53,
   "own entry": 22
  }
