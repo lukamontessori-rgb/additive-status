@@ -2,7 +2,7 @@
  "title": "Federal Register — FDA final rules and orders for 21 CFR parts 73, 74, 172, 173, 180, 184 and 189",
  "publisher": "Office of the Federal Register (U.S.)",
  "licence": "U.S. Government work (not subject to copyright in the United States)",
- "last_attempt": "2026-09-30T21:24:08+00:00",
+ "last_attempt": "2026-10-01T05:44:31+00:00",
  "files": {
   "rules.json": {
    "url": "https://www.federalregister.gov/api/v1/documents.json",
@@ -12,11 +12,11 @@
    "stored_as": "rules.json.gz",
    "sha256": "e9d9d9bd720bc3904f59a6716e8e0938b07cfe62925f0dce5a230482165c885c",
    "fingerprint": "e9d9d9bd720bc3904f59a6716e8e0938b07cfe62925f0dce5a230482165c885c",
-   "fetched_at": "2026-09-30T21:24:09+00:00",
+   "fetched_at": "2026-10-01T05:44:32+00:00",
    "content_changed_at": "2026-09-30T20:36:24+00:00",
    "documents": 81
   }
  },
- "last_success": "2026-09-30T21:24:09+00:00",
+ "last_success": "2026-10-01T05:44:32+00:00",
  "last_error": null
 }
