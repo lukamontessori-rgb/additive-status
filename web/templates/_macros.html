@@ -57,7 +57,7 @@
 {%- endmacro %}
 
 {% macro search_box(id, big=False, autofocus=False, placeholder='E-number or name, e.g. E171, Red 40') -%}
-<form class="search{{ ' big' if big }}" role="search" action="{{ url('/additives/') }}" data-search>
+<form class="search{{ ' big' if big }}" role="search" action="{{ url('/additives/') }}" data-search aria-label="{{ 'Search additives' if big else 'Site search' }}">
   <label class="sr" for="{{ id }}">Search additives</label>
   <svg class="search-ico" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="m20 20-4.2-4.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
   <input id="{{ id }}" name="q" type="search" autocomplete="off" spellcheck="false"{% if autofocus %} autofocus{% endif %}
