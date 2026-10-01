@@ -6,9 +6,9 @@
 <title>{{ page_title }}</title>
 <meta name="description" content="{{ description|default(TAGLINE) }}">
 {% if noindex %}<meta name="robots" content="noindex">{% else %}<link rel="canonical" href="{{ abs_url(path) }}">{% endif %}
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f6f5f1" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111214" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#f5f7ff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b1026" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ SITE_NAME }}">
 <meta property="og:title" content="{{ page_title }}">
@@ -16,25 +16,25 @@
 {% if not noindex %}<meta property="og:url" content="{{ abs_url(path) }}">{% endif %}
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+<link rel="preload" href="{{ asset('fonts/unbounded-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ asset('fonts/instrument-sans-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ asset('style.css') }}">
-<script>(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+<script>(function(){try{var t=localStorage.getItem("theme")||sessionStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}document.documentElement.classList.add("js");})();
 window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson }};</script>
 <script src="{{ asset('app.js') }}" defer></script>
 {% block head %}{% endblock %}
 </head>
 <body class="{{ body_class|default('') }}{% if home %} home{% endif %}">
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"><span></span></div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <header class="top">
-  <div class="wrap top-inner">
+  <div class="top-inner">
     <a class="brand" href="{{ url('/') }}" aria-label="{{ SITE_NAME }} home">
       <span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
       <span class="brand-name">{{ SITE_NAME }}</span>
     </a>
     {% if not home %}<div class="top-search">{{ search_box('q-top') }}</div>{% endif %}
-    <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="main-nav" data-menu>
-      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <span class="sr">Menu</span>
-    </button>
     <nav class="nav" id="main-nav" aria-label="Main">
       <a href="{{ url('/additives/') }}"{% if path == '/additives/' %} aria-current="page"{% endif %}>Additives</a>
       <a href="{{ url('/compare/') }}"{% if path.startswith('/compare/') %} aria-current="page"{% endif %}>Compare</a>
@@ -43,6 +43,10 @@ window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson
       <a href="{{ url('/changes/') }}"{% if path == '/changes/' %} aria-current="page"{% endif %}>Changes</a>
       <a href="{{ url('/about/') }}"{% if path == '/about/' %} aria-current="page"{% endif %}>About</a>
     </nav>
+    <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="main-nav" data-menu>
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="sr">Menu</span>
+    </button>
     <button class="icon-btn theme-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
       <svg class="i-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="currentColor"/></svg>
       <svg class="i-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -57,7 +61,7 @@ window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson
     <div class="foot-grid">
       <div class="foot-about">
         <a class="brand" href="{{ url('/') }}"><span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="brand-name">{{ SITE_NAME }}</span></a>
-        <p>Official food additive rules in {{ PLACES }}, side by side. Free, no ads, no accounts, no tracking.</p>
+        <p>Official food additive rules in {{ PLACES }}, side by side. Free to use, with no ads, accounts, cookies or tracking.</p>
         <p class="small muted">Data checked {{ fmt_date(generated_at) }}. Rechecked every week.</p>
       </div>
       <nav aria-label="Explore">
@@ -78,13 +82,30 @@ window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson
         <h2>About</h2>
         <a href="{{ url('/about/') }}">About and methods</a>
         <a href="{{ url('/about/') }}#sources">Sources</a>
-        <a href="{{ url('/legal/') }}">Legal and privacy</a>
         {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">Report a mistake</a>{% endif %}
+        <a href="{{ url('/accessibility/') }}">Accessibility</a>
+      </nav>
+      <nav aria-label="Legal">
+        <h2>Legal</h2>
+        <a href="{{ url('/privacy/') }}">Privacy policy</a>
+        <a href="{{ url('/terms/') }}">Terms of use</a>
+        <a href="{{ url('/cookies/') }}">Cookies and storage</a>
+        <a href="{{ url('/legal/') }}">Licences and notices</a>
+        <button type="button" class="link-btn" data-privacy-choices>Privacy choices</button>
       </nav>
     </div>
-    <p class="foot-legal"><strong>Not legal advice.</strong> A summary of official lists with links to them — check the official source before you rely on it. Not affiliated with the EU, the UK Food Standards Agency, the US FDA, Health Canada or Food Standards Australia New Zealand. Sources: European Union, UK Food Standards Agency (Open Government Licence), US FDA and Federal Register, Health Canada (Open Government Licence – Canada), Food Standards Australia New Zealand (CC BY 4.0). <a href="{{ url('/legal/') }}#licences">Licences and attribution</a>.</p>
+    <p class="foot-legal"><strong>Not legal advice.</strong> A summary of official lists with links to them. Check the official source before you rely on it. Not affiliated with the EU, the UK Food Standards Agency, the US FDA, Health Canada or Food Standards Australia New Zealand. Sources: European Union, UK Food Standards Agency (Open Government Licence), US FDA and Federal Register, Health Canada (Open Government Licence – Canada), Food Standards Australia New Zealand (CC BY 4.0). <a href="{{ url('/legal/') }}#licences">Licences and attribution</a>.</p>
   </div>
 </footer>
+<div class="consent" id="consent" role="region" aria-label="Privacy choices" hidden>
+  <p class="consent-title">Your privacy choices</p>
+  <p>This site uses <strong>no cookies and no tracking</strong>. It can remember three small settings on this device only: your light or dark theme, your best quiz score and the country you pick in the label checker. Nothing is ever sent to us.</p>
+  <div class="consent-actions">
+    <button type="button" class="btn btn-primary btn-sm" data-consent="yes">Remember my settings</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-consent="no">Don't remember</button>
+    <a href="{{ url('/cookies/') }}">Details</a>
+  </div>
+</div>
 <div class="tip" id="tip" role="tooltip" hidden></div>
 {% block scripts %}{% endblock %}
 </body>

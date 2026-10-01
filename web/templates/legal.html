@@ -3,33 +3,26 @@
 {% block main %}
 {{ breadcrumbs([("Legal", None)]) }}
 <article class="prose">
-<h1>Legal: terms, licences and privacy</h1>
-<p class="lede">The short version: {{ SITE_NAME }} is free to use, it summarises official lists but is not legal advice, the data belongs to its official publishers under open licences, and the site does not track you.</p>
-<p class="muted small">Last updated 30 September 2026.</p>
+<h1>Licences and legal notices</h1>
+<p class="lede">The short version: {{ SITE_NAME }} is free, summarises official lists but is not legal advice, uses data under its publishers' open licences, and does not track you.</p>
+<p class="muted small">Last updated {{ LEGAL_UPDATED }}.</p>
+
+<div class="legal-cards">
+  <a class="legal-card" href="{{ url('/privacy/') }}">{{ icon('lock', 22) }}<strong>Privacy policy</strong><span>What we collect (nothing personal), hosting, your rights.</span></a>
+  <a class="legal-card" href="{{ url('/terms/') }}">{{ icon('file', 22) }}<strong>Terms of use</strong><span>Free service, not advice, acceptable use, liability.</span></a>
+  <a class="legal-card" href="{{ url('/cookies/') }}">{{ icon('flask', 22) }}<strong>Cookies and storage</strong><span>No cookies. Manage or delete the settings kept on your device.</span></a>
+  <a class="legal-card" href="{{ url('/accessibility/') }}">{{ icon('check', 22) }}<strong>Accessibility</strong><span>How the site is made usable for everyone, and how to report a problem.</span></a>
+</div>
 
 <nav class="toc" aria-label="On this page">
-  <a href="#terms">Terms of use</a><a href="#disclaimer">Disclaimer</a><a href="#licences">Licences and attribution</a><a href="#privacy">Privacy</a><a href="#accessibility">Accessibility</a><a href="#independence">Independence</a><a href="#contact">Contact</a>
+  <a href="#disclaimer">Disclaimer</a><a href="#licences">Licences and attribution</a><a href="#fonts">Fonts and icons</a><a href="#honesty">Honest content</a><a href="#independence">Independence</a><a href="#operator">Who runs the site</a>
 </nav>
-
-<h2 id="terms">Terms of use</h2>
-<ul>
-  <li>You may use this site free of charge, without an account, for any lawful purpose.</li>
-  <li>You may link to any page. You may reuse the downloadable data on the terms set out on the <a href="{{ url('/data/') }}">download page</a> and below.</li>
-  <li>Please do not overload the site with automated requests; use the <a href="{{ url('/data/') }}">downloads</a> instead of scraping pages.</li>
-  <li>The site, its data and these terms may change at any time, without notice. The site may be unavailable at times.</li>
-  <li>Links to other websites are provided for convenience. Their content, terms and privacy practices are their own.</li>
-</ul>
 
 <h2 id="disclaimer">Disclaimer</h2>
 <div class="note">
-  <p><strong>Not legal advice.</strong> Statuses are automated, simplified summaries of official lists. They are not legal, regulatory, medical or nutritional advice. Before you make a decision that depends on the law — such as making, labelling, importing or selling food — read the official source linked on each page and, where needed, ask the competent authority or a qualified professional.</p>
-  <p><strong>Not a safety verdict.</strong> Whether a substance is on a list is a legal fact about one jurisdiction. It does not say whether the substance is safe or harmful.</p>
+  <p><strong>Not legal advice.</strong> Statuses are automated, simplified summaries of official lists. They are not legal, regulatory, medical or nutritional advice. Read the official source linked on each page before you rely on a status.</p>
+  <p><strong>Not a safety verdict.</strong> Whether a substance is on a list is a legal fact about one place. It does not say whether the substance is safe or harmful.</p>
 </div>
-<ul>
-  <li><strong>Accuracy.</strong> The data is collected and checked automatically every week, but sources can change between checks, and automated reading and matching can go wrong. Only the official publications are authoritative. For EU law, only the texts published in the Official Journal of the European Union are authentic.</li>
-  <li><strong>No warranty.</strong> The site and its data are provided "as is", without warranty of any kind.</li>
-  <li><strong>Liability.</strong> To the extent permitted by law, no liability is accepted for any loss or damage arising from the use of, or reliance on, this site or its data.</li>
-</ul>
 
 <h2 id="licences">Licences and attribution</h2>
 <p>All statuses are derived from official publications. Each publisher's licence allows reuse on the conditions below. In each case the data has been extracted, matched and summarised — so changes have been made, and the publishers do not endorse this site.</p>
@@ -47,23 +40,25 @@
 </dl>
 <p>If you reuse the downloadable data, keep these attributions, say that changes were made, and please mention {{ SITE_NAME }} ({{ abs_url('/') }}) as the compiler and the date you downloaded it. The names, logos and emblems of the publishers are not covered by these licences and are not used on this site.</p>
 
-<h2 id="privacy">Privacy</h2>
-<ul class="check-list">
-  <li><strong>No cookies</strong>, no analytics, no advertising, no fingerprinting, no accounts, no newsletter.</li>
-  <li><strong>No third-party requests.</strong> Every script, style, font and icon is served from this site. No embeds, pixels or social widgets.</li>
-  <li><strong>The label checker runs in your browser.</strong> The ingredients you paste are never sent anywhere.</li>
-  <li><strong>A few settings stay on your device.</strong> Your theme choice (light or dark), your best quiz score and the country you chose in the label checker are kept in your browser's local storage so they are there next time. They are never sent to us or anyone else. Clearing your browser's site data removes them.</li>
-  <li><strong>Hosting.</strong> The site is hosted on GitHub Pages. Like any web host, GitHub processes technical data such as IP addresses to deliver and secure the service; see the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub General Privacy Statement</a>. The site operator does not receive visitor logs.</li>
-  <li><strong>Reporting a mistake.</strong> Reports are made through GitHub issues, which are public. Please do not include personal information in them.</li>
+<h2 id="fonts">Fonts and icons</h2>
+<ul>
+  <li><strong>Unbounded</strong> (headings): Copyright 2022 The Unbounded Project Authors. Licensed under the <a href="{{ asset('fonts/Unbounded-OFL.txt') }}">SIL Open Font License 1.1</a>.</li>
+  <li><strong>Instrument Sans</strong> (text): Copyright 2022 The Instrument Sans Project Authors. Licensed under the <a href="{{ asset('fonts/InstrumentSans-OFL.txt') }}">SIL Open Font License 1.1</a>.</li>
+  <li>Both fonts are served from this site, not from a font service. The icons and graphics were drawn for this site. The site uses no photos or stock images.</li>
 </ul>
 
-<h2 id="accessibility">Accessibility</h2>
-<p>The site aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. It works with a keyboard, supports screen readers, follows your light or dark setting, and never shows a status by colour alone — every status has an icon and a word. Charts have a table view. If something does not work for you, please report it{% if REPO_URL %} on <a href="{{ REPO_URL }}/issues">GitHub</a>{% endif %}.</p>
+<h2 id="honesty">Honest content</h2>
+<ul class="check-list">
+  <li><strong>No reviews or testimonials.</strong> The site publishes no reviews, ratings, endorsements or testimonials, real or invented.</li>
+  <li><strong>Claims come from the data.</strong> Every status links to its official source, and every number and "Did you know?" fact is calculated from the published data on each build. Where the data is unclear, the site says so.</li>
+  <li><strong>No dark patterns.</strong> No pop-ups that push you, no pre-ticked boxes, no countdowns, no hidden costs. The privacy notice offers "remember" and "don't remember" as equal choices.</li>
+  <li><strong>Free.</strong> No fees, purchases, subscriptions or hidden charges.</li>
+</ul>
 
 <h2 id="independence">Independence</h2>
-<p>{{ SITE_NAME }} is an independent, non-commercial project. It has no ads, sponsors, affiliate links or paid features, and it is not affiliated with, or endorsed by, the European Union, the UK Food Standards Agency, the U.S. Food and Drug Administration, Health Canada, Food Standards Australia New Zealand or any company.</p>
+<p>{{ SITE_NAME }} is an independent, non-commercial project. It has no ads, sponsors, affiliate links or paid features, and it is not affiliated with, or endorsed by, the European Union, the UK Food Standards Agency, the U.S. Food and Drug Administration, Health Canada, Food Standards Australia New Zealand or any company. The publishers' names, logos and emblems are not used on this site.</p>
 
-<h2 id="contact">Contact</h2>
-<p>Questions, corrections and accessibility problems: {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a>{% else %}open an issue on the project's GitHub page{% endif %}. Please include a link to the official source if you are reporting a wrong status.</p>
+<h2 id="operator">Who runs the site</h2>
+<p>The site is run as a non-commercial, open-source project{% if REPO_URL %} whose code and data history are public on <a href="{{ REPO_URL }}">GitHub</a>{% endif %}. It does not sell anything and does not collect personal data. For questions, corrections or legal notices, {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a>{% else %}open an issue on the project's GitHub page{% endif %}.</p>
 </article>
 {% endblock %}

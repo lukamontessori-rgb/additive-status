@@ -49,6 +49,10 @@ official sources ──► pipeline/fetch.py ──► data/raw/          (weekl
 The only hand-made data is `data/curated/crosswalk.yml`, a small reviewed table of name matches.
 See the site's *About* and *Legal* pages for status definitions, matching rules, limits and licences.
 
+The site's privacy policy, terms of use, cookies-and-storage page and accessibility statement are in
+`web/templates/`. The fonts (Unbounded and Instrument Sans) are self-hosted from `web/static/fonts/`
+under the SIL Open Font License 1.1; the licence texts are next to the font files.
+
 ## Local use
 
 ```

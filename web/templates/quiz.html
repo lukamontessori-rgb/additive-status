@@ -4,7 +4,7 @@
 {{ breadcrumbs([("Quiz", None)]) }}
 <section class="quiz" data-quiz aria-labelledby="quiz-h">
   <div class="quiz-intro" data-step="intro">
-    <p class="kicker"><span aria-hidden="true">🧠</span> 10 rounds · 5 places · 50 points</p>
+    <p class="kicker">{{ icon('spark') }} Ten rounds, five places, up to 50 points</p>
     <h1 id="quiz-h">Where is it allowed?</h1>
     <p class="lede">We show you a food additive. You tap every place where you think it is allowed as a food additive. Then the official answer is revealed.</p>
     <ul class="quiz-rules">
@@ -12,10 +12,11 @@
       <li>"Allowed" means authorised or still in a phase-out period.</li>
       <li>Keyboard: <kbd>1</kbd>–<kbd>5</kbd> to choose, <kbd>Enter</kbd> to check and go on.</li>
     </ul>
-    <div class="quiz-mode" role="radiogroup" aria-label="Which additives">
-      <label><input type="radio" name="quiz-mode" value="mixed" checked> Mixed</label>
-      <label><input type="radio" name="quiz-mode" value="hard"> Hard: only additives where the rules differ</label>
-    </div>
+    <fieldset class="quiz-mode">
+      <legend>Which additives?</legend>
+      <label><input type="radio" name="quiz-mode" value="mixed" checked><span><strong>Mixed</strong><small>Any additive with a clear answer</small></span></label>
+      <label><input type="radio" name="quiz-mode" value="hard"><span><strong>Hard</strong><small>Only where the rules differ</small></span></label>
+    </fieldset>
     <button class="btn btn-primary btn-lg" type="button" data-quiz-start>Start the quiz</button>
     <p class="muted small quiz-best" data-quiz-best hidden></p>
     <noscript><p class="note">The quiz needs JavaScript.</p></noscript>
@@ -45,13 +46,18 @@
   </div>
 
   <div class="quiz-end" data-step="end" hidden>
-    <p class="quiz-trophy" aria-hidden="true" data-quiz-trophy>🏆</p>
+    <svg class="score-ring" viewBox="0 0 150 150" aria-hidden="true">
+      <defs><linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd23f"/><stop offset=".5" stop-color="#ff3d5e"/><stop offset="1" stop-color="#7b6bff"/></linearGradient></defs>
+      <circle class="bg" cx="75" cy="75" r="62"/>
+      <circle class="fg" cx="75" cy="75" r="62" data-quiz-ring stroke-dasharray="389.6" stroke-dashoffset="389.6"/>
+      <text x="75" y="86" text-anchor="middle" data-quiz-ring-text>0</text>
+    </svg>
     <h2>Your score: <span data-quiz-final>0</span> / 50</h2>
     <p class="lede" data-quiz-verdict></p>
     <div class="quiz-review" data-quiz-review></div>
     <div class="quiz-actions">
       <button class="btn btn-primary" type="button" data-quiz-again>Play again</button>
-      <button class="btn btn-ghost" type="button" data-quiz-share hidden><span aria-hidden="true">🔗</span> <span data-quiz-share-label>Share your score</span></button>
+      <button class="btn btn-ghost" type="button" data-quiz-share hidden>{{ icon('link') }} <span data-quiz-share-label>Share your score</span></button>
     </div>
   </div>
 </section>

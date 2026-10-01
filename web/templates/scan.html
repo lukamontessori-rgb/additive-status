@@ -3,8 +3,8 @@
 {% block main %}
 {{ breadcrumbs([("Label checker", None)]) }}
 <div class="page-head">
-  <h1><span aria-hidden="true">🏷️</span> Label checker</h1>
-  <p class="lede">Paste or type the ingredients list from a food label. Every additive in it is picked out and shown with its status in the five places.</p>
+  <h1>Label checker</h1>
+  <p class="lede">Paste or type the ingredients list from a food label. The additives it recognises are picked out and shown with their status in the five places.</p>
 </div>
 
 <section class="scan" data-scan>
@@ -23,7 +23,7 @@
         </select>
       </span>
     </div>
-    <p class="muted small"><span aria-hidden="true">🔒</span> The text stays on your device. It is checked in your browser and never sent anywhere.</p>
+    <p class="muted small">{{ icon('lock', 15) }} The text stays on your device. It is checked in your browser and never sent anywhere.</p>
   </div>
   <div class="scan-out" aria-live="polite">
     <div class="scan-summary"></div>

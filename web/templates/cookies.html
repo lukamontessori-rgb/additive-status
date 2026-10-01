@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs %}
+{% block main %}
+{{ breadcrumbs([("Legal", "/legal/"), ("Cookies and storage", None)]) }}
+<article class="prose">
+<h1>Cookies and storage</h1>
+<p class="lede">This site sets no cookies. With your permission it keeps a few settings in your browser's local storage, on your device only.</p>
+<p class="muted small">Last updated {{ LEGAL_UPDATED }}.</p>
+
+<h2 id="cookies">Cookies</h2>
+<p>None. The site sets no cookies of its own, and it loads nothing from other companies that could set them — no analytics, advertising, social media or video embeds.</p>
+
+<h2 id="storage">What can be stored on your device</h2>
+<div class="tbl-wrap">
+<table class="tbl stack-tbl">
+  <thead><tr><th scope="col">Name</th><th scope="col">What it keeps</th><th scope="col">When</th><th scope="col">Kept for</th></tr></thead>
+  <tbody>
+    <tr><th scope="row"><code>privacy-choice</code></th><td data-label="What it keeps">Your answer in the privacy notice ("yes" or "no")</td><td data-label="When">When you choose an option in the notice</td><td data-label="Kept for">Until you delete it</td></tr>
+    <tr><th scope="row"><code>theme</code></th><td data-label="What it keeps">Light or dark theme</td><td data-label="When">When you switch the theme</td><td data-label="Kept for">If you allowed remembering: until you delete it. Otherwise only until you close the tab (session storage).</td></tr>
+    <tr><th scope="row"><code>quiz-best</code></th><td data-label="What it keeps">Your best quiz scores</td><td data-label="When">After a quiz, only if you allowed remembering</td><td data-label="Kept for">Until you delete it</td></tr>
+    <tr><th scope="row"><code>scan-home</code></th><td data-label="What it keeps">The country you picked in the label checker</td><td data-label="When">When you pick a country, only if you allowed remembering</td><td data-label="Kept for">Until you delete it</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Keeping your answer to the notice is needed so the notice does not reappear on every page. The other items are kept only if you choose <em>Remember my settings</em>; without it, a theme you pick lasts only until you close the tab, so it does not change back on every page. None of them are ever sent anywhere: they are read only by this site's pages in your own browser.</p>
+
+<h2 id="choices">Your choices</h2>
+<div class="panel consent-panel" data-storage-panel>
+  <p class="storage-status" aria-live="polite" data-storage-status>Your current choice is shown here when JavaScript is on.</p>
+  <div class="consent-actions">
+    <button type="button" class="btn btn-primary btn-sm" data-consent="yes">Remember my settings</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-consent="no">Don't remember</button>
+    <button type="button" class="btn btn-ghost btn-sm" data-storage-clear>Delete everything this site saved here</button>
+  </div>
+</div>
+<p>You can also delete site data at any time in your browser's settings. Deleting it simply resets your theme, quiz score and country, and shows the privacy notice again.</p>
+<p>More detail is in the <a href="{{ url('/privacy/') }}">privacy policy</a>.</p>
+</article>
+{% endblock %}

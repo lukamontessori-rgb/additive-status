@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs %}
+{% block main %}
+{{ breadcrumbs([("Legal", "/legal/"), ("Terms of use", None)]) }}
+<article class="prose">
+<h1>Terms of use</h1>
+<p class="lede">{{ SITE_NAME }} is free to use. It summarises official food additive lists, but it is not legal advice. By using the site you accept these terms.</p>
+<p class="muted small">Last updated {{ LEGAL_UPDATED }}.</p>
+
+<nav class="toc" aria-label="On this page">
+  <a href="#service">The service</a><a href="#fees">Fees and refunds</a><a href="#advice">Not advice</a><a href="#use">Acceptable use</a><a href="#content">Content and data</a><a href="#links">Links</a><a href="#warranty">Warranty and liability</a><a href="#changes">Changes</a>
+</nav>
+
+<h2 id="service">The service</h2>
+<p>The site shows the status of food additives on the official lists of the European Union, Great Britain, the United States (federal), Canada and Australia/New Zealand, with links to those lists. You do not need an account, and you do not have to give any personal information.</p>
+
+<h2 id="fees">Fees, payments and refunds</h2>
+<p>Everything on the site is free. There are no fees, purchases, subscriptions, paid features, requests for donations or hidden charges, so there is nothing to pay and nothing to refund.</p>
+
+<h2 id="advice">Not legal, medical or nutritional advice</h2>
+<p>Statuses are automated, simplified summaries. They can be out of date between weekly checks, and automated reading and matching can go wrong. Only the official publications are authoritative; for EU law, only the texts in the Official Journal of the European Union are authentic. Before you make a decision that depends on the law — such as making, labelling, importing or selling food — read the official source linked on each page and, where needed, ask the competent authority or a qualified professional. Whether a substance is on a list is a legal fact about one place. It is not a judgement about whether the substance is safe.</p>
+
+<h2 id="use">Acceptable use</h2>
+<ul>
+  <li>Use the site for any lawful purpose.</li>
+  <li>Do not overload it with automated requests. To get all the data, use the <a href="{{ url('/data/') }}">downloads</a> instead of scraping pages.</li>
+  <li>Do not try to disrupt, break into or misuse the site or its hosting.</li>
+  <li>Do not present the site, or data from it, as an official government publication.</li>
+</ul>
+
+<h2 id="content">Content and data</h2>
+<p>The statuses are derived from official publications, each under its own licence; the <a href="{{ url('/legal/') }}#licences">licences page</a> lists them with the required attribution. You may link to any page and quote short passages with a link back. The fonts used on the site are licensed under the SIL Open Font License; details are on the licences page.</p>
+
+<h2 id="links">Links to other websites</h2>
+<p>Pages link to official sources and other websites for convenience. Their content, terms and privacy practices are their own.</p>
+
+<h2 id="warranty">Warranty and liability</h2>
+<p>The site and its data are provided "as is", without warranty of any kind, and may be unavailable at times. To the extent permitted by law, no liability is accepted for any loss or damage arising from the use of, or reliance on, the site or its data. Nothing in these terms limits rights that cannot be limited by law.</p>
+
+<h2 id="changes">Changes to these terms</h2>
+<p>These terms may change. The current version is always on this page with its date{% if REPO_URL %}, and earlier versions are in the <a href="{{ REPO_URL }}/commits/main/web/templates/terms.html">public history of this page</a>{% endif %}.</p>
+<p>Questions: {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a>{% else %}open an issue on the project's GitHub page{% endif %}. See also the <a href="{{ url('/privacy/') }}">privacy policy</a>.</p>
+</article>
+{% endblock %}

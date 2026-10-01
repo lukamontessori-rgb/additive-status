@@ -13,10 +13,25 @@
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Per-visitor conveniences only; the site works the same without storage.
+  // Per-visitor conveniences only; nothing is ever sent anywhere. Settings are kept in
+  // localStorage only after the visitor chose "Remember my settings" (key privacy-choice).
+  const KEYS = ["theme", "quiz-best", "scan-home"];
   const store = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* ignore */ } },
+    choice() { try { return localStorage.getItem("privacy-choice"); } catch (e) { return null; } },
+    get(k) { try { return localStorage.getItem(k) || sessionStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v, sessionOk) {
+      try {
+        if (localStorage.getItem("privacy-choice") === "yes") { localStorage.setItem(k, v); sessionStorage.removeItem(k); }
+        else if (sessionOk) sessionStorage.setItem(k, v);
+      } catch (e) { /* storage blocked: the site works without it */ }
+    },
+    decide(v) {
+      try {
+        localStorage.setItem("privacy-choice", v);
+        if (v !== "yes") KEYS.forEach((k) => localStorage.removeItem(k));
+      } catch (e) { /* ignore */ }
+    },
+    clearAll() { try { KEYS.concat("privacy-choice").forEach((k) => { localStorage.removeItem(k); sessionStorage.removeItem(k); }); } catch (e) { /* ignore */ } },
   };
 
   // ------------------------------------------------------------ text helpers
@@ -227,7 +242,7 @@
         (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
       const next = cur === "dark" ? "light" : "dark";
       root.setAttribute("data-theme", next);
-      store.set("theme", next);
+      store.set("theme", next, true);
     });
   }
   function setupMenu() {
@@ -289,7 +304,7 @@
   function setupShare() {
     $$("[data-share]").forEach((btn) => {
       const canShare = !!navigator.share, canCopy = !!(navigator.clipboard && navigator.clipboard.writeText);
-      if (!canShare && !canCopy) return;
+      if (!canShare && !canCopy) { btn.hidden = true; return; }
       btn.hidden = false;
       const label = $("[data-share-label]", btn);
       if (!canShare && label) label.textContent = "Copy link";
@@ -346,42 +361,117 @@
     show();
   }
 
-  // ------------------------------------------------------------ hero demo card (decorative)
-  function setupDemo() {
-    const card = $("[data-demo]");
-    if (!card || reduceMotion) return;
-    let ids;
-    try { ids = JSON.parse(card.getAttribute("data-demo")); } catch (e) { return; }
-    if (!ids || ids.length < 2) return;
-    const dotsBox = el("div", { class: "demo-dots" });
-    ids.forEach(() => dotsBox.appendChild(el("i")));
-    card.appendChild(dotsBox);
-    let k = 0, timer = 0, paused = false;
-    const mark = () => Array.from(dotsBox.children).forEach((d, i) => d.classList.toggle("on", i === k));
-    mark();
-    function show(r) {
-      const head = $(".demo-head", card);
-      head.textContent = "";
-      if (r.e) head.appendChild(enumBadge(r.e));
-      head.appendChild(el("strong", null, r.n));
-      $$(".demo-list li", card).forEach((li, i) => {
-        const old = $(".st", li);
-        if (old) old.replaceWith(chip(r.s[i], true));
+  // ------------------------------------------------------------ hero "chromatography" lanes (decorative)
+  function setupLab() {
+    const lab = $("[data-lab]");
+    if (!lab || reduceMotion) return;
+    let items;
+    try { items = JSON.parse(lab.getAttribute("data-lab")); } catch (e) { return; }
+    if (!items || items.length < 2) return;
+    const lanes = $$(".lane", lab), dotsEl = $$(".lab-dots i", lab);
+    let k = 0, paused = false;
+    function show(it) {
+      lab.style.setProperty("--dye", it.dye);
+      $(".lab-e", lab).textContent = it.e || "No E-number";
+      $(".lab-name", lab).textContent = it.n;
+      lanes.forEach((lane, i) => {
+        lane.style.setProperty("--y", it.y[i]);
+        const st = $(".lane-st", lane);
+        st.className = "lane-st t-" + it.t[i];
+        $("i", st).textContent = ICON[it.t[i]];
+        $("b", st).textContent = it.l[i];
       });
-      card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
-      mark();
+      dotsEl.forEach((d, i) => d.classList.toggle("on", i === k));
     }
-    function tick() {
+    lab.addEventListener("pointerenter", () => { paused = true; });
+    lab.addEventListener("pointerleave", () => { paused = false; });
+    setInterval(() => {
       if (paused || document.hidden) return;
-      loadIndex().then((idx) => {
-        k = (k + 1) % ids.length;
-        const hit = idx.find((x) => x.r.i === ids[k]);
-        if (hit) show(hit.r);
-      }).catch(() => clearInterval(timer));
+      k = (k + 1) % items.length;
+      show(items[k]);
+    }, 4200);
+  }
+
+  // ------------------------------------------------------------ scroll effects
+  function setupScroll() {
+    const bar = $(".progress span");
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      if (bar) bar.style.setProperty("--p", max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+      document.body.classList.toggle("scrolled", scrollY > 8);
     }
-    card.addEventListener("pointerenter", () => { paused = true; });
-    card.addEventListener("pointerleave", () => { paused = false; });
-    timer = setInterval(tick, 3800);
+    addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener("resize", update, { passive: true });
+    update();
+    // reveal sections and animate charts once they come into view
+    const targets = $$(".reveal, .sbars, .heat, .vcols");
+    function countUp(root) {
+      $$("[data-count]", root).forEach((el) => {
+        const n = +el.getAttribute("data-count");
+        if (!n || reduceMotion) return;
+        const t0 = performance.now(), dur = 1300;
+        (function step(t) {
+          const x = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - x, 3);
+          el.textContent = String(Math.round(n * e));
+          if (x < 1) requestAnimationFrame(step);
+        })(t0);
+      });
+    }
+    if (reduceMotion || !("IntersectionObserver" in window)) { targets.forEach((t) => t.classList.add("in")); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        en.target.classList.add("in");
+        countUp(en.target);
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: "0px 0px -48px 0px", threshold: 0 });
+    targets.forEach((t) => io.observe(t));
+  }
+
+  // ------------------------------------------------------------ cursor spotlight on tool cards
+  function setupSpotlight() {
+    if (reduceMotion) return;
+    $$(".tool").forEach((el) => el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      el.style.setProperty("--my", (e.clientY - r.top) + "px");
+    }));
+  }
+
+  // ------------------------------------------------------------ privacy choices (no cookies)
+  function setupConsent() {
+    const box = $("#consent");
+    const status = $("[data-storage-status]");
+    function describe() {
+      if (!status) return;
+      const c = store.choice();
+      status.textContent = c === "yes" ? "You chose to remember your settings on this device."
+        : c === "no" ? "You chose not to remember settings. Only that choice is kept."
+        : "You have not chosen yet. Nothing is remembered until you do.";
+    }
+    function show() { if (box) { box.hidden = false; const b = $("button", box); if (b) b.focus({ preventScroll: true }); } }
+    if (box && !store.choice()) box.hidden = false;
+    $$("[data-consent]").forEach((b) => b.addEventListener("click", () => {
+      store.decide(b.getAttribute("data-consent"));
+      if (b.getAttribute("data-consent") === "yes") {
+        const t = document.documentElement.getAttribute("data-theme");
+        if (t) store.set("theme", t);
+      }
+      if (box) box.hidden = true;
+      describe();
+    }));
+    $$("[data-privacy-choices]").forEach((b) => b.addEventListener("click", show));
+    const clear = $("[data-storage-clear]");
+    if (clear) clear.addEventListener("click", () => {
+      store.clearAll();
+      describe();
+      if (status) status.textContent = "Deleted. Nothing from this site is stored on this device now.";
+      if (box) box.hidden = false;
+    });
+    describe();
   }
 
   // ------------------------------------------------------------ additive page tabs
@@ -742,8 +832,8 @@
         li.style.animationDelay = reduceMotion ? "0s" : (n * 40) + "ms";
         const name = el("div", { class: "si-name" });
         const a = el("a", { href: pageUrl(r.i) });
-        if (r.e) { a.appendChild(enumBadge(r.e)); a.appendChild(document.createTextNode(" ")); }
-        a.appendChild(document.createTextNode(r.n));
+        if (r.e) a.appendChild(enumBadge(r.e));
+        a.appendChild(el("span", { class: "qr-n" }, r.n));
         name.appendChild(a);
         name.appendChild(el("span", { class: "si-found" }, "Found as “" + x.snips.slice(0, 3).join("”, “") + "”" + (r.g && r.g[0] ? " · " + r.g[0] : "")));
         li.appendChild(name);
@@ -775,14 +865,15 @@
     const q = (name) => $("[data-quiz-" + name + "]", box);
     const bestEl = q("best");
     let rounds = [], n = 0, total = 0, checked = false, mode = "mixed", log = [];
-    function best() { try { return JSON.parse(store.get("quiz-best") || "{}"); } catch (e) { return {}; } }
+    let memBest = {}; // kept for this page visit when the visitor has not chosen to remember settings
+    function best() { try { return Object.assign({}, memBest, JSON.parse(store.get("quiz-best") || "{}")); } catch (e) { return Object.assign({}, memBest); } }
     function showBest() {
       const b = best();
       const parts = [];
       if (b.mixed != null) parts.push("Mixed: " + b.mixed + "/50");
       if (b.hard != null) parts.push("Hard: " + b.hard + "/50");
       bestEl.hidden = !parts.length;
-      bestEl.textContent = "Your best on this device — " + parts.join(" · ");
+      bestEl.textContent = (store.choice() === "yes" ? "Your best on this device: " : "Your best this visit: ") + parts.join(", ");
     }
     function go(step) { Object.keys(steps).forEach((k) => { steps[k].hidden = k !== step; }); }
     function definite(r) { return r.s.every((s) => isAllowed(s) || isNotAllowed(s)); }
@@ -841,13 +932,13 @@
       q("score").textContent = String(total);
       const fb = q("feedback");
       fb.textContent = "";
-      const line = el("p", { class: "qf-line" }, pts + " / 5 — " + (pts === 5 ? "perfect! 🎉" : pts >= 4 ? "so close." : pts >= 3 ? "not bad." : "tricky one."));
+      const line = el("p", { class: "qf-line" }, pts + " / 5: " + (pts === 5 ? "perfect!" : pts >= 4 ? "so close." : pts >= 3 ? "not bad." : "a tricky one."));
       const detail = el("p", { class: "qf-detail" });
       detail.appendChild(document.createTextNode(summary(r) + " Green tiles are the places you got right. "));
       const more = el("a", { href: pageUrl(r.i), target: "_blank", rel: "noopener" }, "Why? See the sources");
       detail.appendChild(more);
       fb.appendChild(line); fb.appendChild(detail);
-      if (pts === 5) confetti(6);
+      if (pts === 5) confetti(14);
       q("check").hidden = true; q("next").hidden = false;
       q("next").textContent = n + 1 < ROUNDS ? "Next" : "See your score";
       q("next").focus({ preventScroll: true });
@@ -862,24 +953,31 @@
       go("end");
       q("final").textContent = String(total);
       const b = best();
-      const isBest = b[mode] == null || total > b[mode];
-      if (isBest) { b[mode] = total; store.set("quiz-best", JSON.stringify(b)); }
+      const hadBest = b[mode] != null;
+      const isBest = hadBest && total > b[mode];
+      if (!hadBest || isBest) { b[mode] = total; memBest = Object.assign({}, b); store.set("quiz-best", JSON.stringify(b)); }
       const verdict = total >= 45 ? "Outstanding — you could write food law." : total >= 38 ? "Great score. You know your additives." :
         total >= 30 ? "Solid. The rules really do differ in surprising ways." : "The rules are tricky — that's why this site exists.";
       q("verdict").textContent = verdict + (isBest ? " New personal best!" : "");
-      q("trophy").textContent = total >= 45 ? "🏆" : total >= 38 ? "🥇" : total >= 30 ? "🥈" : "🧪";
+      const ring = q("ring"), ringText = q("ring-text");
+      if (ring) {
+        const c = 389.6;
+        ring.style.strokeDashoffset = String(c);
+        requestAnimationFrame(() => requestAnimationFrame(() => { ring.style.strokeDashoffset = String(c * (1 - total / 50)); }));
+      }
+      if (ringText) ringText.textContent = String(total);
       const rev = q("review"); rev.textContent = "";
       log.forEach(({ r, pts }) => {
         const row = el("div", { class: "qr" });
         const a = el("a", { href: pageUrl(r.i) });
-        if (r.e) { a.appendChild(enumBadge(r.e)); a.appendChild(document.createTextNode(" ")); }
-        a.appendChild(document.createTextNode(r.n));
+        if (r.e) a.appendChild(enumBadge(r.e));
+        a.appendChild(el("span", { class: "qr-n" }, r.n));
         row.appendChild(a);
         row.appendChild(dots(r.s));
         row.appendChild(el("span", { class: "qr-pts" }, pts + "/5"));
         rev.appendChild(row);
       });
-      if (total >= 45 || isBest) confetti(18);
+      if (total >= 45 || isBest) confetti(36);
       const share = q("share"), label = q("share-label");
       const canShare = !!navigator.share, canCopy = !!(navigator.clipboard && navigator.clipboard.writeText);
       share.hidden = !(canShare || canCopy);
@@ -894,13 +992,16 @@
     }
     function confetti(k) {
       if (reduceMotion) return;
-      const bits = ["🎉", "✨", "✅", "🟢", "⭐"];
+      const dyes = ["#ffd23f", "#ff8a3d", "#ff3d5e", "#a77bff", "#4d8bff", "#3fd39a"];
       for (let i = 0; i < k; i++) {
-        const s = el("span", { class: "confetti", "aria-hidden": "true" }, bits[i % bits.length]);
+        const s = el("span", { class: "confetti", "aria-hidden": "true" });
         s.style.left = (Math.random() * 100) + "vw";
-        s.style.animationDelay = (Math.random() * 0.4) + "s";
+        s.style.background = dyes[i % dyes.length];
+        s.style.setProperty("--dx", ((Math.random() - 0.5) * 30) + "vw");
+        s.style.setProperty("--rot", (360 + Math.random() * 540) + "deg");
+        s.style.animationDelay = (Math.random() * 0.35) + "s";
         document.body.appendChild(s);
-        setTimeout(() => s.remove(), 2400);
+        setTimeout(() => s.remove(), 2600);
       }
     }
     opts.forEach((o) => o.addEventListener("click", () => {
@@ -925,7 +1026,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     $$("form[data-search]").forEach(setupSearch);
     setupTheme(); setupMenu(); setupShortcut(); setupRandom(); setupTooltips(); setupShare();
-    setupFilters(); setupFacts(); setupDemo(); setupTabs(); setupList(); setupCompare(); setupScan(); setupQuiz();
+    setupFilters(); setupFacts(); setupLab(); setupScroll(); setupSpotlight(); setupConsent(); setupTabs(); setupList(); setupCompare(); setupScan(); setupQuiz();
   });
   // exported for tests
   window.__additive = { norm, enumKey, scanText, buildScanMaps };

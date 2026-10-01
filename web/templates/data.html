@@ -22,8 +22,8 @@
 <h1>Download the data</h1>
 <p class="lede">The full combined dataset — {{ count }} additives, five places — is free to download and reuse. It is rebuilt every week from the official sources.</p>
 <div class="dl-grid">
-  <a class="dl" href="{{ url('/downloads/additives.csv') }}" download><span class="dl-ico" aria-hidden="true">📄</span><strong>additives.csv</strong><span>{{ (sizes['additives.csv'] / 1024)|round|int }} KB · one row per additive, a status and a detail column per place. Opens in any spreadsheet.</span></a>
-  <a class="dl" href="{{ url('/downloads/additives.json') }}" download><span class="dl-ico" aria-hidden="true">🧾</span><strong>additives.json</strong><span>{{ (sizes['additives.json'] / 1024)|round|int }} KB · everything shown on the site, including conditions, references and source details.</span></a>
+  <a class="dl" href="{{ url('/downloads/additives.csv') }}" download><span class="dl-ico" aria-hidden="true">{{ icon('file', 26) }}</span><strong>additives.csv</strong><span>{{ (sizes['additives.csv'] / 1024)|round|int }} KB · one row per additive, a status and a detail column per place. Opens in any spreadsheet.</span></a>
+  <a class="dl" href="{{ url('/downloads/additives.json') }}" download><span class="dl-ico" aria-hidden="true">{{ icon('braces', 26) }}</span><strong>additives.json</strong><span>{{ (sizes['additives.json'] / 1024)|round|int }} KB · everything shown on the site, including conditions, references and source details.</span></a>
 </div>
 <h2>Columns</h2>
 <ul>

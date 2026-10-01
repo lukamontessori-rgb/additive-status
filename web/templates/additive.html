@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import chip, dots, breadcrumbs, additive_card, enum %}
+{% from "_macros.html" import chip, dots, breadcrumbs, additive_card, enum, elem %}
 {% block main %}
 {{ breadcrumbs([("Additives", "/additives/"), ((a.e ~ " " if a.e else "") ~ a.name, None)]) }}
 
@@ -12,12 +12,12 @@
     {% if a.aka %}<p class="aka"><span class="muted">Also called</span> {{ a.aka[:8]|join(' · ') }}{% if a.aka|length > 8 %} <span class="muted">+{{ a.aka|length - 8 }} more</span>{% endif %}</p>{% endif %}
     {% if a.ins %}<p class="aka"><span class="muted">International code (INS)</span> {{ a.ins }}{% if status_of(a, 'eu') != 'authorised' %} <span class="muted">· not on the EU list, so it has no E-number there</span>{% endif %}</p>{% endif %}
     <div class="a-tags">
-      {% for c in a.classes %}{% set cp = (CLASSES|selectattr('name', 'equalto', c)|first) %}{% if cp %}<a class="tag" href="{{ url(cp.path) }}"><span aria-hidden="true">{{ CLASS_ICON.get(c, '🧪') }}</span> {{ c }}</a>{% else %}<span class="tag">{{ c }}</span>{% endif %}{% endfor %}
+      {% for c in a.classes %}{% set cp = (CLASSES|selectattr('name', 'equalto', c)|first) %}{% if cp %}<a class="tag" href="{{ url(cp.path) }}">{{ elem(c, 'sm') }} {{ c }}</a>{% else %}<span class="tag">{{ c }}</span>{% endif %}{% endfor %}
       {% for cas in a.cas[:2] %}<span class="tag tag-plain">CAS {{ cas }}</span>{% endfor %}
     </div>
     <div class="a-actions">
-      <button class="btn btn-ghost btn-sm" type="button" data-share hidden><span aria-hidden="true">🔗</span> <span data-share-label>Share</span></button>
-      <a class="btn btn-ghost btn-sm" href="{{ url('/additives/') }}" data-random><span aria-hidden="true">🎲</span> Random</a>
+      <button class="btn btn-ghost btn-sm btn-share js-only" type="button" data-share>{{ icon('link') }} <span data-share-label>Share</span></button>
+      <a class="btn btn-ghost btn-sm" href="{{ url('/additives/') }}" data-random>{{ icon('dice') }} Random</a>
       <span class="a-nav">
         {% if prev %}<a class="btn btn-ghost btn-sm" href="{{ url('/additive/' ~ prev.id ~ '/') }}" rel="prev" title="Previous: {{ prev.e ~ ' ' if prev.e }}{{ prev.name }}"><span aria-hidden="true">←</span> {{ prev.e or 'Previous' }}</a>{% endif %}
         {% if next %}<a class="btn btn-ghost btn-sm" href="{{ url('/additive/' ~ next.id ~ '/') }}" rel="next" title="Next: {{ next.e ~ ' ' if next.e }}{{ next.name }}">{{ next.e or 'Next' }} <span aria-hidden="true">→</span></a>{% endif %}

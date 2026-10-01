@@ -1,7 +1,7 @@
 {# Status chip: icon + label, never colour alone. #}
 {% macro chip(status, short=False, tip=True) -%}
 {% set s = STATUSES.get(status, STATUSES['unknown']) %}
-<span class="st st-{{ s[2] }}"{% if tip %} title="{{ s[0] }}: {{ s[3] }}"{% endif %}><i aria-hidden="true">{{ TONE_ICON[s[2]] }}</i>{{ s[1] if short else s[0] }}</span>
+<span class="st st-{{ s[2] }}"{% if tip %} title="{{ s[0] }}: {{ s[3] }}"{% endif %}><i aria-hidden="true">{{ TONE_ICON[s[2]] }}</i><span class="st-l">{{ s[1] if short else s[0] }}</span></span>
 {%- endmacro %}
 
 {# Five compact status pills with jurisdiction codes, e.g. for cards and results. #}
@@ -11,13 +11,18 @@
 </span>
 {%- endmacro %}
 
+{# Functional class as an element-style tile, e.g. "Co" for colours. Decorative. #}
+{% macro elem(c, size='') -%}
+{% set sym = CLASS_SYMBOL.get(c, ('Fx', 230)) %}<span class="elem{{ ' elem-' ~ size if size }}" style="--h: {{ sym[1] }}" aria-hidden="true">{{ sym[0] }}</span>
+{%- endmacro %}
+
 {% macro enum(a, cls='') -%}
 {% if a.e %}<span class="enum {{ cls }}">{{ a.e }}</span>{% endif %}
 {%- endmacro %}
 
 {% macro additive_card(a) -%}
 <a class="acard" href="{{ url('/additive/' ~ a.id ~ '/') }}">
-  <span class="acard-top">{{ enum(a) }}{% if a.classes %}<span class="acard-class"><span aria-hidden="true">{{ CLASS_ICON.get(a.classes[0], '🧪') }}</span> {{ a.classes[0] }}</span>{% endif %}</span>
+  <span class="acard-top">{% if a.e %}{{ enum(a) }}{% elif a.ins %}<span class="enum enum-alt">INS {{ a.ins }}</span>{% else %}<span class="enum enum-alt">No E number</span>{% endif %}{% if a.classes %}<span class="acard-class">{{ elem(a.classes[0], 'sm') }} {{ a.classes[0] }}</span>{% endif %}</span>
   <span class="acard-name">{{ a.name }}</span>
   {{ dots(a) }}
 </a>
@@ -78,11 +83,11 @@
     {% for j in JUR_ORDER %}<th scope="col"><abbr title="{{ JUR[j].name }}">{{ JUR_CODE[j] }}</abbr></th>{% endfor %}</tr>
   </thead>
   <tbody>
-  {% for a, row in MATRIX.rows %}
+  {% for a, row in MATRIX.rows %}{% set ri = loop.index0 %}
     <tr><th scope="row"><abbr title="{{ JUR[a].name }}">{{ JUR_CODE[a] }}</abbr></th>
     {% for c in row %}
-      {% if c is none %}<td class="h-self" aria-label="Same place">—</td>
-      {% else %}<td class="h-{{ c.level }}">{% if link and c.n %}<a href="{{ url(c.path) }}" data-tip="{{ c.tip }}. Open the list.">{{ c.n }}</a>{% else %}<span data-tip="{{ c.tip }}">{{ c.n }}</span>{% endif %}</td>{% endif %}
+      {% if c is none %}<td class="h-self" style="--d: {{ ri * 5 + loop.index0 }}" aria-label="Same place">—</td>
+      {% else %}<td class="h-{{ c.level }}" style="--d: {{ ri * 5 + loop.index0 }}">{% if link and c.n %}<a href="{{ url(c.path) }}" data-tip="{{ c.tip }}. Open the list.">{{ c.n }}</a>{% else %}<span data-tip="{{ c.tip }}">{{ c.n }}</span>{% endif %}</td>{% endif %}
     {% endfor %}
     </tr>
   {% endfor %}

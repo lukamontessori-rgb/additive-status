@@ -12,7 +12,7 @@
   {% if tracking_since %}<p class="muted">Tracking since {{ fmt_date(tracking_since) }}. Changes before that date are not listed here; the EU history below and the official sources go further back.</p>{% endif %}
   {% if entries %}
   <div class="tbl-wrap">
-  <table class="tbl">
+  <table class="tbl log-tbl">
     <thead><tr><th scope="col">Detected</th><th scope="col">Additive</th><th scope="col">Where</th><th scope="col">Change</th></tr></thead>
     <tbody>
     {% for c in entries %}{% set a = by_id.get(c.id) %}
@@ -42,7 +42,7 @@
   </div>
   {% endif %}
   <div class="tbl-wrap">
-  <table class="tbl">
+  <table class="tbl log-tbl">
     <thead><tr><th scope="col">First shown in consolidated text</th><th scope="col">Additive</th><th scope="col">Change</th></tr></thead>
     <tbody>
     {% for e in eu_events %}{% set a = by_id.get(e.id) %}

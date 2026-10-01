@@ -76,6 +76,46 @@ GLOSSARY = [
     ("ADI (acceptable daily intake)", "adi", "An estimate of the amount of a substance, per kilogram of body weight, that can be eaten every day over a lifetime without an appreciable health risk. Set by scientific bodies; not shown on this site."),
 ]
 
+# Line icons (24x24, stroke = currentColor). Decorative: always aria-hidden.
+ICONS = {
+    "dice": '<rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="15" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="9" cy="15" r="1.2" fill="currentColor"/>',
+    "tag": '<path d="M3.5 12.2V5a1.5 1.5 0 0 1 1.5-1.5h7.2l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-7.1 7.1a1.5 1.5 0 0 1-2.1 0Z"/><circle cx="8.5" cy="8.5" r="1.6"/>',
+    "spark": '<path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><path d="M12 8.5 13.4 10.6 15.5 12 13.4 13.4 12 15.5 10.6 13.4 8.5 12 10.6 10.6Z" fill="currentColor"/>',
+    "scale": '<path d="M12 4v16M7 20h10M5 7h14"/><path d="M5 7 2.5 13a3 3 0 0 0 5 0Z"/><path d="M19 7l-2.5 6a3 3 0 0 0 5 0Z"/>',
+    "shuffle": '<path d="M3 7h3.5c4 0 6.5 10 11 10H21M3 17h3.5c1.6 0 2.9-1.5 4-3.4M14 9.4C15 7.9 16 7 17.5 7H21"/><path d="m18.5 4.5 2.5 2.5-2.5 2.5M18.5 14.5l2.5 2.5-2.5 2.5"/>',
+    "cart": '<path d="M3 4h2.2l2.2 11h10.4l2-8H6.3"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/>',
+    "factory": '<path d="M3 20V10l5 3V10l5 3V6h3l1 4h4v10Z"/><path d="M7 16h2M12 16h2M17 16h1"/>',
+    "news": '<rect x="3.5" y="5" width="14" height="14" rx="2"/><path d="M17.5 9h3v8a2 2 0 0 1-2 2M7 9h7M7 12.5h7M7 16h4"/>',
+    "cap": '<path d="m2.5 9.5 9.5-4.5 9.5 4.5-9.5 4.5Z"/><path d="M6.5 11.5v4.2c1.4 1.4 3.4 2.3 5.5 2.3s4.1-.9 5.5-2.3v-4.2M21.5 9.5v5"/>',
+    "download": '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/>',
+    "read": '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
+    "puzzle": '<path d="M8 4h3.5a1.5 1.5 0 0 1 3 0H18v3.5a1.5 1.5 0 0 1 0 3V14h-3.5a1.5 1.5 0 0 0-3 0H8v-3.5a1.5 1.5 0 0 0 0-3Z"/><path d="M8 14v6h10v-6"/>',
+    "check": '<circle cx="12" cy="12" r="8.5"/><path d="m8.3 12.3 2.5 2.5 5-5.2"/>',
+    "rocket": '<path d="M12.5 15.5 8.5 11.5c1.8-4.5 5-7.5 11-8-.5 6-3.5 9.2-8 11Z"/><path d="M8.5 11.5 5 12l-1.5 3 4-1M12.5 15.5 12 19l-3 1.5 1-4"/><circle cx="15" cy="9" r="1.4"/>',
+    "file": '<path d="M6 3.5h8l4 4V20a.5.5 0 0 1-.5.5h-11A.5.5 0 0 1 6 20Z"/><path d="M14 3.5v4h4M9 12h6M9 15.5h6"/>',
+    "braces": '<path d="M9 4c-2 0-2.5 1-2.5 3v2c0 1.5-.8 2.5-2 3 1.2.5 2 1.5 2 3v2c0 2 .5 3 2.5 3M15 4c2 0 2.5 1 2.5 3v2c0 1.5.8 2.5 2 3-1.2.5-2 1.5-2 3v2c0 2-.5 3-2.5 3"/>',
+    "lock": '<rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+    "flask": '<path d="M9.5 3.5h5M10.5 3.5v6L5 18.5a1.5 1.5 0 0 0 1.3 2.2h11.4a1.5 1.5 0 0 0 1.3-2.2L13.5 9.5v-6"/><path d="M7.5 14.5h9"/>',
+    "link": '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+    "trophy": '<path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>',
+}
+
+
+def icon(name: str, size: int = 18) -> Markup:
+    body = ICONS.get(name, "")
+    return Markup(f'<svg class="ico" aria-hidden="true" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" '
+                  f'stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{body}</svg>')
+
+
+# Functional classes shown as element-style tiles (symbol, hue) - a nod to the lab theme.
+CLASS_SYMBOL = {
+    "Colours": ("Co", 350), "Sweeteners": ("Sw", 300), "Preservatives": ("Pr", 25), "Antioxidants": ("Ao", 200),
+    "Emulsifiers, stabilisers, thickeners and gelling agents": ("Em", 250), "Acidity regulators": ("Ac", 55),
+    "Flour treatment agents": ("Fl", 35), "Sequestrants": ("Sq", 180), "Anticaking agents": ("An", 160),
+    "Carriers and solvents": ("Cs", 210), "Firming agents": ("Fi", 140), "Modified starches": ("St", 45),
+    "Glazing agents": ("Gl", 270), "Enzymes": ("En", 120),
+}
+
 
 def site_base() -> tuple[str, str]:
     """Return (origin, base_path) from SITE_URL, e.g. ('https://x.github.io', '/repo')."""
@@ -298,6 +338,7 @@ class Builder:
             url=url, abs_url=abs_url, SITE_NAME=SITE_NAME, TAGLINE=TAGLINE, PLACES=PLACES,
             PLACES_SHORT=PLACES_SHORT, JUR=JURISDICTIONS, JUR_ORDER=JUR_ORDER, JUR_CODE=JUR_CODE,
             JUR_THE=JUR_THE, STATUSES=STATUSES, TONE_ICON=TONE_ICON, CLASS_ICON=CLASS_ICON,
+            CLASS_SYMBOL=CLASS_SYMBOL, icon=icon, LEGAL_UPDATED="1 October 2026",
             fmt_date=fmt_date, REPO_URL=REPO_URL if REPO_URL and REPO_URL != "https://github.com/" else "",
             ld_json=ld_json, ld_breadcrumbs=ld_breadcrumbs, asset=lambda n: self.asset[n],
             data_version=self.data.get("data_version"),
@@ -345,6 +386,10 @@ class Builder:
                 name = f"{f.stem}.{h}{f.suffix}" if f.suffix in (".css", ".js") else f.name
                 (dst / name).write_bytes(body)
                 self.asset[f.name] = url(f"/static/{name}")
+            elif f.is_dir():   # e.g. fonts/: copied as they are (referenced from the CSS)
+                shutil.copytree(f, dst / f.name, dirs_exist_ok=True)
+                for g in f.iterdir():
+                    self.asset[f"{f.name}/{g.name}"] = url(f"/static/{f.name}/{g.name}")
 
     def allowed_counts(self) -> dict:
         counts = defaultdict(int)
@@ -523,9 +568,25 @@ class Builder:
                   description="What Additive Status is, how it collects, matches and checks official food additive "
                               "data from five jurisdictions every week, what each status means and what it does not cover.")
         self.page("/legal/", "legal.html", priority=0.3,
-                  page_title="Legal: terms of use, disclaimer, licences and privacy",
-                  description="Terms of use, disclaimer, source licences and attribution, and the privacy notice for "
-                              "Additive Status. No cookies, no tracking, no accounts.")
+                  page_title="Licences and legal notices",
+                  description="Disclaimer, source licences and attribution, font licences, independence and honest-content "
+                              "notices for Additive Status, with links to the privacy policy, terms and cookie page.")
+        self.page("/privacy/", "privacy.html", priority=0.3,
+                  page_title="Privacy policy",
+                  description="Additive Status collects no personal data: no accounts, cookies, analytics, ads, emails or "
+                              "third-party trackers. What is kept on your device, hosting, and your rights.")
+        self.page("/terms/", "terms.html", priority=0.3,
+                  page_title="Terms of use",
+                  description="Terms of use for Additive Status: a free service with no fees or refunds, not legal advice, "
+                              "acceptable use, content licences, warranty and liability.")
+        self.page("/cookies/", "cookies.html", priority=0.3,
+                  page_title="Cookies and storage",
+                  description="Additive Status sets no cookies. See the few settings that can be kept on your device with "
+                              "your permission, and delete them in one click.")
+        self.page("/accessibility/", "accessibility.html", priority=0.3,
+                  page_title="Accessibility statement",
+                  description="How Additive Status aims to meet WCAG 2.2 AA: keyboard use, contrast, reduced motion, "
+                              "screen readers, charts with tables, known limitations and how to report a problem.")
         terms = sorted(GLOSSARY, key=lambda t: t[0].lower())
         glossary_ld = [{"@type": "DefinedTerm", "name": t, "description": d, "url": abs_url("/glossary/") + "#" + k}
                        for t, k, d in terms]
@@ -666,9 +727,20 @@ class Builder:
                                             "us-brominated-vegetable-oil", "e621", "e102") if i in self.by_id]
         recent = sorted(self.changelog.get("entries", []), key=lambda e: e.get("date", ""), reverse=True)[:5]
         eu_recent = self.data.get("eu_history_events", [])[:5]
+        # Hero "chromatography" lanes: the dot height encodes the status, the colour is the
+        # additive's own dye colour where it has one (decorative; the same data is in the cards).
+        dyes = {"e171": "#eef1ff", "e129": "#ff3d5e", "e127": "#ff5fa2", "e102": "#ffd23f", "e951": "#7fe3ff",
+                "e621": "#c9d4ff", "us-potassium-bromate": "#b39dff", "us-brominated-vegetable-oil": "#ffb347"}
+        height = {"ok": 0.14, "warn": 0.36, "unknown": 0.6, "no": 0.86}
+        lab = []
+        for a in examples:
+            sts = [status_of(a, j) for j in JUR_ORDER]
+            lab.append({"i": a["id"], "e": a.get("e") or "", "n": a["name"], "s": sts,
+                        "y": [height[tone(x)] for x in sts], "dye": dyes.get(a["id"], "#8fa8ff"),
+                        "l": [STATUSES[x][1] for x in sts], "t": [tone(x) for x in sts]})
         self.page("/", "home.html", priority=1.0,
                   page_title=f"{SITE_NAME}: is this food additive allowed in the EU, UK, US, Canada or Australia?",
-                  home=True, compare=compare, classes=classes, counts=counts, chart=chart, breakdown=breakdown,
+                  home=True, compare=compare, classes=classes, counts=counts, chart=chart, breakdown=breakdown, lab=lab,
                   diff_count=diff_count, everywhere=everywhere, facts=self.facts(counts, compare),
                   examples=examples, recent=recent, eu_recent=eu_recent, by_id=self.by_id,
                   description="Search any E-number or additive name and see its official status in the EU, UK (GB), "

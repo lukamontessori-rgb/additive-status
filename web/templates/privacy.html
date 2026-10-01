@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs %}
+{% block main %}
+{{ breadcrumbs([("Legal", "/legal/"), ("Privacy policy", None)]) }}
+<article class="prose">
+<h1>Privacy policy</h1>
+<p class="lede">The short version: we do not collect personal data. There are no accounts, no cookies, no analytics, no ads, no emails and no third-party trackers.</p>
+<p class="muted small">Last updated {{ LEGAL_UPDATED }}. Earlier versions are kept in the public history of the site's code.</p>
+
+<nav class="toc" aria-label="On this page">
+  <a href="#collect">What we collect</a><a href="#device">On your device</a><a href="#host">Hosting</a><a href="#search">Search and tools</a><a href="#reports">Reporting a mistake</a><a href="#children">Children</a><a href="#rights">Your rights</a><a href="#changes">Changes</a>
+</nav>
+
+<h2 id="collect">What we collect</h2>
+<p>Nothing that identifies you. {{ SITE_NAME }} is a set of static pages. It has:</p>
+<ul class="check-list">
+  <li><strong>No accounts</strong> and no sign-up of any kind.</li>
+  <li><strong>No forms that send data.</strong> The search box and the label checker work in your browser.</li>
+  <li><strong>No cookies</strong>, no analytics, no advertising, no fingerprinting and no session recording.</li>
+  <li><strong>No third-party requests.</strong> Every script, style, font and icon is served from this site. There are no embeds, pixels, social buttons or software development kits (SDKs) from other companies.</li>
+  <li><strong>No emails.</strong> We never send email, run a newsletter or keep a mailing list, so there is nothing to unsubscribe from.</li>
+  <li><strong>No selling or sharing of data</strong>, because there is no data to sell or share.</li>
+</ul>
+
+<h2 id="device">Settings kept on your device, with your permission</h2>
+<p>If you choose <em>Remember my settings</em>, your browser keeps up to three small settings in its local storage: your light or dark theme, your best quiz score and the country you picked in the label checker. They stay on your device and are never sent to us or anyone else. If you choose <em>Don't remember</em>, only that choice is kept; a theme you switch to then lasts only until you close the tab (session storage). The <a href="{{ url('/cookies/') }}">cookies and storage page</a> lists every item and lets you delete them in one click.</p>
+
+<h2 id="host">Hosting</h2>
+<p>The site is hosted on GitHub Pages, a service of GitHub, Inc. Like any web host, GitHub processes technical data such as IP addresses to deliver pages and keep the service secure. GitHub handles this data under its own <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">General Privacy Statement</a>. The site operator does not receive these logs or any visitor statistics.</p>
+
+<h2 id="search">Search and tools</h2>
+<ul>
+  <li><strong>Search.</strong> Suggestions are worked out in your browser from a file on this site. If you press Enter, your search words become part of the page address (for example <code>/additives/?q=e171</code>), and the host may record that address like any other page request.</li>
+  <li><strong>Label checker.</strong> The ingredients you paste are checked in your browser and never leave your device.</li>
+  <li><strong>Quiz.</strong> Your answers stay in your browser. Your best score is kept only if you allowed it.</li>
+</ul>
+
+<h2 id="reports">Reporting a mistake</h2>
+<p>Corrections are reported through GitHub issues, which are public and covered by GitHub's terms and privacy statement. Please do not include personal information in a report. You can edit or delete what you posted through your GitHub account.</p>
+
+<h2 id="children">Children</h2>
+<p>The site is suitable for all ages. Because it collects no personal data from anyone, it collects none from children, and no age check or parental consent is needed to use it.</p>
+
+<h2 id="rights">Your rights</h2>
+<p>Under data protection laws such as the GDPR you can ask to access, correct or delete personal data held about you. We hold none, so there is nothing for us to return, correct or delete. Settings on your own device can be deleted on the <a href="{{ url('/cookies/') }}">cookies and storage page</a> or in your browser's settings. For data processed by the host, see GitHub's privacy statement, which explains how to make a request to GitHub. You can also complain to your national data protection authority.</p>
+
+<h2 id="changes">Changes to this policy</h2>
+<p>If anything here changes, the new version is published on this page with a new date. Because the site's code is public, every earlier version can be seen{% if REPO_URL %} in the <a href="{{ REPO_URL }}/commits/main/web/templates/privacy.html">history of this page</a>{% endif %}.</p>
+<p>Questions: {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a>{% else %}open an issue on the project's GitHub page{% endif %}.</p>
+</article>
+{% endblock %}
