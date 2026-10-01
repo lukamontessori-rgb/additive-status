@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-01T06:48:39+00:00",
+ "generated_at": "2026-10-01T06:54:47+00:00",
  "data_version": "2026-10-01",
- "method_version": "2026-10-01.3",
+ "method_version": "2026-10-01.4",
  "eu_history": {
   "versions": 57,
   "first": "20130601",
@@ -156,7 +156,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-01T06:47:15+00:00",
+   "retrieved_at": "2026-10-01T06:53:03+00:00",
    "content_changed_at": "2026-09-30T21:07:33+00:00",
    "version": "02008R1333-20260818",
    "state": "ok"
@@ -168,8 +168,8 @@
    "licence": "Open Government Licence v3.0",
    "licence_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
    "attribution": "Contains public sector information licensed under the Open Government Licence v3.0 (Food Standards Agency).",
-   "retrieved_at": "2026-10-01T06:47:16+00:00",
-   "content_changed_at": "2026-10-01T06:13:35+00:00",
+   "retrieved_at": "2026-10-01T06:53:07+00:00",
+   "content_changed_at": "2026-10-01T06:53:07+00:00",
    "version": null,
    "state": "ok"
   },
@@ -180,7 +180,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.fda.gov/about-fda/about-website/website-policies",
    "attribution": "Source: U.S. Food and Drug Administration.",
-   "retrieved_at": "2026-10-01T06:47:20+00:00",
+   "retrieved_at": "2026-10-01T06:53:11+00:00",
    "content_changed_at": "2026-10-01T05:43:55+00:00",
    "version": null,
    "state": "ok"
@@ -192,7 +192,7 @@
    "licence": "Open Government Licence – Canada",
    "licence_url": "https://open.canada.ca/en/open-government-licence-canada",
    "attribution": "Contains information licensed under the Open Government Licence – Canada (Health Canada).",
-   "retrieved_at": "2026-10-01T06:47:52+00:00",
+   "retrieved_at": "2026-10-01T06:53:41+00:00",
    "content_changed_at": "2026-09-30T21:08:09+00:00",
    "version": null,
    "state": "ok"
@@ -204,7 +204,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-01T06:48:00+00:00",
+   "retrieved_at": "2026-10-01T06:54:06+00:00",
    "content_changed_at": "2026-09-30T21:08:14+00:00",
    "version": "02012R0231-20260818",
    "state": "ok"
@@ -216,7 +216,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.federalregister.gov/reader-aids/policy/legal-status",
    "attribution": "Source: Federal Register (federalregister.gov).",
-   "retrieved_at": "2026-10-01T06:48:01+00:00",
+   "retrieved_at": "2026-10-01T06:54:07+00:00",
    "content_changed_at": "2026-09-30T20:36:24+00:00",
    "version": null,
    "state": "ok"
@@ -228,7 +228,7 @@
    "licence": "Creative Commons Attribution 4.0 (CC BY 4.0)",
    "licence_url": "https://www.foodstandards.gov.au/copyright",
    "attribution": "Food Standards Australia New Zealand",
-   "retrieved_at": "2026-10-01T06:48:02+00:00",
+   "retrieved_at": "2026-10-01T06:54:10+00:00",
    "content_changed_at": "2026-09-30T21:08:16+00:00",
    "version": null,
    "state": "ok"
@@ -244,7 +244,7 @@
  },
  "quality": [
   "Health Canada lists: 288 of 454 listed substances linked to an additive on this site; the rest are mostly enzymes, solvents and substances with no counterpart here.",
-  "FDA inventory: 306 additives on this site are linked to at least one FDA inventory entry.",
+  "FDA inventory: 308 additives on this site are linked to at least one FDA inventory entry.",
   "340 additives with an E-number (all entries on the EU and GB lists) and 65 US substances without an E-number."
  ],
  "additives": [
@@ -25190,7 +25190,7 @@
       ],
       [
        "Group",
-       "Group I; Group II: Food colours authorised at quantum satis"
+       "Group II: Food colours authorised at quantum satis; Group I"
       ],
       [
        "Register entry updated",
@@ -28718,7 +28718,7 @@
       ],
       [
        "Group",
-       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202: Sorbic acid – potassium sorbate (SA)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202: Sorbic acid – potassium sorbate (SA); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
       ],
       [
        "Register entry updated",
@@ -30067,7 +30067,7 @@
       ],
       [
        "Group",
-       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200 – 202: Sorbic acid – potassium sorbate (SA)"
       ],
       [
        "Register entry updated",
@@ -31396,7 +31396,7 @@
       ],
       [
        "Group",
-       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA)"
+       "E 210–213: Benzoic acid — benzoates (BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -33256,7 +33256,7 @@
       ],
       [
        "Group",
-       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 210–213: Benzoic acid — benzoates (BA)"
       ],
       [
        "Register entry updated",
@@ -34177,7 +34177,7 @@
       ],
       [
        "Group",
-       "E 210–213: Benzoic acid — benzoates (BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -35011,7 +35011,7 @@
       ],
       [
        "Group",
-       "E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
       ],
       [
        "Register entry updated",
@@ -35601,7 +35601,7 @@
       ],
       [
        "Group",
-       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
       ],
       [
        "Register entry updated",
@@ -129870,9 +129870,7 @@
    "cas": [
     "9004-57-3"
    ],
-   "classes": [
-    "Emulsifiers, stabilisers, thickeners and gelling agents"
-   ],
+   "classes": [],
    "jur": {
     "eu": {
      "status": "authorised",
@@ -172403,7 +172401,7 @@
       ],
       [
        "Group",
-       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
+       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
       ],
       [
        "Register entry updated",
@@ -173530,7 +173528,7 @@
       ],
       [
        "Group",
-       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
+       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
       ],
       [
        "Register entry updated",
@@ -174008,9 +174006,7 @@
    "cas": [
     "14807-96-6"
    ],
-   "classes": [
-    "Sweeteners"
-   ],
+   "classes": [],
    "jur": {
     "eu": {
      "status": "authorised",
@@ -174933,8 +174929,8 @@
      "match_detail": "Matched to the FDA inventory by name."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Food Colours",
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -174943,7 +174939,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Food colours must be on List 3 to be used in Canada. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "authorised",
@@ -175012,7 +175008,7 @@
     "The EU specification describes it as: “Light grey to white crystalline platelets or powder.”",
     "In the US it is listed as Mica: colour additive for food, exempt from certification (21 CFR 73.350)."
    ],
-   "updated": "2026-09-30"
+   "updated": "2026-10-01"
   },
   {
    "id": "e556",
@@ -175224,7 +175220,6 @@
     "1302-78-9"
    ],
    "classes": [
-    "Emulsifiers, stabilisers, thickeners and gelling agents",
     "Flour treatment agents"
    ],
    "jur": {
@@ -181579,8 +181574,8 @@
      "match_detail": "Matched to the FDA inventory by name."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Food Colours",
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -181589,7 +181584,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Food colours must be on List 3 to be used in Canada. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "not_authorised",
@@ -181671,7 +181666,7 @@
     "In the EU it may be used in 2 food categories, in these food groups: fruit and vegetables.",
     "In the US it is listed as Ferrous Lactate: colour additive for food, exempt from certification (21 CFR 73.165)."
    ],
-   "updated": "2026-09-30"
+   "updated": "2026-10-01"
   },
   {
    "id": "e586",
@@ -182056,7 +182051,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -182806,9 +182801,7 @@
    "cas": [
     "142-47-2"
    ],
-   "classes": [
-    "Emulsifiers, stabilisers, thickeners and gelling agents"
-   ],
+   "classes": [],
    "jur": {
     "eu": {
      "status": "authorised",
@@ -182947,7 +182940,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -184724,7 +184717,7 @@
       ],
       [
        "Group",
-       "Group I; E 620–625: Glutamic acid — glutamates"
+       "E 620–625: Glutamic acid — glutamates; Group I"
       ],
       [
        "Register entry updated",
@@ -185593,7 +185586,7 @@
       ],
       [
        "Group",
-       "Group I; E 620–625: Glutamic acid — glutamates"
+       "E 620–625: Glutamic acid — glutamates; Group I"
       ],
       [
        "Register entry updated",
@@ -186474,7 +186467,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -189910,7 +189903,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -190751,7 +190744,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -191600,7 +191593,7 @@
       ],
       [
        "Group",
-       "E 626–635: Ribonucleotides; Group I"
+       "Group I; E 626–635: Ribonucleotides"
       ],
       [
        "Register entry updated",
@@ -192487,7 +192480,7 @@
       ],
       [
        "Group",
-       "E 626–635: Ribonucleotides; Group I"
+       "Group I; E 626–635: Ribonucleotides"
       ],
       [
        "Register entry updated",
@@ -193332,7 +193325,7 @@
       ],
       [
        "Group",
-       "E 626–635: Ribonucleotides; Group I"
+       "Group I; E 626–635: Ribonucleotides"
       ],
       [
        "Register entry updated",
@@ -194171,7 +194164,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -224795,9 +224788,7 @@
    "cas": [
     "68424-04-4"
    ],
-   "classes": [
-    "Emulsifiers, stabilisers, thickeners and gelling agents"
-   ],
+   "classes": [],
    "jur": {
     "eu": {
      "status": "authorised",
@@ -225722,9 +225713,7 @@
    "cas": [
     "9003-39-8"
    ],
-   "classes": [
-    "Emulsifiers, stabilisers, thickeners and gelling agents"
-   ],
+   "classes": [],
    "jur": {
     "eu": {
      "status": "authorised",
@@ -241410,9 +241399,7 @@
    "cas": [
     "54724-00-4"
    ],
-   "classes": [
-    "Emulsifiers, stabilisers, thickeners and gelling agents"
-   ],
+   "classes": [],
    "jur": {
     "eu": {
      "status": "not_authorised",
@@ -242082,8 +242069,9 @@
      "match_detail": "Matched to the FDA inventory by FDA inventory entry."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Sweeteners",
+     "notes": [],
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -242092,7 +242080,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Sweeteners may be used as food additives in Canada only if they are on List 9. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "not_authorised",
@@ -243380,8 +243368,9 @@
      "match_detail": "Matched to the FDA inventory by FDA inventory entry."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Sweeteners",
+     "notes": [],
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -243390,7 +243379,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Sweeteners may be used as food additives in Canada only if they are on List 9. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "not_authorised",
@@ -243787,8 +243776,8 @@
      "match_detail": "Matched to the FDA inventory by FDA inventory entry."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Food Colours",
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -243797,7 +243786,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Food colours must be on List 3 to be used in Canada. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "not_authorised",
@@ -243921,8 +243910,9 @@
      "match_detail": "Matched to the FDA inventory by FDA inventory entry."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Sweeteners",
+     "notes": [],
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -243931,7 +243921,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Sweeteners may be used as food additives in Canada only if they are on List 9. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "not_authorised",
@@ -244051,8 +244041,9 @@
      "match_detail": "Matched to the FDA inventory by FDA inventory entry."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Bleaching, Maturing and Dough Conditioning Agents",
+     "notes": [],
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -244061,7 +244052,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Flour treatment agents may be used as food additives in Canada only if they are on List 2. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "not_authorised",
@@ -244115,7 +244106,7 @@
     "Potassium Bromate is a food additive. FDA's inventory lists this technical effect: flour treatment agent.",
     "In the US it is listed as Potassium Bromate: approved food additive (21 CFR 172)."
    ],
-   "updated": "2026-09-30"
+   "updated": "2026-10-01"
   },
   {
    "id": "us-potassium-cyclamate",
@@ -244201,8 +244192,9 @@
      "match_detail": "Matched to the FDA inventory by FDA inventory entry."
     },
     "ca": {
-     "status": "not_listed",
-     "headline": "Not found on Health Canada's Lists of Permitted Food Additives",
+     "status": "not_authorised",
+     "headline": "Not on Health Canada's List of Permitted Sweeteners",
+     "notes": [],
      "refs": [
       {
        "label": "Lists of Permitted Food Additives",
@@ -244211,7 +244203,7 @@
      ],
      "source": "ca_lists",
      "match": null,
-     "match_detail": "Searched the 15 lists by name and known synonyms. Some substances (for example monosodium glutamate or modified starches) are treated as food ingredients in Canada and are not on these lists, so this does not show that the substance is banned."
+     "match_detail": "Sweeteners may be used as food additives in Canada only if they are on List 9. The list was searched by name and known synonyms."
     },
     "anz": {
      "status": "not_authorised",
@@ -244604,9 +244596,7 @@
    "cas": [
     "4418-26-2"
    ],
-   "classes": [
-    "Colours"
-   ],
+   "classes": [],
    "jur": {
     "eu": {
      "status": "not_authorised",
@@ -246171,17 +246161,21 @@
      "match_detail": "No E-number and no match in the Food Standards Agency register."
     },
     "us": {
-     "status": "not_listed",
-     "headline": "Not found in FDA's Substances Added to Food inventory",
+     "status": "not_authorised",
+     "headline": "Not listed as a colour additive for food in the US",
      "refs": [
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
+      },
+      {
+       "label": "21 CFR Part 73 and Part 74 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A"
       }
      ],
      "source": "us_fda_substances",
      "match": null,
-     "match_detail": "Searched by Colour Index number, CAS number and known names. The inventory is not a complete list of substances that may be used."
+     "match_detail": "Colour additives may only be used in US food if FDA lists them in 21 CFR 73 or 74. No food listing was found by Colour Index number, CAS number or name."
     },
     "ca": {
      "status": "authorised",
@@ -246289,6 +246283,7 @@
    "functions_source": "lists",
    "overview": [
     "Carbon Black is a food additive. The official lists name this function: colour.",
+    "In the US: not listed as a colour additive for food in the US.",
     "Canada permits it (on the List of Permitted Food Colours)."
    ],
    "updated": "2026-10-01"
@@ -246709,17 +246704,21 @@
      "match_detail": "No E-number and no match in the Food Standards Agency register."
     },
     "us": {
-     "status": "not_listed",
-     "headline": "Not found in FDA's Substances Added to Food inventory",
+     "status": "not_authorised",
+     "headline": "Not listed as a colour additive for food in the US",
      "refs": [
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
+      },
+      {
+       "label": "21 CFR Part 73 and Part 74 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A"
       }
      ],
      "source": "us_fda_substances",
      "match": null,
-     "match_detail": "Searched by Colour Index number, CAS number and known names. The inventory is not a complete list of substances that may be used."
+     "match_detail": "Colour additives may only be used in US food if FDA lists them in 21 CFR 73 or 74. No food listing was found by Colour Index number, CAS number or name."
     },
     "ca": {
      "status": "authorised",
@@ -246833,9 +246832,10 @@
    "functions_source": "lists",
    "overview": [
     "Ethyl β-Apo-8'-Carotenoate is a food additive. The official lists name this function: colour.",
+    "In the US: not listed as a colour additive for food in the US.",
     "Canada permits it (on the List of Permitted Food Colours)."
    ],
-   "updated": "2026-09-30"
+   "updated": "2026-10-01"
   },
   {
    "id": "ca-glycerol-ester-gum-rosin",
