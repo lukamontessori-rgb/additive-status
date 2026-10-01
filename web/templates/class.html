@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% from "_macros.html" import breadcrumbs, additive_table %}
 {% block main %}
-{{ breadcrumbs([("All additives", "/additives/"), (c.name, None)]) }}
-<h1>{{ c.name }}</h1>
-<p class="lede">{{ c['items']|length }} additives in this group, with their status in the EU, UK (GB), US and Canada. The group is based on the function listed in the official sources; one additive can have several functions.</p>
+{{ breadcrumbs([("Additives", "/additives/"), (c.name, None)]) }}
+<div class="page-head">
+  <h1><span aria-hidden="true">{{ c.icon }}</span> {{ c.name }}</h1>
+  <p class="lede">{{ c.count }} additives in this group. {{ c.differ }} of them are allowed in some of the five places but not in others. The group comes from the functions listed in the official sources; one additive can belong to several groups.</p>
+</div>
+<ul class="count-strip" aria-label="Allowed in each place">
+  {% for j in JUR_ORDER %}<li><span class="jbadge">{{ JUR_CODE[j] }}</span> <strong>{{ c.counts[j] }}</strong> <span class="muted">of {{ c.count }} allowed</span></li>{% endfor %}
+</ul>
 {{ additive_table(c['items']) }}
+<p class="muted small"><a href="{{ url('/additives/') }}?type={{ c.name|urlencode }}">Filter this group in the full table</a> · Data checked {{ fmt_date(generated_at) }}.</p>
 {% endblock %}

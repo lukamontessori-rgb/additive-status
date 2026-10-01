@@ -1,5 +1,5 @@
-<!doctype html>
-<html lang="en">
+{% from "_macros.html" import search_box %}<!doctype html>
+<html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,8 @@
 <meta name="description" content="{{ description|default(TAGLINE) }}">
 {% if noindex %}<meta name="robots" content="noindex">{% else %}<link rel="canonical" href="{{ abs_url(path) }}">{% endif %}
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#0f5e57">
+<meta name="theme-color" content="#f6f5f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111214" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ SITE_NAME }}">
 <meta property="og:title" content="{{ page_title }}">
@@ -16,32 +17,36 @@
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="stylesheet" href="{{ asset('style.css') }}">
-<script>window.SITE={base:{{ url('/')|tojson }},index:{{ SEARCH_INDEX_URL|tojson }}};</script>
+<script>(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson }};</script>
 <script src="{{ asset('app.js') }}" defer></script>
 {% block head %}{% endblock %}
 </head>
-<body{% if home %} class="home"{% endif %}>
+<body class="{{ body_class|default('') }}{% if home %} home{% endif %}">
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <div class="wrap top-inner">
     <a class="brand" href="{{ url('/') }}" aria-label="{{ SITE_NAME }} home">
-      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 32 32"><rect x="2" y="2" width="12" height="12" rx="3" class="b1"/><rect x="18" y="2" width="12" height="12" rx="3" class="b2"/><rect x="2" y="18" width="12" height="12" rx="3" class="b3"/><rect x="18" y="18" width="12" height="12" rx="3" class="b4"/></svg>
-      <span>{{ SITE_NAME }}</span>
+      <span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="brand-name">{{ SITE_NAME }}</span>
     </a>
-    {% if not home %}
-    <form class="search mini" role="search" action="{{ url('/additives/') }}" data-search>
-      <label class="sr" for="q-top">Search additives</label>
-      <input id="q-top" name="q" type="search" autocomplete="off" spellcheck="false"
-             placeholder="E-number or name, e.g. E171, Red 40" aria-controls="q-top-results" aria-expanded="false" aria-autocomplete="list">
-      <ul id="q-top-results" class="results" role="listbox" hidden></ul>
-    </form>
-    {% endif %}
-    <nav class="nav" aria-label="Main">
-      <a href="{{ url('/additives/') }}">All additives</a>
-      <a href="{{ url('/compare/') }}">Differences</a>
-      <a href="{{ url('/changes/') }}">Changes</a>
-      <a href="{{ url('/about/') }}">About</a>
+    {% if not home %}<div class="top-search">{{ search_box('q-top') }}</div>{% endif %}
+    <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="main-nav" data-menu>
+      <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="sr">Menu</span>
+    </button>
+    <nav class="nav" id="main-nav" aria-label="Main">
+      <a href="{{ url('/additives/') }}"{% if path == '/additives/' %} aria-current="page"{% endif %}>Additives</a>
+      <a href="{{ url('/compare/') }}"{% if path.startswith('/compare/') %} aria-current="page"{% endif %}>Compare</a>
+      <a href="{{ url('/scan/') }}"{% if path == '/scan/' %} aria-current="page"{% endif %}>Label check</a>
+      <a href="{{ url('/quiz/') }}"{% if path == '/quiz/' %} aria-current="page"{% endif %}>Quiz</a>
+      <a href="{{ url('/changes/') }}"{% if path == '/changes/' %} aria-current="page"{% endif %}>Changes</a>
+      <a href="{{ url('/about/') }}"{% if path == '/about/' %} aria-current="page"{% endif %}>About</a>
     </nav>
+    <button class="icon-btn theme-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+      <svg class="i-moon" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="currentColor"/></svg>
+      <svg class="i-sun" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
   </div>
 </header>
 <main id="main" class="wrap">
@@ -49,11 +54,38 @@
 </main>
 <footer class="foot">
   <div class="wrap">
-    <p><strong>Not legal advice.</strong> This site summarises official lists and links to them. Always check the official source before making decisions.</p>
-    <p>Data from the European Union (EUR-Lex), the UK Food Standards Agency, the U.S. Food and Drug Administration, the Federal Register and Health Canada.
-       Data checked: {{ fmt_date(generated_at) }}. <a href="{{ url('/about/') }}#sources">Sources and licences</a> · <a href="{{ url('/data/') }}">Download the data</a>{% if REPO_URL and REPO_URL != 'https://github.com/' %} · <a href="{{ REPO_URL }}">Source code</a>{% endif %}</p>
-    <p class="muted">Free, no ads, no tracking cookies, no accounts. Independent project — not affiliated with any government agency.</p>
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="brand" href="{{ url('/') }}"><span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="brand-name">{{ SITE_NAME }}</span></a>
+        <p>Official food additive rules in {{ PLACES }}, side by side. Free, no ads, no accounts, no tracking.</p>
+        <p class="small muted">Data checked {{ fmt_date(generated_at) }}. Rechecked every week.</p>
+      </div>
+      <nav aria-label="Explore">
+        <h2>Explore</h2>
+        <a href="{{ url('/additives/') }}">All additives</a>
+        <a href="{{ url('/compare/') }}">Compare two places</a>
+        <a href="{{ url('/changes/') }}">Changes</a>
+        <a href="{{ url('/additives/') }}" data-random>Random additive</a>
+      </nav>
+      <nav aria-label="Tools">
+        <h2>Tools</h2>
+        <a href="{{ url('/scan/') }}">Label checker</a>
+        <a href="{{ url('/quiz/') }}">Quiz</a>
+        <a href="{{ url('/data/') }}">Download the data</a>
+        <a href="{{ url('/glossary/') }}">Glossary</a>
+      </nav>
+      <nav aria-label="About">
+        <h2>About</h2>
+        <a href="{{ url('/about/') }}">About and methods</a>
+        <a href="{{ url('/about/') }}#sources">Sources</a>
+        <a href="{{ url('/legal/') }}">Legal and privacy</a>
+        {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">Report a mistake</a>{% endif %}
+      </nav>
+    </div>
+    <p class="foot-legal"><strong>Not legal advice.</strong> A summary of official lists with links to them — check the official source before you rely on it. Not affiliated with the EU, the UK Food Standards Agency, the US FDA, Health Canada or Food Standards Australia New Zealand. Sources: European Union, UK Food Standards Agency (Open Government Licence), US FDA and Federal Register, Health Canada (Open Government Licence – Canada), Food Standards Australia New Zealand (CC BY 4.0). <a href="{{ url('/legal/') }}#licences">Licences and attribution</a>.</p>
   </div>
 </footer>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+{% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,13 +1,21 @@
 {% extends "base.html" %}
 {% from "_macros.html" import breadcrumbs, additive_table %}
 {% block main %}
-{{ breadcrumbs([("Where the rules differ", "/compare/"), (s.short, None)]) }}
-<h1>{{ s.title }}</h1>
-<p class="lede">{{ s['items']|length }} additive{{ '' if s['items']|length == 1 else 's' }} {{ 'is' if s['items']|length == 1 else 'are' }} allowed (authorised or still in a phase-out period) in {{ JUR[s.a].name_in }} but not allowed in {{ JUR[s.b].name_in }} (not authorised, prohibited or revoked).</p>
+{{ breadcrumbs([("Compare", "/compare/"), (s.short, None)]) }}
+<div class="page-head">
+  <h1>{{ s.title }}</h1>
+  {% set n = s['items']|length %}
+  <p class="lede">{{ n }} additive{{ '' if n == 1 else 's' }} {{ 'is' if n == 1 else 'are' }} allowed (authorised or still in a phase-out period) in {{ JUR[s.a].name_in }} but not allowed in {{ JUR[s.b].name_in }} (not authorised, prohibited or revoked).</p>
+  <p><a class="btn btn-ghost btn-sm" href="{{ url('/compare/allowed-in-' ~ s.b ~ '-not-' ~ s.a ~ '/') }}">⇄ The other way round</a> <a class="btn btn-ghost btn-sm" href="{{ url('/compare/') }}">Compare other places</a></p>
+</div>
 <div class="note">
   <p><strong>{{ JUR[s.a].short }}:</strong> {{ JUR[s.a].system_note }}</p>
   <p><strong>{{ JUR[s.b].short }}:</strong> {{ JUR[s.b].system_note }}</p>
 </div>
+{% if s['items'] %}
 {{ additive_table(s['items'], show_class=True) }}
-<p class="muted small">Different status is a legal fact, not a safety verdict. Open an additive for its conditions of use and the official source. Data checked {{ fmt_date(generated_at) }}.</p>
+{% else %}
+<p class="empty">No additive is allowed in {{ JUR[s.a].name_in }} and not allowed in {{ JUR[s.b].name_in }} in the current data.</p>
+{% endif %}
+<p class="muted small">A different status is a legal fact, not a safety verdict. Open an additive for its conditions of use and the official source. Data checked {{ fmt_date(generated_at) }}.</p>
 {% endblock %}

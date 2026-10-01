@@ -1,29 +1,44 @@
+{# Status chip: icon + label, never colour alone. #}
 {% macro chip(status, short=False) -%}
 {% set s = STATUSES.get(status, STATUSES['unknown']) %}
-{% if short %}<span class="chip t-{{ s[2] }}" title="{{ s[0] }}: {{ s[3] }}"><span class="dot" aria-hidden="true"></span><span class="lbl-l">{{ s[1] }}</span><span class="lbl-s" aria-hidden="true">{{ TINY.get(status, '–') }}</span></span>{% else %}<span class="chip t-{{ s[2] }}" title="{{ s[3] }}"><span class="dot" aria-hidden="true"></span>{{ s[0] }}</span>{% endif %}
+<span class="st st-{{ s[2] }}" title="{{ s[0] }}: {{ s[3] }}"><i aria-hidden="true">{{ TONE_ICON[s[2]] }}</i>{{ s[1] if short else s[0] }}</span>
 {%- endmacro %}
 
-{% macro status_cells(a) -%}
-{% for j in JUR_ORDER %}{% set st = a.jur.get(j, {}).get('status', 'unknown') %}
-<td data-j="{{ j }}" data-s="{{ st }}">{{ chip(st, True) }}</td>
-{% endfor %}
+{# Five compact status pills with jurisdiction codes, e.g. for cards and results. #}
+{% macro dots(a) -%}
+<span class="dots" role="img" aria-label="{% for j in JUR_ORDER %}{% set st = status_of(a, j) %}{{ JUR_CODE[j] }}: {{ STATUSES.get(st, STATUSES['unknown'])[1] }}{% if not loop.last %}; {% endif %}{% endfor %}">
+{% for j in JUR_ORDER %}{% set st = status_of(a, j) %}{% set t = tone(st) %}<span class="d d-{{ t }}" aria-hidden="true"><b>{{ JUR_CODE[j] }}</b>{{ TONE_ICON[t] }}</span>{% endfor %}
+</span>
 {%- endmacro %}
 
-{% macro additive_table(items, caption=None, show_class=False) -%}
-<div class="table-wrap">
-<table class="grid">
+{% macro enum(a, cls='') -%}
+{% if a.e %}<span class="enum {{ cls }}">{{ a.e }}</span>{% endif %}
+{%- endmacro %}
+
+{% macro additive_card(a) -%}
+<a class="acard" href="{{ url('/additive/' ~ a.id ~ '/') }}">
+  <span class="acard-top">{{ enum(a) }}{% if a.classes %}<span class="acard-class"><span aria-hidden="true">{{ CLASS_ICON.get(a.classes[0], '🧪') }}</span> {{ a.classes[0] }}</span>{% endif %}</span>
+  <span class="acard-name">{{ a.name }}</span>
+  {{ dots(a) }}
+</a>
+{%- endmacro %}
+
+{# Sortable, filterable status table. #}
+{% macro additive_table(items, caption=None, show_class=False, id=None) -%}
+<div class="tbl-wrap">
+<table class="tbl stat-tbl"{% if id %} id="{{ id }}"{% endif %}>
   {% if caption %}<caption>{{ caption }}</caption>{% endif %}
   <thead><tr>
     <th scope="col">Additive</th>
-    {% if show_class %}<th scope="col">Type</th>{% endif %}
-    {% for j in JUR_ORDER %}<th scope="col" class="jcol"><abbr title="{{ JUR[j].name }}">{{ JUR[j].short }}</abbr></th>{% endfor %}
+    {% if show_class %}<th scope="col" class="c-type">Type</th>{% endif %}
+    {% for j in JUR_ORDER %}<th scope="col" class="jcol"><abbr title="{{ JUR[j].name }}">{{ JUR_CODE[j] }}</abbr></th>{% endfor %}
   </tr></thead>
   <tbody>
   {% for a in items %}
   <tr>
-    <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{% if a.e %}<span class="enum">{{ a.e }}</span> {% endif %}{{ a.name }}</a></th>
-    {% if show_class %}<td class="muted small">{{ a.classes|join(', ') }}</td>{% endif %}
-    {{ status_cells(a) }}
+    <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ enum(a) }} <span class="nm">{{ a.name }}</span></a></th>
+    {% if show_class %}<td class="c-type">{{ a.classes|join(', ') }}</td>{% endif %}
+    {% for j in JUR_ORDER %}{% set st = status_of(a, j) %}<td data-label="{{ JUR_CODE[j] }}" data-s="{{ st }}">{{ chip(st, True) }}</td>{% endfor %}
   </tr>
   {% endfor %}
   </tbody>
@@ -31,17 +46,47 @@
 </div>
 {%- endmacro %}
 
-{% macro source_link(sid) -%}
-{% set s = sources.get(sid) %}
-{% if s %}<a href="{{ s.url }}" rel="noopener">{{ s.title }}</a>{% else %}{{ sid }}{% endif %}
-{%- endmacro %}
-
 {% macro breadcrumbs(items) -%}
 <nav class="crumbs" aria-label="Breadcrumb"><ol>
   <li><a href="{{ url('/') }}">Home</a></li>
-  {% for label, href in items %}
-  <li>{% if href %}<a href="{{ url(href) }}">{{ label }}</a>{% else %}<span aria-current="page">{{ label }}</span>{% endif %}</li>
+  {% for lbl, href in items %}
+  <li>{% if href %}<a href="{{ url(href) }}">{{ lbl }}</a>{% else %}<span aria-current="page">{{ lbl }}</span>{% endif %}</li>
   {% endfor %}
 </ol></nav>
 <script type="application/ld+json">{{ ld_breadcrumbs(items)|safe }}</script>
+{%- endmacro %}
+
+{% macro search_box(id, big=False, autofocus=False, placeholder='E-number or name, e.g. E171, Red 40') -%}
+<form class="search{{ ' big' if big }}" role="search" action="{{ url('/additives/') }}" data-search>
+  <label class="sr" for="{{ id }}">Search additives</label>
+  <svg class="search-ico" aria-hidden="true" viewBox="0 0 24 24" width="20" height="20"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="m20 20-4.2-4.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  <input id="{{ id }}" name="q" type="search" autocomplete="off" spellcheck="false"{% if autofocus %} autofocus{% endif %}
+         placeholder="{{ placeholder }}" role="combobox" aria-controls="{{ id }}-results" aria-expanded="false" aria-autocomplete="list">
+  {% if big %}<button class="btn btn-primary" type="submit">Search</button>{% else %}<kbd class="kbd-hint" aria-hidden="true">/</kbd>{% endif %}
+  <ul id="{{ id }}-results" class="results" role="listbox" aria-label="Matching additives" hidden></ul>
+</form>
+{%- endmacro %}
+
+{% macro heatmap(link=True) -%}
+<p class="heat-key"><span><b>Rows ↓</b> allowed in</span><span><b>Columns →</b> not allowed in</span></p>
+<div class="tbl-wrap heat-wrap">
+<table class="heat">
+  <colgroup><col class="hc-head">{% for j in JUR_ORDER %}<col>{% endfor %}</colgroup>
+  <caption class="sr">Number of additives allowed in the row's place but not allowed in the column's place</caption>
+  <thead>
+    <tr><td class="corner"></td>
+    {% for j in JUR_ORDER %}<th scope="col"><abbr title="{{ JUR[j].name }}">{{ JUR_CODE[j] }}</abbr></th>{% endfor %}</tr>
+  </thead>
+  <tbody>
+  {% for a, row in MATRIX.rows %}
+    <tr><th scope="row"><abbr title="{{ JUR[a].name }}">{{ JUR_CODE[a] }}</abbr></th>
+    {% for c in row %}
+      {% if c is none %}<td class="h-self" aria-label="Same place">—</td>
+      {% else %}<td class="h-{{ c.level }}">{% if link and c.n %}<a href="{{ url(c.path) }}" data-tip="{{ c.tip }}. Open the list.">{{ c.n }}</a>{% else %}<span data-tip="{{ c.tip }}">{{ c.n }}</span>{% endif %}</td>{% endif %}
+    {% endfor %}
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
 {%- endmacro %}

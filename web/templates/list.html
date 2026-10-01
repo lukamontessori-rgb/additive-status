@@ -1,58 +1,69 @@
 {% extends "base.html" %}
-{% from "_macros.html" import breadcrumbs, status_cells %}
+{% from "_macros.html" import breadcrumbs, chip, enum %}
 {% block main %}
-{{ breadcrumbs([("All additives", None)]) }}
-<h1>All food additives</h1>
-<p class="lede">{{ additives|length }} additives. Type to filter, or choose a status for each jurisdiction. Click a name for sources and conditions.</p>
+{{ breadcrumbs([("Additives", None)]) }}
+<div class="page-head">
+  <h1>All food additives</h1>
+  <p class="lede">{{ additives|length }} additives in five places. Filter by name, by where they are allowed, or by type. Select a name for sources and conditions.</p>
+</div>
 
-<form class="filters" id="filters" onsubmit="return false">
-  <div class="f-q">
-    <label for="fq">Filter by name, E-number or CAS</label>
-    <input id="fq" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="e.g. 102, tartrazine, sorbate">
+<form class="filters" id="filters" onsubmit="return false" aria-label="Filter additives">
+  <div class="f-row">
+    <div class="f-q">
+      <label for="fq">Name, E-number or CAS</label>
+      <input id="fq" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="e.g. 102, tartrazine, sorbate">
+    </div>
+    <div>
+      <label for="f-class">Type</label>
+      <select id="f-class">
+        <option value="">All types</option>
+        {% for c in CLASSES %}<option value="{{ c.name }}">{{ c.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="f-sort">Sort by</label>
+      <select id="f-sort">
+        <option value="e">E-number</option>
+        <option value="name">Name (A–Z)</option>
+        <option value="allowed">Allowed in most places</option>
+        <option value="restricted">Not allowed in most places</option>
+      </select>
+    </div>
   </div>
-  {% for j in JUR_ORDER %}
-  <div>
-    <label for="f-{{ j }}">{{ JUR[j].short }}</label>
-    <select id="f-{{ j }}" data-j="{{ loop.index0 }}">
-      <option value="">Any status</option>
-      <option value="allowed">Allowed (incl. phase-out)</option>
-      <option value="notallowed">Not allowed / prohibited / revoked</option>
-      {% if j in ('us', 'ca') %}<option value="not_listed">Not on the list (list is incomplete)</option>{% endif %}
-      {% if j == 'us' %}<option value="listed_noreg">In FDA inventory, no regulation</option>{% endif %}
-      <option value="unknown">No data</option>
-    </select>
-  </div>
-  {% endfor %}
-  <div>
-    <label for="f-class">Type</label>
-    <select id="f-class">
-      <option value="">All types</option>
-      {% for c in CLASSES %}<option value="{{ c.name }}">{{ c.name }}</option>{% endfor %}
-    </select>
-  </div>
+  <fieldset class="f-toggles">
+    <legend>Allowed in</legend>
+    {% for j in JUR_ORDER %}<button type="button" class="tog tog-ok" data-allow="{{ j }}" aria-pressed="false" title="Allowed in {{ JUR[j].name }}">{{ JUR_CODE[j] }}</button>{% endfor %}
+  </fieldset>
+  <fieldset class="f-toggles">
+    <legend>Not allowed in</legend>
+    {% for j in JUR_ORDER %}<button type="button" class="tog tog-no" data-deny="{{ j }}" aria-pressed="false" title="Not allowed in {{ JUR[j].name }}">{{ JUR_CODE[j] }}</button>{% endfor %}
+  </fieldset>
   <div class="f-actions">
-    <button type="button" id="f-diff" aria-pressed="false">Only where rules differ</button>
-    <button type="reset" id="f-reset">Reset</button>
+    <button type="button" class="tog" id="f-diff" aria-pressed="false">Only where rules differ</button>
+    <button type="reset" class="btn btn-ghost btn-sm" id="f-reset">Clear filters</button>
   </div>
 </form>
-<p id="f-count" class="muted" role="status" aria-live="polite">{{ additives|length }} shown</p>
+<p id="f-count" class="f-count" role="status" aria-live="polite">{{ additives|length }} shown</p>
 
-<div class="table-wrap">
-<table class="grid" id="all">
+<div class="tbl-wrap">
+<table class="tbl stat-tbl" id="all">
   <thead><tr>
     <th scope="col">Additive</th>
-    {% for j in JUR_ORDER %}<th scope="col" class="jcol"><abbr title="{{ JUR[j].name }}">{{ JUR[j].short }}</abbr></th>{% endfor %}
+    {% for j in JUR_ORDER %}<th scope="col" class="jcol"><abbr title="{{ JUR[j].name }}">{{ JUR_CODE[j] }}</abbr></th>{% endfor %}
   </tr></thead>
   <tbody>
   {% for a in additives %}
-  <tr data-q="{{ ([a.e or '', a.name] + a.aka + a.cas)|join('|')|lower }}" data-c="{{ a.classes|join('|') }}" data-d="{{ 1 if a.differs else 0 }}">
-    <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{% if a.e %}<span class="enum">{{ a.e }}</span> {% endif %}{{ a.name }}</a></th>
-    {{ status_cells(a) }}
+  <tr data-q="{{ ([a.e or '', a.name] + a.aka + a.cas + (['INS ' ~ a.ins, 'E ' ~ a.ins] if a.ins else []))|join('|')|lower }}" data-c="{{ a.classes|join('|') }}" data-d="{{ 1 if a.differs else 0 }}" data-o="{{ loop.index0 }}">
+    <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ enum(a) }} <span class="nm">{{ a.name }}</span></a></th>
+    {% for j in JUR_ORDER %}{% set st = status_of(a, j) %}<td data-label="{{ JUR_CODE[j] }}" data-s="{{ st }}">{{ chip(st, True) }}</td>{% endfor %}
   </tr>
   {% endfor %}
   </tbody>
 </table>
 </div>
-<p id="f-empty" class="empty" hidden>No additive matches these filters. <button type="button" onclick="document.getElementById('f-reset').click()">Clear filters</button></p>
-<p class="muted small"><a href="{{ url('/data/') }}">Download this table as CSV or JSON</a>.</p>
+<div id="f-empty" class="empty" hidden>
+  <p><span aria-hidden="true">🔍</span> No additive matches these filters.</p>
+  <button type="button" class="btn btn-soft" onclick="document.getElementById('f-reset').click()">Clear filters</button>
+</div>
+<p class="muted small"><a href="{{ url('/data/') }}">Download this table as CSV or JSON</a> · <a href="{{ url('/about/') }}#statuses">What the statuses mean</a></p>
 {% endblock %}

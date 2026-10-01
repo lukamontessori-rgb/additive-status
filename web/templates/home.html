@@ -1,76 +1,160 @@
 {% extends "base.html" %}
-{% from "_macros.html" import chip, additive_table %}
+{% from "_macros.html" import chip, dots, additive_card, search_box, heatmap, enum %}
 {% block head %}
 <script type="application/ld+json">{{ ld_json({"@context": "https://schema.org", "@type": "WebSite", "name": SITE_NAME, "url": abs_url('/'),
+  "description": TAGLINE,
   "potentialAction": {"@type": "SearchAction", "target": abs_url('/additives/') ~ "?q={search_term_string}", "query-input": "required name=search_term_string"}})|safe }}</script>
 {% endblock %}
 {% block main %}
 <section class="hero">
-  <h1>Is this food additive allowed?</h1>
-  <p class="lede">Search any E-number or name. See its official status in the <strong>EU</strong>, the <strong>UK (GB)</strong>, the <strong>US</strong> and <strong>Canada</strong>, side by side, with links to the sources.</p>
-  <form class="search big" role="search" action="{{ url('/additives/') }}" data-search>
-    <label class="sr" for="q-home">Search additives</label>
-    <input id="q-home" name="q" type="search" autocomplete="off" spellcheck="false" autofocus
-           placeholder="Try E171, Red 40, aspartame, potassium bromate…" aria-controls="q-home-results" aria-expanded="false" aria-autocomplete="list">
-    <button type="submit">Search</button>
-    <ul id="q-home-results" class="results" role="listbox" hidden></ul>
-  </form>
-  {% if examples %}
-  <p class="examples"><span class="muted">Examples:</span>
-    {% for a in examples %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{% if a.e %}{{ a.e }} {% endif %}{{ a.name }}</a>{% endfor %}
-  </p>
-  {% endif %}
+  <div class="hero-text">
+    <p class="kicker"><span class="pulse" aria-hidden="true"></span> {{ total }} additives · 5 places · checked every week</p>
+    <h1>Is this food additive <span class="hl">allowed?</span></h1>
+    <p class="lede">Type an E-number or a name. See its official status in the <strong>EU</strong>, the <strong>UK</strong>, the <strong>US</strong>, <strong>Canada</strong> and <strong>Australia/New Zealand</strong> — side by side, with the source for every answer.</p>
+    {{ search_box('q-home', big=True, placeholder='Try E171, Red 40 or aspartame') }}
+    <div class="try">
+      <span class="muted">Try:</span>
+      {% for a in examples[:5] %}<a class="pill" href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e or a.name }}{% if a.e %} <span class="muted">{{ a.name.split(',')[0].split('/')[0] }}</span>{% endif %}</a>{% endfor %}
+    </div>
+    <div class="hero-actions">
+      <a class="btn btn-soft" href="{{ url('/additives/') }}" data-random><span aria-hidden="true">🎲</span> Surprise me</a>
+      <a class="btn btn-soft" href="{{ url('/scan/') }}"><span aria-hidden="true">🏷️</span> Check a label</a>
+      <a class="btn btn-soft" href="{{ url('/quiz/') }}"><span aria-hidden="true">🧠</span> Play the quiz</a>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    {% set demo = examples[0] if examples else None %}
+    {% if demo %}
+    <div class="demo-card" data-demo='{{ examples|map(attribute="id")|list|tojson }}'>
+      <div class="demo-head">{{ enum(demo) }}<strong>{{ demo.name }}</strong></div>
+      <ul class="demo-list">
+      {% for j in JUR_ORDER %}{% set st = status_of(demo, j) %}
+        <li style="--i: {{ loop.index0 }}"><span class="demo-j">{{ JUR[j].short }}</span>{{ chip(st, True) }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
 </section>
 
-<section class="stats" aria-label="Key numbers">
-  <div><strong>{{ total }}</strong><span>additives tracked</span></div>
-  <div><strong>{{ diff_count }}</strong><span>allowed in one place, not in another</span></div>
-  {% for j in JUR_ORDER %}<div><strong>{{ counts[j] }}</strong><span>allowed in {{ JUR[j].short }}</span></div>{% endfor %}
-</section>
-
-{% if compare %}
-<section aria-labelledby="diff-h">
-  <h2 id="diff-h">Where the rules differ</h2>
-  <div class="cards">
-  {% for s in compare %}
-    <a class="card" href="{{ url(s.path) }}">
-      <span class="card-num">{{ s['items']|length }}</span>
-      <span class="card-title">{{ s.short }}</span>
-      <span class="card-sub">{% for a in s['items'][:3] %}{{ a.e or a.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if s['items']|length > 3 %}…{% endif %}</span>
-    </a>
+<section class="legend-strip" aria-label="What the colours mean">
+  {% for key in ['authorised', 'phase_out', 'not_authorised', 'not_listed'] %}
+  <span>{{ chip(key, True) }} <span class="muted">{{ {'authorised': 'on the permitted list', 'phase_out': 'still allowed, ending soon', 'not_authorised': 'not permitted, prohibited or revoked', 'not_listed': 'not on a list that is incomplete'}[key] }}</span></span>
   {% endfor %}
+  <a href="{{ url('/about/') }}#statuses">What the statuses mean →</a>
+</section>
+
+{% if facts %}
+<section class="facts-sec" aria-labelledby="facts-h" data-facts>
+  <div class="sec-head">
+    <h2 id="facts-h"><span aria-hidden="true">💡</span> Did you know?</h2>
+    <div class="facts-nav" hidden>
+      <button class="icon-btn" type="button" data-fact-prev aria-label="Previous fact">←</button>
+      <span class="facts-count muted small" aria-live="polite"></span>
+      <button class="icon-btn" type="button" data-fact-next aria-label="Next fact">→</button>
+      <button class="btn btn-ghost btn-sm" type="button" data-fact-shuffle><span aria-hidden="true">🔀</span> Shuffle</button>
+    </div>
+  </div>
+  <ul class="fact-list">
+    {% for f in facts %}
+    <li class="fact k-{{ f.kind }}"><p>{{ f.text }}</p>{% if f.href %}<a href="{{ f.href }}">See the details →</a>{% endif %}</li>
+    {% endfor %}
+  </ul>
+  <p class="muted small">Every fact is computed from the official data on this site ({{ fmt_date(generated_at) }}).</p>
+</section>
+{% endif %}
+
+<section class="glance" aria-labelledby="glance-h">
+  <h2 id="glance-h">At a glance</h2>
+  <div class="glance-grid">
+    <div class="panel">
+      <h3>Allowed in each place</h3>
+      <p class="muted small">Out of the {{ total }} additives tracked here. Allowed means authorised or still in a phase-out period.</p>
+      <figure class="chart-fig">
+        {{ chart }}
+        <figcaption class="sr">Bar chart. {% for j in JUR_ORDER %}{{ JUR[j].short }}: {{ counts[j] }}. {% endfor %}</figcaption>
+      </figure>
+      <details class="table-view">
+        <summary>Show as a table</summary>
+        <table class="tbl mini">
+          <thead><tr><th scope="col">Place</th><th scope="col">Allowed</th><th scope="col">Share</th></tr></thead>
+          <tbody>{% for j in JUR_ORDER %}<tr><th scope="row"><a href="{{ url('/additives/') }}?allow={{ j }}">{{ JUR[j].name }}</a></th><td>{{ counts[j] }}</td><td>{{ (100 * counts[j] / total)|round|int if total else 0 }}%</td></tr>{% endfor %}</tbody>
+        </table>
+      </details>
+    </div>
+    <div class="panel stat-panel">
+      <a class="stat" href="{{ url('/additives/') }}?differ=1"><strong>{{ diff_count }}</strong><span>additives are allowed in one place but not in another</span></a>
+      <a class="stat" href="{{ url('/additives/') }}?allow={{ JUR_ORDER|join(',') }}"><strong>{{ everywhere }}</strong><span>are allowed in all five places</span></a>
+      <a class="stat" href="{{ url('/changes/') }}#eu-history"><strong>{{ EU_HISTORY.versions or '—' }}</strong><span>versions of the EU list compared since {{ (EU_HISTORY.first or '2013')[:4] }}</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="matrix-sec" aria-labelledby="mx-h">
+  <div class="sec-head">
+    <h2 id="mx-h">Where the rules differ</h2>
+    <a class="btn btn-ghost btn-sm" href="{{ url('/compare/') }}">Compare any two places →</a>
+  </div>
+  <p class="muted">Each number counts the additives allowed in the row's place but not allowed in the column's place. Darker means more. Select a number to see the list.</p>
+  {{ heatmap() }}
+</section>
+
+<section class="tools" aria-labelledby="tools-h">
+  <h2 id="tools-h">Play and explore</h2>
+  <div class="tool-grid">
+    <a class="tool" href="{{ url('/scan/') }}"><span class="tool-ico" aria-hidden="true">🏷️</span><strong>Label checker</strong><span>Paste an ingredients list. Every additive in it lights up with its status in the five places.</span></a>
+    <a class="tool" href="{{ url('/quiz/') }}"><span class="tool-ico" aria-hidden="true">🧠</span><strong>Where is it allowed?</strong><span>A ten-round quiz. Guess which places allow each additive, then see the official answer.</span></a>
+    <a class="tool" href="{{ url('/compare/') }}"><span class="tool-ico" aria-hidden="true">⚖️</span><strong>Compare two places</strong><span>Pick any two and see what one allows that the other does not.</span></a>
+    <a class="tool" href="{{ url('/additives/') }}" data-random><span class="tool-ico" aria-hidden="true">🎲</span><strong>Random additive</strong><span>Land on a random additive page and learn something new.</span></a>
+  </div>
+</section>
+
+{% if examples %}
+<section aria-labelledby="ex-h">
+  <h2 id="ex-h">Additives people ask about</h2>
+  <div class="card-grid">
+    {% for a in examples %}{{ additive_card(a) }}{% endfor %}
   </div>
 </section>
 {% endif %}
 
-<section aria-labelledby="recent-h">
-  <h2 id="recent-h">Recent changes</h2>
-  {% if recent %}
-  <ol class="timeline">
-    {% for c in recent %}{% set a = by_id.get(c.id) %}
-    <li><time datetime="{{ c.date }}">{{ fmt_date(c.date) }}</time> — {% if a %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% else %}{{ c.id }}{% endif %}, {{ JUR[c.jur].short }}: {{ STATUSES.get(c['from'], STATUSES['unknown'])[0] }} → <strong>{{ STATUSES.get(c.to, STATUSES['unknown'])[0] }}</strong></li>
+<section class="two-col" aria-label="Recent changes and types">
+  <div>
+    <h2 id="recent-h">Recent changes</h2>
+    {% if recent %}
+    <ol class="timeline">
+      {% for c in recent %}{% set a = by_id.get(c.id) %}
+      <li><time datetime="{{ c.date }}">{{ fmt_date(c.date) }}</time> <span>{% if a %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% else %}{{ c.id }}{% endif %} · {{ JUR[c.jur].short }}: {{ STATUSES.get(c['from'], STATUSES['unknown'])[0] }} → <strong>{{ STATUSES.get(c.to, STATUSES['unknown'])[0] }}</strong></span></li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p class="muted">The official sources are checked every week. No status change has been detected since tracking started.</p>
+    {% endif %}
+    {% if eu_recent %}
+    <h3 class="subh">Latest EU list changes</h3>
+    <ol class="timeline">
+      {% for e in eu_recent %}{% set a = by_id.get(e.id) %}
+      <li><time datetime="{{ e.date }}">{{ fmt_date(e.date) }}</time> <span>{% if a %}<a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} {{ a.name }}</a>{% else %}{{ e.id }}{% endif %} · {{ e.change }}</span></li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+    <p><a href="{{ url('/changes/') }}">All changes →</a></p>
+  </div>
+  <div>
+    <h2 id="cls-h">Browse by type</h2>
+    <ul class="type-list">
+      {% for c in classes %}<li><a href="{{ url(c.path) }}"><span class="type-ico" aria-hidden="true">{{ c.icon }}</span><span class="type-name">{{ c.name }}</span><span class="type-n">{{ c.count }}</span></a></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="why" aria-labelledby="why-h">
+  <h2 id="why-h">Why can the same additive be allowed in one place and not in another?</h2>
+  <div class="why-grid">
+    {% for j in JUR_ORDER %}
+    <div class="why-card"><span class="jbadge">{{ JUR_CODE[j] }}</span><strong>{{ JUR[j].name }}</strong><p>{{ JUR[j].system_note }}</p></div>
     {% endfor %}
-  </ol>
-  <p><a href="{{ url('/changes/') }}">All changes →</a></p>
-  {% else %}
-  <p class="muted">The official sources are checked every week. Status changes will be listed here as they are detected. <a href="{{ url('/changes/') }}">About change tracking</a>.</p>
-  {% endif %}
-</section>
-
-{% if classes %}
-<section aria-labelledby="cls-h">
-  <h2 id="cls-h">Browse by type</h2>
-  <ul class="pill-list">{% for c in classes %}<li><a href="{{ url(c.path) }}">{{ c.name }} <span class="muted">{{ c.count }}</span></a></li>{% endfor %}</ul>
-</section>
-{% endif %}
-
-<section aria-labelledby="legend-h" class="legend">
-  <h2 id="legend-h">How to read a status</h2>
-  <dl>
-  {% for key in ['authorised', 'phase_out', 'not_authorised', 'prohibited', 'delisted', 'not_listed', 'listed_noreg'] %}
-    <div><dt>{{ chip(key) }}</dt><dd>{{ STATUSES[key][3] }}</dd></div>
-  {% endfor %}
-  </dl>
-  <p class="muted small">A status is a legal fact about one jurisdiction's list, not a judgement about safety. <a href="{{ url('/about/') }}">Methods and limits</a>.</p>
+  </div>
+  <p class="muted">A different status is a legal fact, not a safety verdict. Regulators assess different evidence, at different times, under different laws.</p>
 </section>
 {% endblock %}

@@ -3,12 +3,40 @@
 {% block main %}
 {{ breadcrumbs([("About", None)]) }}
 <article class="prose">
-<h1>Methods, sources and limits</h1>
-<p class="lede">{{ SITE_NAME }} puts the official food additive lists of four jurisdictions side by side, so you can see in one place whether an additive is allowed in the EU, Great Britain, the United States and Canada, and check each answer against its source.</p>
+<h1>About {{ SITE_NAME }}</h1>
+<p class="lede">{{ SITE_NAME }} puts the official food additive lists of five places side by side — the European Union, Great Britain, the United States, Canada and Australia/New Zealand — so you can see in one place whether an additive is allowed, and check every answer against its source.</p>
 
 <nav class="toc" aria-label="On this page">
-  <a href="#statuses">Statuses</a> · <a href="#systems">Legal systems</a> · <a href="#sources">Sources</a> · <a href="#matching">Matching</a> · <a href="#updates">Updates</a> · <a href="#limits">Limits</a> · <a href="#privacy">Privacy</a> · <a href="#contact">Corrections</a>
+  <a href="#why">Why it exists</a><a href="#principles">Principles</a><a href="#how">How it works</a><a href="#statuses">Statuses</a><a href="#systems">Five legal systems</a><a href="#sources">Sources</a><a href="#matching">Matching</a><a href="#updates">Updates</a><a href="#limits">Limits</a><a href="#contact">Corrections</a>
 </nav>
+
+<h2 id="why">Why it exists</h2>
+<p>Claims like "banned in Europe but allowed in America" spread fast, and they are hard to check: every jurisdiction publishes its rules in a different format, with different names and numbers for the same substance. The answers exist, but they are scattered across legal texts, registers, spreadsheets and PDFs. This site gathers them, matches them up, and shows the result in plain language — with a link to the official text behind every status.</p>
+<div class="who-grid">
+  <div><span aria-hidden="true">🛒</span><strong>Shoppers</strong><p>Look up an E-number from a label, or paste the whole ingredients list into the <a href="{{ url('/scan/') }}">label checker</a>.</p></div>
+  <div><span aria-hidden="true">🏭</span><strong>Food businesses</strong><p>See quickly where an additive needs a closer look before a product crosses a border.</p></div>
+  <div><span aria-hidden="true">📰</span><strong>Journalists and fact-checkers</strong><p>Check a "banned there, allowed here" claim against the official lists in seconds.</p></div>
+  <div><span aria-hidden="true">🎓</span><strong>Students and the curious</strong><p>Explore how five systems regulate the same substances differently — or test yourself in the <a href="{{ url('/quiz/') }}">quiz</a>.</p></div>
+</div>
+
+<h2 id="principles">Principles</h2>
+<ul class="check-list">
+  <li><strong>Official sources only.</strong> Every status comes from a government or intergovernmental publication, downloaded automatically. Nothing is copied from blogs, apps or campaign lists.</li>
+  <li><strong>Show the source.</strong> Every status links to the text it comes from, and says how the match was made.</li>
+  <li><strong>No guessing.</strong> If a substance cannot be matched to a source, the site says <em>No data</em>. Uncertain cases are labelled as uncertain, not rounded up or down.</li>
+  <li><strong>Legal facts, not safety verdicts.</strong> A status says what a list allows. It does not say whether a substance is safe or harmful.</li>
+  <li><strong>Independent and free.</strong> No ads, no sponsors, no affiliate links, no paid tiers. Not affiliated with any government, agency or company.</li>
+  <li><strong>Private.</strong> No cookies, no accounts, no tracking. Details on the <a href="{{ url('/legal/') }}#privacy">legal page</a>.</li>
+</ul>
+
+<h2 id="how">How it works</h2>
+<ol class="pipeline">
+  <li><span class="step-ico" aria-hidden="true">⬇️</span><strong>Download</strong><span>Every week an automated job downloads each official source and keeps a dated, checksummed copy.</span></li>
+  <li><span class="step-ico" aria-hidden="true">🔎</span><strong>Read</strong><span>Parsers read the legal texts, registers, spreadsheets and PDFs, and pull out each additive's entry.</span></li>
+  <li><span class="step-ico" aria-hidden="true">🧩</span><strong>Match</strong><span>Entries are joined across sources by E/INS number, Colour Index, CAS number and normalised names.</span></li>
+  <li><span class="step-ico" aria-hidden="true">✅</span><strong>Check</strong><span>Counts, required fields and known reference additives are verified. Anything suspicious stops the update.</span></li>
+  <li><span class="step-ico" aria-hidden="true">🚀</span><strong>Publish</strong><span>The site is rebuilt and changes are recorded. If a check fails, the last good data stays online.</span></li>
+</ol>
 
 <h2 id="statuses">What the statuses mean</h2>
 <dl class="defs">
@@ -16,41 +44,42 @@
   <div><dt>{{ chip(key) }}</dt><dd>{{ s[3] }}</dd></div>
 {% endfor %}
 </dl>
-<p>"Allowed" in lists and filters means <em>Authorised</em> or <em>Being phased out</em>. "Not allowed" means <em>Not authorised</em>, <em>Prohibited</em> or <em>Delisted / revoked</em>. <em>Not in FDA inventory</em> and <em>No data</em> are never counted as "not allowed".</p>
+<p>"Allowed" in lists, filters, charts and the quiz means <em>Authorised</em> or <em>Being phased out</em>. "Not allowed" means <em>Not authorised</em>, <em>Prohibited</em> or <em>Delisted / revoked</em>. <em>Not on the list</em>, <em>In FDA inventory, no regulation cited</em> and <em>No data</em> are never counted as "not allowed".</p>
 
-<h2 id="systems">Four different legal systems</h2>
+<h2 id="systems">Five different legal systems</h2>
 <ul>{% for j in JUR_ORDER %}<li><strong>{{ JUR[j].name }}:</strong> {{ JUR[j].system_note }}</li>{% endfor %}</ul>
-<p>Because the systems differ, the same word can mean different things. For example, an additive missing from the EU list may not be used at all in the EU, but a substance missing from the FDA inventory may still be used legally in the US.</p>
+<p>Because the systems differ, the same word can mean different things. An additive missing from the EU list may not be used at all in the EU, but a substance missing from the FDA inventory may still be used legally in the US. Australia and New Zealand also allow some substances as processing aids rather than food additives; the site reports these separately and does not count them as permitted additives.</p>
+<p>Current totals: {% for j in JUR_ORDER %}{{ JUR[j].short }} allows {{ counts[j] }}{% if not loop.last %}, {% endif %}{% endfor %} of the {{ total }} additives tracked here.</p>
 
-<h2 id="sources">Sources and licences</h2>
-<p>Every status on this site comes from one of these official or open sources. The data pipeline downloads them automatically; nothing is typed in by hand except a small, documented table of name matches.</p>
-<div class="table-wrap">
-<table class="grid sources">
-  <thead><tr><th scope="col">Source</th><th scope="col">Licence and attribution</th><th scope="col">Last downloaded</th><th scope="col">Content last changed</th></tr></thead>
+<h2 id="sources">Sources</h2>
+<p>Every status on this site comes from one of these official sources. The data pipeline downloads them automatically; nothing is typed in by hand except a small, reviewed table of name matches that is published with the code.</p>
+<div class="tbl-wrap">
+<table class="tbl sources">
+  <thead><tr><th scope="col">Source</th><th scope="col">Licence</th><th scope="col">Last downloaded</th><th scope="col">Content last changed</th></tr></thead>
   <tbody>
   {% for sid, s in sources.items() %}
   <tr>
     <th scope="row"><a href="{{ s.url }}" rel="noopener">{{ s.title }}</a><br><span class="muted small">{{ s.publisher }}{% if s.version %} · version {{ s.version }}{% endif %}</span></th>
-    <td>{% if s.licence_url %}<a href="{{ s.licence_url }}" rel="noopener">{{ s.licence }}</a>{% else %}{{ s.licence }}{% endif %}<br><span class="muted small">{{ s.attribution }}</span></td>
-    <td>{{ fmt_date(s.retrieved_at) }}{% if s.state and s.state != 'ok' %}<br><span class="chip t-warn"><span class="dot" aria-hidden="true"></span>{{ s.state }}</span>{% endif %}</td>
+    <td>{% if s.licence_url %}<a href="{{ s.licence_url }}" rel="noopener">{{ s.licence }}</a>{% else %}{{ s.licence }}{% endif %}</td>
+    <td>{{ fmt_date(s.retrieved_at) }}{% if s.state and s.state != 'ok' %}<br>{{ chip('phase_out', True) }} {{ s.state }}{% endif %}</td>
     <td>{{ fmt_date(s.content_changed_at) }}</td>
   </tr>
   {% endfor %}
   </tbody>
 </table>
 </div>
-<p class="small">EU legal texts: © European Union, reuse authorised with acknowledgement of the source (retrieved from the Publications Office's Cellar service). UK data: contains public sector information licensed under the Open Government Licence v3.0. Canadian data: contains information licensed under the Open Government Licence – Canada. FDA and Federal Register data: U.S. Government works.</p>
+<p class="small">Attribution and licence terms for each source are on the <a href="{{ url('/legal/') }}#licences">legal page</a>.</p>
 
 <h2 id="matching">How additives are matched across sources</h2>
-<p>Each source names additives differently. The EU and UK use E-numbers, the FDA uses chemical names, CAS and Colour Index numbers, and Health Canada uses names only. Records are joined in this order:</p>
+<p>Each source names additives differently. The EU and UK use E-numbers, Australia and New Zealand use INS numbers, the FDA uses chemical names, CAS and Colour Index numbers, and Health Canada uses names only. Records are joined in this order:</p>
 <ol>
-  <li><strong>E-number</strong> (EU list and GB register).</li>
+  <li><strong>E-number or INS number</strong> (EU list, GB register, Food Standards Code schedules).</li>
   <li><strong>Colour Index number</strong> for colours (from the EU specifications, Regulation (EU) No 231/2012, and the FDA inventory's alternative names).</li>
   <li><strong>CAS registry number</strong>, where the EU specifications give one.</li>
-  <li><strong>Name after normalisation</strong> (case, punctuation, plural forms, British/American spelling, "FD&amp;C" spellings), using the official names and the synonyms listed in the EU specifications.</li>
-  <li><strong>A small reviewed match table</strong> for names that cannot be matched automatically.</li>
+  <li><strong>Name after normalisation</strong> (case, punctuation, plural forms, British and American spelling, "FD&amp;C" spellings), using the official names and the synonyms in the EU specifications.</li>
+  <li><strong>A small reviewed match table</strong> for names that cannot be matched automatically, for example where the INS code in Australia/New Zealand groups several EU sub-numbers.</li>
 </ol>
-<p>US revocations that are newer than FDA's inventory are taken from final orders in the <a href="https://www.federalregister.gov/" rel="noopener">Federal Register</a> (for example, the revocation of FD&amp;C Red No. 3 for food, effective 15 January 2027).</p>
+<p>US revocations that are newer than FDA's inventory are taken from final orders in the <a href="https://www.federalregister.gov/" rel="noopener">Federal Register</a> — for example, the revocation of FD&amp;C Red No. 3 for food, effective 15 January 2027. The EU history is built by comparing every consolidated version of the EU list since June 2013.</p>
 <p>If a record cannot be matched, the site shows <em>No data</em> instead of guessing. On each additive page, a note under each status says how the match was made.</p>
 {% if quality %}
 <p>Current match rates:</p>
@@ -59,26 +88,25 @@
 
 <h2 id="updates">How the data stays current</h2>
 <ul>
-  <li>Every week an automated job downloads each source again and records its size, checksum and time.</li>
-  <li>The new data is parsed and checked: expected fields must be present, counts must not drop sharply, and key reference additives must still parse correctly.</li>
+  <li>Every Monday an automated job downloads each source again and records its size, checksum and time. A source counts as changed only when its content changes, not when the page around it does.</li>
+  <li>The new data is parsed and checked: expected fields must be present, counts must not drop sharply, and reference additives (such as E 129 and E 171) must still come out right.</li>
   <li>If a check fails, the site keeps showing the last data that passed, and the problem is reported automatically. Broken data is not published.</li>
-  <li>Status differences between the new and the previous version are recorded on the <a href="{{ url('/changes/') }}">changes page</a>.</li>
+  <li>Status differences between the new and the previous version are listed on the <a href="{{ url('/changes/') }}">changes page</a>, with the date they were detected.</li>
 </ul>
 
 <h2 id="limits">What this site does not cover</h2>
 <ul>
   <li><strong>Not legal advice.</strong> Statuses are simplified summaries. Conditions of use (which foods, what maximum levels, purity criteria, labelling duties) are shown only in part. Always check the official source.</li>
-  <li><strong>US state laws</strong> (for example California or West Virginia dye laws) are not included: there is no structured official source for them. The US column shows federal status only.</li>
-  <li><strong>GRAS substances</strong> used in the US without notification are not in the FDA inventory and cannot be shown.</li>
-  <li><strong>Safety values</strong> such as the acceptable daily intake (ADI) are not shown, because the licence of the main open database of these values does not allow republishing adapted data. Links to the official assessments are given where available.</li>
-  <li><strong>Flavourings, enzymes and processing aids</strong> are covered only where they appear in the additive lists used here.</li>
-  <li><strong>Northern Ireland</strong> follows EU food additive rules; see the EU column.</li>
+  <li><strong>US state laws</strong> (for example state laws on food dyes) are not included: there is no structured official source for them. The US column shows federal status only.</li>
+  <li><strong>GRAS substances</strong> used in the US without notification to the FDA are not in the FDA inventory and cannot be shown.</li>
+  <li><strong>Safety values</strong> such as the acceptable daily intake (ADI) are not shown.</li>
+  <li><strong>Flavourings, enzymes, processing aids and nutrients</strong> are covered only where they appear in the additive lists used here.</li>
+  <li><strong>Other countries.</strong> Japan, China and India publish additive lists too, but not under terms that clearly allow this site to reuse and republish them automatically. They are left out rather than covered badly.</li>
+  <li><strong>Northern Ireland</strong> follows EU food additive rules; see the EU column. New Zealand's food law adopts the joint Food Standards Code, so Australia and New Zealand share a column.</li>
 </ul>
 
-<h2 id="privacy">Privacy</h2>
-<p>This site sets no cookies, has no accounts, no ads and no third-party trackers. The web host keeps standard server logs.</p>
-
 <h2 id="contact">Corrections</h2>
-<p>If you find a wrong status or a bad match, please open an issue{% if REPO_URL and REPO_URL != 'https://github.com/' %} on <a href="{{ REPO_URL }}/issues">the project's GitHub page</a>{% endif %}, with a link to the official source.</p>
+<p>Found a wrong status or a bad match? Please {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on the project's GitHub page</a>{% else %}report it on the project's GitHub page{% endif %} with a link to the official source. Every report is checked against the source, and fixes go into the reviewed match table or the parsers so they stay fixed.</p>
+<p>The site's code, the reviewed match table and the full history of the data are public{% if REPO_URL %} in the <a href="{{ REPO_URL }}">GitHub repository</a>{% endif %}. Terms, licences and privacy are on the <a href="{{ url('/legal/') }}">legal page</a>.</p>
 </article>
 {% endblock %}

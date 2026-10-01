@@ -123,22 +123,23 @@ ca:
 
 # Substances without an E-number that get their own page. They were chosen because
 # people look them up as "allowed in the US/Canada but not in the EU" and because
-# the EU and GB lists clearly do not cover them (several are former E-numbers that
-# the EU removed). US entries that FDA prohibits or has revoked are added automatically.
+# the EU and GB lists clearly do not cover them. `ins` is the international code number
+# (Codex INS), used for search and to match the Australia/New Zealand schedules.
+# US entries that FDA prohibits or has revoked are added automatically.
 us_only:
-  - {name: "POTASSIUM BROMATE", former_e: "E 924"}
-  - {name: "AZODICARBONAMIDE", former_e: "E 927a"}
-  - {name: "BENZOYL PEROXIDE", former_e: "E 928"}
+  - {name: "POTASSIUM BROMATE", ins: "924a"}
+  - {name: "AZODICARBONAMIDE", ins: "927a"}
+  - {name: "BENZOYL PEROXIDE", ins: "928"}
   - "ACETONE PEROXIDES"
-  - {name: "CHLORINE DIOXIDE", former_e: "E 926"}
-  - {name: "PROPYL P-HYDROXYBENZOATE", former_e: "E 216", aka: ["Propylparaben"]}
+  - {name: "CHLORINE DIOXIDE", ins: "926"}
+  - {name: "PROPYL P-HYDROXYBENZOATE", ins: "216", aka: ["Propylparaben"]}
   - "HEPTYLPARABEN"
   - "ETHOXYQUIN"
-  - {name: "CITRUS RED NO. 2", former_e: "E 121"}
+  - {name: "CITRUS RED NO. 2", ins: "121"}
   - "ORANGE B"
-  - {name: "FD&C GREEN NO. 3", former_e: "E 143", aka: ["Fast Green FCF"]}
-  - {name: "DEHYDROACETIC ACID", former_e: "E 265"}
-  - {name: "SODIUM DEHYDROACETATE", former_e: "E 266"}
+  - {name: "FD&C GREEN NO. 3", ins: "143", aka: ["Fast Green FCF"]}
+  - {name: "DEHYDROACETIC ACID", ins: "265"}
+  - {name: "SODIUM DEHYDROACETATE", ins: "266"}
   - "DIOCTYL SODIUM SULFOSUCCINATE"
   - "ANOXOMER"
   - "CURDLAN"
@@ -150,27 +151,27 @@ us_only:
 ca_only:
   - "Acetone Peroxide"
   - "Calcium Peroxide"
-  - {name: "Chlorine", former_e: "E 925"}
-  - {name: "Chlorine Dioxide", former_e: "E 926"}
+  - {name: "Chlorine", ins: "925"}
+  - {name: "Chlorine Dioxide", ins: "926"}
   - "Potassium Persulphate"
   - "Calcium Iodate"
   - "Potassium Iodate"
   - "Carbon Black"
-  - {name: "Ethyl β-Apo-8'-Carotenoate", former_e: "E 160f"}
-  - {name: "Sodium Sorbate", former_e: "E 201"}
-  - {name: "Calcium Sorbate", former_e: "E 203"}
-  - {name: "Sodium Salt of Propyl-ρ-Hydroxybenzoic Acid", former_e: "E 217"}
+  - {name: "Ethyl β-Apo-8'-Carotenoate", ins: "160f"}
+  - {name: "Sodium Sorbate", ins: "201"}
+  - {name: "Calcium Sorbate", ins: "203"}
+  - {name: "Sodium Salt of Propyl-ρ-Hydroxybenzoic Acid", ins: "217"}
   - "Disodium Ethylenediaminetetraacetate (Disodium EDTA)"
   - "Monk Fruit Extract"
   - "α-Cyclodextrin"
   - "Sorbitan Trioleate"
   - "Glycerol Ester of Gum Rosin"
   - "Glycerol Ester of Tall Oil Rosin"
-  - {name: "Stearyl Citrate", former_e: "E 484"}
-  - {name: "Monoisopropyl Citrate", former_e: "E 384"}
-  - {name: "Sodium Fumarate", former_e: "E 365"}
-  - {name: "Potassium Fumarate", former_e: "E 366"}
-  - {name: "Calcium Fumarate", former_e: "E 367"}
+  - {name: "Stearyl Citrate", ins: "484"}
+  - {name: "Monoisopropyl Citrate", ins: "384"}
+  - {name: "Sodium Fumarate", ins: "365"}
+  - {name: "Potassium Fumarate", ins: "366"}
+  - {name: "Calcium Fumarate", ins: "367"}
   - "Magnesium Fumarate"
 
 # Revoked US uses that are no longer in FDA's inventory at all, taken from Federal Register final rules.

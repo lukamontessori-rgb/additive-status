@@ -1,49 +1,78 @@
 {% extends "base.html" %}
-{% from "_macros.html" import chip, breadcrumbs, additive_table %}
+{% from "_macros.html" import chip, dots, breadcrumbs, additive_card, enum %}
 {% block main %}
-{{ breadcrumbs([("All additives", "/additives/"), ((a.e ~ " " if a.e else "") ~ a.name, None)]) }}
+{{ breadcrumbs([("Additives", "/additives/"), ((a.e ~ " " if a.e else "") ~ a.name, None)]) }}
 
-<article class="additive">
-  <header class="entity-head">
-    <h1>{% if a.e %}<span class="enum big">{{ a.e }}</span> {% endif %}{{ a.name }}</h1>
-    {% if a.aka %}<p class="aka"><span class="muted">Also called:</span> {{ a.aka[:10]|join(' · ') }}</p>{% endif %}
-    {% if a.former_e %}<p class="aka"><span class="muted">Former EU number:</span> {{ a.former_e }} <span class="muted">(no longer on the EU list)</span></p>{% endif %}
-    <p class="ids">
-      {% if a.classes %}<span>{% for c in a.classes %}{% set cp = (CLASSES|selectattr('name', 'equalto', c)|first) %}{% if cp %}<a href="{{ url(cp.path) }}">{{ c }}</a>{% else %}{{ c }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif %}
-      {% for cas in a.cas[:3] %}<span>CAS {{ cas }}</span>{% endfor %}
-      {% if a.wikidata %}<span><a href="https://www.wikidata.org/wiki/{{ a.wikidata }}" rel="noopener">Wikidata {{ a.wikidata }}</a></span>{% endif %}
-    </p>
+<article class="additive" data-additive="{{ a.id }}">
+  <header class="a-head">
+    <div class="a-title">
+      {% if a.e %}<span class="enum xl">{{ a.e }}</span>{% endif %}
+      <h1>{{ a.name }}</h1>
+    </div>
+    {% if a.aka %}<p class="aka"><span class="muted">Also called</span> {{ a.aka[:8]|join(' · ') }}{% if a.aka|length > 8 %} <span class="muted">+{{ a.aka|length - 8 }} more</span>{% endif %}</p>{% endif %}
+    {% if a.ins %}<p class="aka"><span class="muted">International code (INS)</span> {{ a.ins }}{% if status_of(a, 'eu') != 'authorised' %} <span class="muted">· not on the EU list, so it has no E-number there</span>{% endif %}</p>{% endif %}
+    <div class="a-tags">
+      {% for c in a.classes %}{% set cp = (CLASSES|selectattr('name', 'equalto', c)|first) %}{% if cp %}<a class="tag" href="{{ url(cp.path) }}"><span aria-hidden="true">{{ CLASS_ICON.get(c, '🧪') }}</span> {{ c }}</a>{% else %}<span class="tag">{{ c }}</span>{% endif %}{% endfor %}
+      {% for cas in a.cas[:2] %}<span class="tag tag-plain">CAS {{ cas }}</span>{% endfor %}
+    </div>
+    <div class="a-actions">
+      <button class="btn btn-ghost btn-sm" type="button" data-share hidden><span aria-hidden="true">🔗</span> <span data-share-label>Share</span></button>
+      <a class="btn btn-ghost btn-sm" href="{{ url('/additives/') }}" data-random><span aria-hidden="true">🎲</span> Random</a>
+      <span class="a-nav">
+        {% if prev %}<a class="btn btn-ghost btn-sm" href="{{ url('/additive/' ~ prev.id ~ '/') }}" rel="prev" title="Previous: {{ prev.e ~ ' ' if prev.e }}{{ prev.name }}"><span aria-hidden="true">←</span> {{ prev.e or 'Previous' }}</a>{% endif %}
+        {% if next %}<a class="btn btn-ghost btn-sm" href="{{ url('/additive/' ~ next.id ~ '/') }}" rel="next" title="Next: {{ next.e ~ ' ' if next.e }}{{ next.name }}">{{ next.e or 'Next' }} <span aria-hidden="true">→</span></a>{% endif %}
+      </span>
+    </div>
   </header>
 
-  <p class="answer">{{ a.summary }}</p>
+  <section class="verdict" aria-labelledby="verdict-h">
+    <h2 id="verdict-h" class="sr">Status in each place</h2>
+    <ul class="verdict-grid">
+    {% for j in JUR_ORDER %}{% set r = a.jur.get(j, {}) %}{% set st = r.get('status', 'unknown') %}{% set t = tone(st) %}
+      <li class="v-tile v-{{ t }}">
+        <a href="#jur-{{ j }}" data-tab-link="{{ j }}">
+          <span class="v-place">{{ JUR[j].short }}</span>
+          <span class="v-ico" aria-hidden="true">{{ TONE_ICON[t] }}</span>
+          <span class="v-status">{{ STATUSES.get(st, STATUSES['unknown'])[0] }}</span>
+          {% if r.headline %}<span class="v-head">{{ r.headline }}</span>{% endif %}
+        </a>
+      </li>
+    {% endfor %}
+    </ul>
+    <p class="answer">{{ a.summary }}</p>
+  </section>
 
   {% if a.overview %}
-  <section aria-labelledby="ov-h" class="overview">
+  <section class="overview" aria-labelledby="ov-h">
     <h2 id="ov-h">Overview</h2>
     <p>{{ a.overview|join(' ') }}</p>
   </section>
   {% endif %}
 
-  <section aria-labelledby="status-h">
-    <h2 id="status-h" class="sr">Status by jurisdiction</h2>
-    <div class="jur-grid">
+  <section class="jur-details" aria-labelledby="det-h" data-tabs>
+    <h2 id="det-h">Details and sources for each place</h2>
     {% for j in JUR_ORDER %}{% set r = a.jur.get(j, {}) %}{% set st = r.get('status', 'unknown') %}
-      <section class="jur-card s-{{ STATUSES.get(st, STATUSES['unknown'])[2] }}" aria-labelledby="j-{{ j }}">
-        <h3 id="j-{{ j }}"><span class="jname">{{ JUR[j].name }}</span></h3>
-        <p class="jstatus">{{ chip(st) }}</p>
-        {% if r.headline %}<p class="headline">{{ r.headline }}</p>{% endif %}
-        {% if r.facts %}
-        <dl class="facts">
-          {% for label, value in r.facts %}<div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>{% endfor %}
-        </dl>
-        {% endif %}
-        {% if r.refs %}
-        <p class="refs">{% for ref in r.refs %}<a href="{{ ref.url }}" rel="noopener">{{ ref.label }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>
-        {% endif %}
-        {% if r.match_detail %}<p class="match muted small">{{ r.match_detail }}</p>{% endif %}
-      </section>
+    <section class="jur-panel" id="jur-{{ j }}" data-tab="{{ j }}" data-tab-label="{{ JUR_CODE[j] }}" data-tab-tone="{{ tone(st) }}" aria-labelledby="jur-{{ j }}-h">
+      <h3 id="jur-{{ j }}-h"><span class="jbadge">{{ JUR_CODE[j] }}</span> {{ JUR[j].name }} {{ chip(st) }}</h3>
+      {% if r.headline %}<p class="headline">{{ r.headline }}</p>{% endif %}
+      {% if r.facts %}
+      <dl class="facts">
+        {% for lbl, value in r.facts %}<div><dt>{{ lbl }}</dt><dd>{{ value }}</dd></div>{% endfor %}
+      </dl>
+      {% endif %}
+      {% if r.notes %}
+      <details class="notes"{% if r.notes|length <= 3 %} open{% endif %}>
+        <summary>Conditions and notes ({{ r.notes|length }})</summary>
+        <ul>{% for n in r.notes %}<li>{{ n }}</li>{% endfor %}</ul>
+      </details>
+      {% endif %}
+      {% if r.refs %}
+      <p class="refs"><span class="muted">Official sources:</span> {% for ref in r.refs %}<a href="{{ ref.url }}" rel="noopener">{{ ref.label }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>
+      {% endif %}
+      {% if r.match_detail %}<p class="match muted small">How we matched it: {{ r.match_detail }}</p>{% endif %}
+      <p class="system muted small">{{ JUR[j].system_note }}</p>
+    </section>
     {% endfor %}
-    </div>
   </section>
 
   {% if a.identity %}{% set idn = a.identity %}
@@ -66,26 +95,30 @@
   </section>
   {% endif %}
 
-  {% if a.eu_uses %}
+  {% if a.eu_uses %}{% set ncat = a.eu_uses|map(attribute='cat')|unique|list|length %}
   <section aria-labelledby="euuse-h">
     <h2 id="euuse-h">Where it may be used in the EU</h2>
     <details class="uses"{% if a.eu_uses|length <= 12 %} open{% endif %}>
-      <summary>{{ a.eu_uses|length }} condition{{ '' if a.eu_uses|length == 1 else 's' }} of use in {{ a.eu_uses|map(attribute='cat')|unique|list|length }} food categor{{ 'y' if a.eu_uses|map(attribute='cat')|unique|list|length == 1 else 'ies' }}</summary>
-      <div class="table-wrap">
-      <table class="grid uses-table">
+      <summary>{{ a.eu_uses|length }} condition{{ '' if a.eu_uses|length == 1 else 's' }} of use in {{ ncat }} food categor{{ 'y' if ncat == 1 else 'ies' }}</summary>
+      {% if a.eu_uses|length > 8 %}
+      <p class="table-filter"><label for="uf-{{ a.id }}">Filter foods</label> <input id="uf-{{ a.id }}" type="search" data-table-filter="eu-uses" placeholder="e.g. drinks, cheese, 14.1" autocomplete="off"></p>
+      {% endif %}
+      <div class="tbl-wrap">
+      <table class="tbl uses-table" id="eu-uses">
         <thead><tr><th scope="col">Food category</th><th scope="col">Maximum level (mg/kg or mg/l)</th><th scope="col">Restrictions and notes</th></tr></thead>
         <tbody>
         {% for u in a.eu_uses %}
         <tr>
-          <td><span class="enum">{{ u.cat }}</span> {{ u.cat_name }}</td>
-          <td>{{ u.level or '—' }}{% if u.group %}<br><span class="muted small">via Group {{ u.group }}</span>{% elif u.entry %}<br><span class="muted small">as {{ u.entry }}</span>{% endif %}</td>
-          <td>{{ u.restr }}{% for n in u.notes %}<br><span class="muted small">{{ n }}</span>{% endfor %}</td>
+          <td data-label="Food category"><span class="code">{{ u.cat }}</span> {{ u.cat_name }}</td>
+          <td data-label="Maximum level">{{ u.level or '—' }}{% if u.group %}<br><span class="muted small">via Group {{ u.group }}</span>{% elif u.entry %}<br><span class="muted small">as {{ u.entry }}</span>{% endif %}</td>
+          <td data-label="Restrictions and notes">{{ u.restr }}{% for n in u.notes %}<br><span class="muted small">{{ n }}</span>{% endfor %}</td>
         </tr>
         {% endfor %}
         </tbody>
       </table>
       </div>
     </details>
+    {% if a.eu_uses_total %}<p class="small">Showing the first {{ a.eu_uses|length }} of {{ a.eu_uses_total }} conditions of use; the official text has the rest.</p>{% endif %}
     <p class="muted small">From Annex II, Part E of Regulation (EC) No 1333/2008 (consolidated version {{ sources.eu_annex2.version if sources.eu_annex2 else '' }}). "Quantum satis" means no maximum level is set; use only as much as needed.</p>
   </section>
   {% endif %}
@@ -95,32 +128,19 @@
     <h2 id="cause-h">Where it may be used in Canada</h2>
     {% for L in a.ca_uses %}
     <details class="uses"{% if loop.first and L.rows|length <= 4 %} open{% endif %}>
-      <summary>{{ L.title }} <span class="muted small">(listed as {{ L.listed_as }}; {{ L.rows|length }} entr{{ 'y' if L.rows|length == 1 else 'ies' }})</span></summary>
-      <div class="table-wrap">
-      <table class="grid uses-table">
+      {% set nrows = L.row_count or L.rows|length %}
+      <summary>{{ L.title }} <span class="muted small">(listed as {{ L.listed_as }}; {{ nrows }} entr{{ 'y' if nrows == 1 else 'ies' }})</span></summary>
+      <div class="tbl-wrap">
+      <table class="tbl uses-table ca-uses">
         <thead><tr><th scope="col">Item</th><th scope="col">Permitted in or upon</th><th scope="col">Maximum level and conditions</th></tr></thead>
         <tbody>
         {% for r in L.rows %}
-        <tr><td>{{ r.item }}</td><td>{{ r.foods or '—' }}</td><td>{{ r.max or '—' }}</td></tr>
+        <tr><td data-label="Item">{{ r.item }}</td><td data-label="Permitted in or upon">{{ r.foods or '—' }}</td><td data-label="Maximum level and conditions">{{ r.max or '—' }}</td></tr>
         {% endfor %}
         </tbody>
       </table>
       </div>
-      <p class="small"><a href="{{ L.url }}" rel="noopener">Official list on canada.ca</a></p>
-    </details>
-    {% endfor %}
-  </section>
-  {% endif %}
-
-  {% set detailed = [] %}
-  {% for j in JUR_ORDER %}{% if a.jur.get(j, {}).get('notes') %}{% set _ = detailed.append(j) %}{% endif %}{% endfor %}
-  {% if detailed %}
-  <section aria-labelledby="details-h">
-    <h2 id="details-h">Conditions and notes</h2>
-    {% for j in detailed %}{% set r = a.jur[j] %}
-    <details class="notes"{% if loop.first and r.notes|length < 6 %} open{% endif %}>
-      <summary>{{ JUR[j].name }} <span class="muted small">({{ r.notes|length }} item{{ '' if r.notes|length == 1 else 's' }})</span></summary>
-      <ul>{% for n in r.notes %}<li>{{ n }}</li>{% endfor %}</ul>
+      <p class="small">{% if nrows > L.rows|length %}Showing the first {{ L.rows|length }} of {{ nrows }} entries. {% endif %}Long entries are shortened (…). <a href="{{ L.url }}" rel="noopener">Full official list on canada.ca</a></p>
     </details>
     {% endfor %}
   </section>
@@ -129,28 +149,32 @@
   {% if in_sets %}
   <section aria-labelledby="diff-h">
     <h2 id="diff-h">Where the rules differ</h2>
-    <ul class="pill-list">{% for s in in_sets %}<li><a href="{{ url(s.path) }}">{{ s.short }}</a></li>{% endfor %}</ul>
+    <p class="muted small">This additive appears on these lists:</p>
+    <ul class="pill-list">{% for s in in_sets %}<li><a class="pill" href="{{ url(s.path) }}">{{ s.short }}</a></li>{% endfor %}</ul>
   </section>
   {% endif %}
 
   <section aria-labelledby="hist-h">
-    <h2 id="hist-h">Status history</h2>
+    <h2 id="hist-h">History</h2>
     {% if a.eu_history %}
     <h3 class="subh">EU list since 2013</h3>
     <ol class="timeline">
       {% for h in a.eu_history|sort(attribute='date', reverse=True) %}
-      <li><time datetime="{{ h.date }}">{{ fmt_date(h.date) }}</time> — {{ h.change }} (<a href="{{ h.url }}" rel="noopener">consolidated text</a>)</li>
+      <li><time datetime="{{ h.date }}">{{ fmt_date(h.date) }}</time> <span>{{ h.change }} (<a href="{{ h.url }}" rel="noopener">consolidated text</a>)</span></li>
       {% endfor %}
     </ol>
     <p class="muted small">Each date is the first EU consolidated text that shows the change. The amending act may be older, and transition periods can apply.</p>
+    {% elif a.eu_history_unclear %}
+    <h3 class="subh">EU list since 2013</h3>
+    <p class="muted">Our automated comparison of the {{ EU_HISTORY.versions }} consolidated versions gives inconsistent results for this additive, so no EU history is shown here. The consolidated versions are listed on <a href="https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008R1333" rel="noopener">EUR-Lex</a>.</p>
     {% elif EU_HISTORY.versions and a.e %}
-    <p class="muted">No change to this additive's EU status in the {{ EU_HISTORY.versions }} consolidated versions of the EU list since {{ fmt_date(EU_HISTORY.first[:4] ~ '-' ~ EU_HISTORY.first[4:6] ~ '-' ~ EU_HISTORY.first[6:]) }}.</p>
+    <p class="muted">No change to its EU status in the {{ EU_HISTORY.versions }} consolidated versions of the EU list since {{ fmt_date(EU_HISTORY.first[:4] ~ '-' ~ EU_HISTORY.first[4:6] ~ '-' ~ EU_HISTORY.first[6:]) }}.</p>
     {% endif %}
     <h3 class="subh">Weekly checks</h3>
     {% if changes %}
     <ol class="timeline">
       {% for c in changes|sort(attribute='date', reverse=True) %}
-      <li><time datetime="{{ c.date }}">{{ fmt_date(c.date) }}</time> — {{ JUR[c.jur].short }}: {{ STATUSES.get(c['from'], STATUSES['unknown'])[0] }} → <strong>{{ STATUSES.get(c.to, STATUSES['unknown'])[0] }}</strong>{% if c.note %}. {{ c.note }}{% endif %}</li>
+      <li><time datetime="{{ c.date }}">{{ fmt_date(c.date) }}</time> <span>{{ JUR[c.jur].short }}: {{ STATUSES.get(c['from'], STATUSES['unknown'])[0] }} → <strong>{{ STATUSES.get(c.to, STATUSES['unknown'])[0] }}</strong>{% if c.note %}. {{ c.note }}{% endif %}</span></li>
       {% endfor %}
     </ol>
     {% else %}
@@ -158,19 +182,18 @@
     {% endif %}
   </section>
 
-  <details class="systems">
-    <summary>Why the same additive can have different statuses</summary>
-    <ul>{% for j in JUR_ORDER %}<li><strong>{{ JUR[j].name }}:</strong> {{ JUR[j].system_note }}</li>{% endfor %}</ul>
-    <p>A different status is a legal fact, not a safety verdict. Regulators assess different evidence, at different times, under different laws.</p>
-  </details>
-
   {% if related %}
   <section aria-labelledby="rel-h">
     <h2 id="rel-h">Related additives</h2>
-    {{ additive_table(related) }}
+    <div class="card-grid">{% for r in related %}{{ additive_card(r) }}{% endfor %}</div>
   </section>
   {% endif %}
 
-  <p class="checked muted small">Data checked {{ fmt_date(generated_at) }}. Statuses summarise the official sources linked above — check them before making decisions. <a href="{{ url('/about/') }}#statuses">What the statuses mean</a>.</p>
+  <aside class="cta-quiz">
+    <p><strong>Think you know where additives are allowed?</strong> Ten rounds, five places.</p>
+    <a class="btn btn-primary" href="{{ url('/quiz/') }}">Play the quiz</a>
+  </aside>
+
+  <p class="checked muted small">Data checked {{ fmt_date(generated_at) }}. Statuses summarise the official sources linked above — check them before you rely on them. <a href="{{ url('/about/') }}#statuses">What the statuses mean</a> · <a href="{{ url('/glossary/') }}">Glossary</a>{% if REPO_URL %} · <a href="{{ REPO_URL }}/issues/new?title={{ ('Correction: ' ~ (a.e ~ ' ' if a.e else '') ~ a.name)|urlencode }}">Report a mistake on this page</a>{% endif %}</p>
 </article>
 {% endblock %}

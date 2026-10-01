@@ -103,6 +103,14 @@ def parse_page(key: str, body: bytes, url: str) -> list[dict]:
     return rows_out
 
 
+def clip(text: str | None, n: int) -> str:
+    """Collapse whitespace; if longer than n, cut at a word boundary and mark the cut with an ellipsis."""
+    t = re.sub(r"\s+", " ", text or "").strip()
+    if len(t) <= n:
+        return t
+    return t[:n].rsplit(" ", 1)[0].rstrip(" ,;") + " …"
+
+
 def parse_all() -> dict:
     cfg = load_sources()["ca_lists"]
     meta = read_json(RAW / "ca_lists" / "meta.json", {}) or {}
@@ -123,10 +131,11 @@ def parse_all() -> dict:
                 rec["names"].append(r["name"])
             L = rec["lists"].setdefault(key, {"no": int(key), "title": LIST_TITLES[key], "url": url,
                                               "items": [], "purposes": [], "food_rows": 0, "rows": []})
-            row = {"item": r["item"], "foods": re.sub(r"\s+", " ", r["foods"] or "").strip()[:700],
-                   "max": re.sub(r"\s+", " ", r["max"] or "").strip()[:500]}
-            if (row["foods"] or row["max"]) and row not in L["rows"] and len(L["rows"]) < 60:
-                L["rows"].append(row)
+            row = {"item": r["item"], "foods": clip(r["foods"], 1500), "max": clip(r["max"], 600)}
+            if (row["foods"] or row["max"]) and row not in L["rows"]:
+                L["row_count"] = L.get("row_count", 0) + 1
+                if len(L["rows"]) < 60:
+                    L["rows"].append(row)
             if r["item"] and r["item"] not in L["items"]:
                 L["items"].append(r["item"])
             for p in re.split(r"\n|;", r["purpose"] or ""):

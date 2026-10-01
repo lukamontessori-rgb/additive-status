@@ -1,17 +1,51 @@
 {% extends "base.html" %}
-{% from "_macros.html" import breadcrumbs %}
+{% from "_macros.html" import breadcrumbs, heatmap %}
 {% block main %}
-{{ breadcrumbs([("Where the rules differ", None)]) }}
-<h1>Where food additive rules differ</h1>
-<p class="lede">Each list shows additives that are allowed in one jurisdiction but not allowed in another. "Not in the FDA inventory" is not counted as "not allowed", because US law also permits substances that are generally recognized as safe (GRAS) without listing them.</p>
-<div class="cards">
-{% for s in sets %}
-  <a class="card" href="{{ url(s.path) }}">
-    <span class="card-num">{{ s['items']|length }}</span>
-    <span class="card-title">{{ s.title }}</span>
-    <span class="card-sub">{% for a in s['items'][:4] %}{{ a.e or a.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if s['items']|length > 4 %}…{% endif %}</span>
-  </a>
-{% endfor %}
+{{ breadcrumbs([("Compare", None)]) }}
+<div class="page-head">
+  <h1>Compare two places</h1>
+  <p class="lede">Pick two places. See which additives one allows and the other does not.</p>
 </div>
-{% if not sets %}<p class="empty">No differences found in the current data.</p>{% endif %}
+
+<section class="cmp-tool" data-compare aria-label="Comparison tool">
+  <div class="cmp-pick">
+    <div>
+      <label for="cmp-a">First place</label>
+      <select id="cmp-a">{% for j in JUR_ORDER %}<option value="{{ j }}"{% if j == 'eu' %} selected{% endif %}>{{ JUR[j].name }}</option>{% endfor %}</select>
+    </div>
+    <button class="icon-btn swap" type="button" data-swap aria-label="Swap the two places">⇄</button>
+    <div>
+      <label for="cmp-b">Second place</label>
+      <select id="cmp-b">{% for j in JUR_ORDER %}<option value="{{ j }}"{% if j == 'us' %} selected{% endif %}>{{ JUR[j].name }}</option>{% endfor %}</select>
+    </div>
+  </div>
+  <div class="cmp-out" aria-live="polite" hidden>
+    <div class="cmp-summary"></div>
+    <div class="cmp-cols"></div>
+  </div>
+  <noscript><p class="note">The comparison tool needs JavaScript. The ready-made lists below work without it.</p></noscript>
+</section>
+
+<section aria-labelledby="mx-h">
+  <h2 id="mx-h">All differences at once</h2>
+  <p class="muted">Each number counts the additives allowed in the row's place but not allowed in the column's place. Darker means more.</p>
+  {{ heatmap() }}
+</section>
+
+<section aria-labelledby="lists-h">
+  <h2 id="lists-h">Ready-made lists</h2>
+  <div class="pair-grid">
+  {% for s in sets if s['items'] %}
+    <a class="pair" href="{{ url(s.path) }}">
+      <span class="pair-n">{{ s['items']|length }}</span>
+      <span class="pair-t">Allowed in <strong>{{ JUR_CODE[s.a] }}</strong>, not in <strong>{{ JUR_CODE[s.b] }}</strong></span>
+      <span class="pair-s">{% for a in s['items'][:3] %}{{ a.e or a.name }}{% if not loop.last %}, {% endif %}{% endfor %}{% if s['items']|length > 3 %}…{% endif %}</span>
+    </a>
+  {% endfor %}
+  </div>
+</section>
+
+<div class="note">
+  <p><strong>How "not allowed" is counted.</strong> Only <em>Not authorised</em>, <em>Prohibited</em> and <em>Delisted / revoked</em> count as not allowed. <em>Not on the list</em> does not: US law also permits substances that are generally recognized as safe (GRAS) without listing them, and Canada treats some substances as food ingredients rather than additives.</p>
+</div>
 {% endblock %}

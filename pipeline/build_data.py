@@ -201,6 +201,9 @@ class Build:
                 ent.setdefault("official", []).append(r["name"])
                 if r["section"] in EU_CLASS:
                     ent["classes"].append(EU_CLASS[r["section"]])
+                p = e_parts(r["e"])
+                if p and 1400 <= p[0] <= 1452 and "starch" in r["name"].lower():
+                    ent["classes"].append("Modified starches")   # E 14xx: named as modified starches
         elif self.prev_by_id:  # EU source down: keep previous E-numbered entities
             for k, a in self.prev_by_id.items():
                 if a.get("e"):
@@ -553,10 +556,9 @@ class Build:
         codes = []
         if ent.get("e"):
             codes.append((self.curated.get("anz_codes") or {}).get(key, key))
-        if ent.get("former_e"):
-            p = e_parts(ent["former_e"])
-            if p:
-                codes.append(f"e{p[0]}{p[1]}")
+        if ent.get("ins"):
+            code = "e" + ent["ins"].lower()
+            codes += [code] + ([code[:-1]] if code[-1].isalpha() else [])   # INS 924a -> 924a, then 924
         for code in codes:
             st, reasons = parse_anz.status_of(anz, code)
             if st == "authorised":
@@ -600,7 +602,7 @@ class Build:
                     "refs": refs + [{"label": "Schedule 18 Processing aids", "url": "https://www.legislation.gov.au/F2015L00452/latest/text"}],
                     "source": "anz_code", "match": "name",
                     "match_detail": "Not in Schedule 15 or on the Schedule 16 lists; its name is listed in Schedule 18 (processing aids)."}
-        if ent.get("e") or ent.get("former_e"):
+        if ent.get("e") or ent.get("ins"):
             return {"status": "not_authorised", "headline": "Not permitted as a food additive in Australia and New Zealand",
                     "refs": refs, "source": "anz_code", "match": "INS number",
                     "match_detail": "Its INS number is not in Schedule 15 or on the Schedule 16 lists, and no entry matches its name."}
@@ -641,13 +643,15 @@ class Build:
                              "restr": r["restr"], "notes": r.get("foot_text", [])[:3], "group": r.get("group"),
                              "entry": r["entry"] if r["entry"] != (ent.get("e") or "") and not r.get("group") else ""})
             if uses:
-                out["eu_uses"] = uses[:150]
+                out["eu_uses"] = uses[:400]
+                if len(uses) > 400:
+                    out["eu_uses_total"] = len(uses)
         ca_lists = []
         for r, _ in ca_matches:
             for L in r["lists"]:
                 if L.get("rows"):
                     ca_lists.append({"no": L["no"], "title": L["title"], "url": L["url"], "listed_as": r["name"],
-                                     "rows": L["rows"][:30]})
+                                     "rows": L["rows"][:40], "row_count": L.get("row_count", len(L["rows"]))})
         if ca_lists:
             out["ca_uses"] = sorted(ca_lists, key=lambda x: x["no"])[:6]
         functions = []
@@ -774,7 +778,7 @@ class Build:
             ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": r["display"],
                          "names": [r["display"]] + info.get("aka", []) + r["other_names"][:10], "cas": r["cas"],
                          "ci": r["colour_index"], "classes": [], "jur": {}, "us_only": True,
-                         "former_e": info.get("former_e")}
+                         "ins": info.get("ins")}
             us_m[sid] = [(r, "FDA inventory entry")]
             for n in [r["name"]] + r["other_names"][:10]:
                 by_name[match_key(n)].add(sid)
@@ -832,7 +836,7 @@ class Build:
                 continue
             ents[cid] = {"id": cid, "e": None, "sort": "~~" + cid, "name": r["name"], "names": list(r["names"]),
                          "cas": [], "ci": [], "classes": [], "jur": {}, "ca_only": True,
-                         "former_e": ca_only_info.get(r["name"], {}).get("former_e")}
+                         "ins": ca_only_info.get(r["name"], {}).get("ins")}
             self._ent_names[cid] = r["name"]
             ca_m[cid].append((r, "Health Canada list entry"))
             ca_stats["own entry"] += 1
@@ -887,10 +891,8 @@ class Build:
                                                    if m[1] and not m[1].startswith("alternative")]))
             item = {"id": k, "e": ent["e"], "sort": ent["sort"], "name": ent["name"], "aka": aka[:16],
                     "cas": cas[:4], "classes": classes, "jur": jur}
-            if ent.get("former_e"):
-                item["former_e"] = ent["former_e"]
-                jur["eu"].setdefault("notes", []).append(
-                    f"This substance once had the EU number {ent['former_e']}, which is no longer on the EU list.")
+            if ent.get("ins"):
+                item["ins"] = ent["ins"]
             item.update(self.details(k, ent, us_m.get(k, []), ca_m.get(k, [])))
             additives.append(item)
         additives.sort(key=lambda a: a["sort"])
@@ -904,6 +906,13 @@ class Build:
         eu_hist_all = []
         for a in additives:
             evs = []
+            seq = [e["from"] for e in events.get(a["id"], [])[:1]] + [e["to"] for e in events.get(a["id"], [])]
+            if len(seq) != len(set(seq)):
+                # A status that comes back (e.g. authorised -> not -> authorised) is more likely an
+                # artefact of reading differently formatted old texts than a real legal history.
+                # Show nothing rather than a history we cannot vouch for.
+                a["eu_history_unclear"] = True
+                continue
             for e in events.get(a["id"], []):
                 d = e["version"]
                 item = {"date": f"{d[:4]}-{d[4:6]}-{d[6:]}", "change": change_text.get((e["from"], e["to"]), "Status changed"),

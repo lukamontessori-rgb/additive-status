@@ -3,12 +3,12 @@
 {% block head %}
 <script type="application/ld+json">{{ ld_json({
   "@context": "https://schema.org", "@type": "Dataset",
-  "name": "Food additive status in the EU, Great Britain, the United States and Canada",
-  "description": "One record per food additive with its legal status in the European Union, Great Britain, the United States (federal) and Canada, compiled weekly from official sources (EUR-Lex, UK Food Standards Agency, U.S. FDA, Federal Register, Health Canada).",
+  "name": "Food additive status in the EU, Great Britain, the United States, Canada and Australia/New Zealand",
+  "description": "One record per food additive with its legal status in the European Union, Great Britain, the United States (federal), Canada and Australia/New Zealand, compiled weekly from official sources (EU Publications Office, UK Food Standards Agency, U.S. FDA, Federal Register, Health Canada, Food Standards Australia New Zealand).",
   "url": abs_url('/data/'),
   "isAccessibleForFree": true,
-  "keywords": ["food additives", "E numbers", "food colours", "regulation", "EU", "FDA", "Health Canada", "Food Standards Agency"],
-  "spatialCoverage": ["European Union", "United Kingdom", "United States", "Canada"],
+  "keywords": ["food additives", "E numbers", "INS numbers", "food colours", "regulation", "EU", "FDA", "Health Canada", "Food Standards Agency", "FSANZ"],
+  "spatialCoverage": ["European Union", "United Kingdom", "United States", "Canada", "Australia", "New Zealand"],
   "dateModified": (generated_at or '')[:10],
   "creator": {"@type": "Organization", "name": SITE_NAME, "url": abs_url('/')},
   "distribution": [
@@ -20,18 +20,22 @@
 {{ breadcrumbs([("Download the data", None)]) }}
 <article class="prose">
 <h1>Download the data</h1>
-<p class="lede">The full combined dataset — {{ count }} additives, four jurisdictions — is free to download and reuse.</p>
-<ul class="downloads">
-  <li><a href="{{ url('/downloads/additives.csv') }}" download>additives.csv</a> <span class="muted">({{ (sizes['additives.csv'] / 1024)|round|int }} KB) — one row per additive, a status column per jurisdiction.</span></li>
-  <li><a href="{{ url('/downloads/additives.json') }}" download>additives.json</a> <span class="muted">({{ (sizes['additives.json'] / 1024)|round|int }} KB) — everything shown on the site, including conditions, references and source metadata.</span></li>
+<p class="lede">The full combined dataset — {{ count }} additives, five places — is free to download and reuse. It is rebuilt every week from the official sources.</p>
+<div class="dl-grid">
+  <a class="dl" href="{{ url('/downloads/additives.csv') }}" download><span class="dl-ico" aria-hidden="true">📄</span><strong>additives.csv</strong><span>{{ (sizes['additives.csv'] / 1024)|round|int }} KB · one row per additive, a status and a detail column per place. Opens in any spreadsheet.</span></a>
+  <a class="dl" href="{{ url('/downloads/additives.json') }}" download><span class="dl-ico" aria-hidden="true">🧾</span><strong>additives.json</strong><span>{{ (sizes['additives.json'] / 1024)|round|int }} KB · everything shown on the site, including conditions, references and source details.</span></a>
+</div>
+<h2>Columns</h2>
+<ul>
+  <li><code>id</code>, <code>e_number</code>, <code>name</code>, <code>other_names</code>, <code>cas</code>, <code>classes</code>, <code>page_url</code></li>
+  <li><code>status_eu</code>, <code>status_gb</code>, <code>status_us</code>, <code>status_ca</code>, <code>status_anz</code> — one of {% for k in STATUSES %}<code>{{ k }}</code>{% if not loop.last %}, {% endif %}{% endfor %} (<a href="{{ url('/about/') }}#statuses">meanings</a>)</li>
+  <li><code>detail_*</code> — a one-line explanation of each status</li>
 </ul>
 <h2>Licence and attribution</h2>
-<p>The compiled data carries the terms of its sources. You may reuse it if you keep these attributions:</p>
+<p>The compiled data carries the terms of its sources. You may reuse it if you keep these attributions and say that the data was changed (extracted and summarised):</p>
 <ul>
 {% for sid, s in sources.items() %}<li><strong>{{ s.publisher }}</strong> — {{ s.licence }}. {{ s.attribution }}</li>{% endfor %}
 </ul>
-<p>Please also mention {{ SITE_NAME }} ({{ abs_url('/') }}) as the compiler, and the date you downloaded the file. Data checked {{ fmt_date(generated_at) }}.</p>
-<h2>Status values</h2>
-<p>The <code>status_*</code> columns use these values: {% for k in STATUSES %}<code>{{ k }}</code>{% if not loop.last %}, {% endif %}{% endfor %}. See <a href="{{ url('/about/') }}#statuses">what the statuses mean</a>.</p>
+<p>Please also mention {{ SITE_NAME }} ({{ abs_url('/') }}) as the compiler, and the date you downloaded the file. Full terms are on the <a href="{{ url('/legal/') }}#licences">legal page</a>. Data checked {{ fmt_date(generated_at) }}.</p>
 </article>
 {% endblock %}

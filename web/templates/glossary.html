@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs %}
+{% block head %}
+<script type="application/ld+json">{{ ld_json({"@context": "https://schema.org", "@type": "DefinedTermSet", "name": "Food additive glossary", "url": abs_url('/glossary/'),
+  "hasDefinedTerm": glossary_ld})|safe }}</script>
+{% endblock %}
+{% block main %}
+{{ breadcrumbs([("Glossary", None)]) }}
+<article class="prose">
+<h1>Glossary</h1>
+<p class="lede">The words you meet on food additive lists and on this site, in plain English.</p>
+<p class="table-filter"><label for="gl-filter">Find a term</label> <input id="gl-filter" type="search" data-list-filter="gl" placeholder="e.g. GRAS" autocomplete="off"></p>
+<dl class="gloss" id="gl">
+{% for term, anchor, text in terms %}
+  <div id="{{ anchor }}"><dt>{{ term }}</dt><dd>{{ text }}</dd></div>
+{% endfor %}
+</dl>
+<p class="muted small">See also <a href="{{ url('/about/') }}#statuses">what the statuses mean</a>.</p>
+</article>
+{% endblock %}

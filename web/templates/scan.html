@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs %}
+{% block main %}
+{{ breadcrumbs([("Label checker", None)]) }}
+<div class="page-head">
+  <h1><span aria-hidden="true">🏷️</span> Label checker</h1>
+  <p class="lede">Paste or type the ingredients list from a food label. Every additive in it is picked out and shown with its status in the five places.</p>
+</div>
+
+<section class="scan" data-scan>
+  <div class="scan-in panel">
+    <label for="scan-text">Ingredients</label>
+    <textarea id="scan-text" rows="6" spellcheck="false" placeholder="e.g. Sugar, glucose syrup, gelling agent (pectin), acid (citric acid), colours (E129, E133)…"></textarea>
+    <div class="scan-bar">
+      <button class="btn btn-primary" type="button" data-scan-run>Check the label</button>
+      <button class="btn btn-ghost" type="button" data-scan-example>Try an example</button>
+      <button class="btn btn-ghost" type="button" data-scan-clear>Clear</button>
+      <span class="scan-place">
+        <label for="scan-home">My country</label>
+        <select id="scan-home">
+          <option value="">Show all five</option>
+          {% for j in JUR_ORDER %}<option value="{{ j }}">{{ JUR[j].name }}</option>{% endfor %}
+        </select>
+      </span>
+    </div>
+    <p class="muted small"><span aria-hidden="true">🔒</span> The text stays on your device. It is checked in your browser and never sent anywhere.</p>
+  </div>
+  <div class="scan-out" aria-live="polite">
+    <div class="scan-summary"></div>
+    <ul class="scan-list"></ul>
+    <p class="scan-hint muted small" hidden>It finds E-numbers (E 102, E-102, e102), INS numbers in brackets as used on Australian and New Zealand labels (“colour (102)”), and additive names such as “citric acid”. Names the lists do not use, and additives that are not on any of the five lists, are not found.</p>
+  </div>
+  <noscript><p class="note">The label checker needs JavaScript. You can still <a href="{{ url('/additives/') }}">search the full table</a>.</p></noscript>
+</section>
+
+<section class="how" aria-labelledby="how-h">
+  <h2 id="how-h">Good to know</h2>
+  <ul>
+    <li><strong>A label can be right even when a status says "not allowed".</strong> A product made for one market follows that market's rules. Imported food can also be covered by rules not shown here.</li>
+    <li><strong>"Allowed" comes with conditions.</strong> Most additives are permitted only in certain foods and up to a maximum level. Open an additive to see the conditions.</li>
+    <li><strong>Flavourings, enzymes and processing aids</strong> often do not appear as additives on a label and are mostly not covered.</li>
+  </ul>
+</section>
+{% endblock %}
