@@ -200,3 +200,8 @@ anz_names:
   e246: "Sweet osmanthus ear glycolipids"   # glycolipids from Dacryopinax spathularia
   e1517: "Glycerol diacetate"
   e1519: "Benzyl alcohol"
+
+# Additives with no Canadian entry under their own name, where a Canadian entry with a different
+# name may or may not be the same substance. Shown as "Not on the list" (never "not authorised").
+ca_uncertain:
+  e153: "Canada's List of Permitted Colouring Agents has an entry for carbon black but none for vegetable carbon. The list does not say whether the two are treated as the same substance."

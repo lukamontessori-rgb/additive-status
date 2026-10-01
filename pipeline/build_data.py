@@ -456,6 +456,16 @@ class Build:
         notes = r["notes"][:5] + r.get("phase_notes", [])
         headline = "Authorised in Great Britain" if st == "authorised" else (
             "; ".join(r.get("phase_notes", [])) or ", ".join(r["phases"]))
+        terms = " ".join(r.get("terms", []))
+        if st == "authorised" and r.get("terms") and "1333/2008" not in terms and "conditions of use" not in terms.lower():
+            # Listed only through its purity specification (e.g. canthaxanthin, kept for medicines):
+            # the register gives no permitted food use.
+            st = "not_authorised"
+            headline = "Not authorised in food: the register lists only its specification"
+            facts.append(["Legal basis in the register", "; ".join(r["terms"])])
+            notes.append("The FSA register lists this additive only under the specifications regulation "
+                         "(assimilated Regulation (EU) No 231/2012), not under the food uses in Annex II or III "
+                         "of assimilated Regulation (EC) No 1333/2008.")
         return {"status": st, "headline": headline, "facts": facts, "notes": notes, "refs": refs,
                 "source": "uk_fsa", "match": "e_number", "match_detail": "Matched by E-number in the FSA register."}
 
@@ -482,7 +492,9 @@ class Build:
         cfr = sorted({c for m in matches for c in m[0]["cfr"]}, key=lambda s: tuple(int(x) for x in s.split(".")))
         food_cfr = [c for c in cfr if not re.match(r"^(73|74)\.\d{4}$", c) and not c.startswith(("175.", "176.", "177.", "178."))]
         if food_cfr:
-            facts.append(["21 CFR (food uses)", ", ".join(food_cfr[:8])])
+            feed_only = r["status"] == "not_authorised" and all(
+                c.startswith("73.") and int(c.split(".")[1]) in parse_us.FEED_ONLY_73 for c in food_cfr)
+            facts.append(["21 CFR (animal feed uses)" if feed_only else "21 CFR (food uses)", ", ".join(food_cfr[:8])])
             for c in food_cfr[:3]:
                 refs.append({"label": f"21 CFR {c} (eCFR)", "url": f"https://www.ecfr.gov/current/title-21/section-{c}"})
         effects = sorted({e for m in matches for e in m[0]["effects"]})
@@ -511,6 +523,11 @@ class Build:
         base = "https://www.canada.ca/en/health-canada/services/food-nutrition/food-safety/food-additives/lists-permitted.html"
         if not matches:
             refs = [{"label": "Lists of Permitted Food Additives", "url": base}]
+            unsure = (self.curated.get("ca_uncertain") or {}).get(key)
+            if unsure:   # reviewed cases where the Canadian list may cover the substance under another name
+                return {"status": "not_listed", "headline": "Not on the list under this name", "notes": [unsure],
+                        "refs": refs, "source": "ca_lists", "match": None,
+                        "match_detail": "No entry with this name or its synonyms. See the note for a related Canadian entry."}
             if "Colours" in self._ent_classes.get(key, []):
                 return {"status": "not_authorised", "headline": "Not on Health Canada's List of Permitted Food Colours",
                         "refs": refs, "source": "ca_lists", "match": None,
