@@ -168,7 +168,7 @@ ca_only:
   - "Glycerol Ester of Gum Rosin"
   - "Glycerol Ester of Tall Oil Rosin"
   - {name: "Stearyl Citrate", ins: "484"}
-  - {name: "Monoisopropyl Citrate", ins: "384"}
+  - {name: "Monoisopropyl Citrate", ins: "384", us_names: ["ISOPROPYL CITRATE"]}   # 21 CFR 184.1386 covers mono-, di- and tri-isopropyl citrate
   - {name: "Sodium Fumarate", ins: "365"}
   - {name: "Potassium Fumarate", ins: "366"}
   - {name: "Calcium Fumarate", ins: "367"}

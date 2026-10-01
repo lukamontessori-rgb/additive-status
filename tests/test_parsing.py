@@ -74,6 +74,9 @@ def test_us_classify():
     assert parse_us.classify([], {"NLFG"}, True)[0] == "delisted"
     assert parse_us.classify([], set(), True)[0] == "authorised"
     assert parse_us.classify([], set(), False)[0] == "listed_noreg"
+    assert parse_us.classify([(181, 30)], set(), False)[0] == "not_listed"      # packaging sanction only
+    assert parse_us.classify([(181, 34)], set(), False)[0] == "authorised"      # nitrites in meat curing
+    assert parse_us.classify([(182, 90)], set(), False)[0] == "not_listed"      # migrates from paper
 
 
 def test_us_html_grid():

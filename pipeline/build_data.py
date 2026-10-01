@@ -21,7 +21,7 @@ from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
 
 # Bump when parsing or matching rules change. Status differences caused by a method
 # change are not reported as regulatory changes on the changes page.
-METHOD_VERSION = "2026-09-30.2"
+METHOD_VERSION = "2026-10-01.1"
 
 STATUS_RANK = {"authorised": 7, "phase_out": 6, "listed_noreg": 5, "prohibited": 4, "delisted": 3,
                "not_authorised": 2, "not_listed": 1, "unknown": 0}
@@ -490,7 +490,10 @@ class Build:
         r = best[0]
         facts = [["FDA name", r["display"]]]
         cfr = sorted({c for m in matches for c in m[0]["cfr"]}, key=lambda s: tuple(int(x) for x in s.split(".")))
-        food_cfr = [c for c in cfr if not re.match(r"^(73|74)\.\d{4}$", c) and not c.startswith(("175.", "176.", "177.", "178."))]
+        def indirect(c):  # food-contact sections (see parse_us.classify)
+            p, x = (int(v) for v in c.split(".")[:2])
+            return p in (175, 176, 177, 178, 186) or (p == 181 and x not in (33, 34)) or (p == 182 and x in parse_us.INDIRECT_182)
+        food_cfr = [c for c in cfr if not re.match(r"^(73|74)\.\d{4}$", c) and not indirect(c)]
         if food_cfr:
             feed_only = r["status"] == "not_authorised" and all(
                 c.startswith("73.") and int(c.split(".")[1]) in parse_us.FEED_ONLY_73 for c in food_cfr)
@@ -860,12 +863,14 @@ class Build:
             ca_stats["unmatched"] -= 1
             hits = []
             for n in r["names"]:
-                hits.extend(fda_by_key.get(match_key(n), []))
+                hits.extend((h, "name") for h in fda_by_key.get(match_key(n), []))
+            for n in ca_only_info.get(r["name"], {}).get("us_names", []):   # reviewed FDA names
+                hits.extend((h, "reviewed match table") for h in fda_by_key.get(match_key(n), []))
             seen = set()
-            for h in hits:
+            for h, how in hits:
                 if id(h) not in seen:
                     seen.add(id(h))
-                    us_m[cid].append((h, "name"))
+                    us_m[cid].append((h, how))
 
         additives = []
         for k, ent in ents.items():

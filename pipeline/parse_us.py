@@ -84,6 +84,7 @@ def find_header(grid):
 
 
 FOOD_COLOUR_MAX = 1000
+INDIRECT_182 = {70, 90, 99}
 # 21 CFR 73 Subpart A sections that allow the colour only in animal feed or pet food
 FEED_ONLY_73 = {35, 37, 50, 185, 275, 295, 315, 352, 355}  # 73.1–73.999 and 74.101–74.999 are food uses; 73.1xxx+/74.1xxx+ are drugs, cosmetics, devices
 
@@ -105,6 +106,13 @@ def classify(sections: list[tuple[int, int]], flags: set[str], fema: bool,
         secs = ", ".join(f"73.{x}" for x in sorted(food_col_73))
         return "not_authorised", f"Not listed as a colour for human food (listed for animal feed only, 21 CFR {secs})"
     food_col_73 = [s for s in food_col_73 if s not in FEED_ONLY_73]
+    # Parts 181 and 182 also hold food-contact (packaging) sanctions: 181.22-181.32 (packaging
+    # materials) and 182.70/182.90/182.99 (migration from paper, pesticide adjuvants). Only the
+    # remaining sections are direct food uses.
+    direct = {p for p, x in sections if p not in (181, 182)
+              or (p == 181 and x in (33, 34)) or (p == 182 and x not in INDIRECT_182)}
+    indirect_only = bool(parts & {181, 182}) and not (direct & {181, 182})
+    parts = (parts - {181, 182}) | (direct & {181, 182})
     labels = []
     colour_first = effects is None or any("color" in e.lower() for e in effects)
     other = []
@@ -127,11 +135,11 @@ def classify(sections: list[tuple[int, int]], flags: set[str], fema: bool,
         return "delisted", "No longer considered GRAS by the FEMA expert panel (flavouring)"
     if fema:
         return "authorised", "Flavouring considered GRAS by the FEMA expert panel"
-    if parts & {73, 74} and not (food_col_73 or food_col_74):
+    if parts & {73, 74} and not (food_col_73 or food_col_74) and colour_first:
         return "not_authorised", "Colour additive listed only for drugs, cosmetics or devices, not for food"
     if parts == {81} or (parts and parts <= {81, 70, 71}):
         return "delisted", "Colour additive listing terminated (21 CFR 81)"
-    if parts & {175, 176, 177, 178, 186}:
+    if parts & {175, 176, 177, 178, 186} or indirect_only:
         return "not_listed", "Listed only for indirect (food-contact) uses"
     return "listed_noreg", "In FDA's inventory, but no regulation is cited"
 

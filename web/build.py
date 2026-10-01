@@ -560,7 +560,7 @@ class Builder:
                 continue
             yes = [j for j in JUR_ORDER if allowed(status_of(a, j))]
             no = [j for j in JUR_ORDER if not_allowed(status_of(a, j))]
-            add(f"{label(a)} is allowed in {join_words([JUR_THE[j] for j in yes])}, "
+            add(f"{label(a)}: allowed in {join_words([JUR_THE[j] for j in yes])}, "
                 f"but not in {join_words([JUR_THE[j] for j in no])}.", a, kind="differs")
 
         # 2. Counts per jurisdiction (superlatives only "of the additives tracked here")
@@ -604,8 +604,10 @@ class Builder:
         if ev and hist.get("versions"):
             added = sum(1 for e in ev if e["change"].startswith("Added"))
             removed = sum(1 for e in ev if e["change"].startswith("Removed"))
-            add(f"Across {hist['versions']} consolidated versions since {hist['first'][:4]}, {added} additives were "
-                f"added to the EU list and {removed} were removed.", href=url("/changes/#eu-history"), kind="history")
+            def n_was(n):
+                return f"{n} additive was" if n == 1 else f"{n} additives were"
+            add(f"Across {hist['versions']} consolidated versions of the EU list since {hist['first'][:4]}, "
+                f"{n_was(added)} added and {n_was(removed)} removed.", href=url("/changes/#eu-history"), kind="history")
         # 6. Class facts
         by_class = defaultdict(list)
         for a in self.additives:
