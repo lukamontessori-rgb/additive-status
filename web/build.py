@@ -98,6 +98,10 @@ ICONS = {
     "flask": '<path d="M9.5 3.5h5M10.5 3.5v6L5 18.5a1.5 1.5 0 0 0 1.3 2.2h11.4a1.5 1.5 0 0 0 1.3-2.2L13.5 9.5v-6"/><path d="M7.5 14.5h9"/>',
     "link": '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
     "trophy": '<path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>',
+    "pause": '<path d="M9 6v12M15 6v12"/>',
+    "play": '<path d="M8 5.5v13l10-6.5Z" fill="currentColor"/>',
+    "arrow": '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    "up": '<path d="M12 19V5M6 11l6-6 6 6"/>',
 }
 
 
@@ -738,14 +742,73 @@ class Builder:
             lab.append({"i": a["id"], "e": a.get("e") or "", "n": a["name"], "s": sts,
                         "y": [height[tone(x)] for x in sts], "dye": dyes.get(a["id"], "#8fa8ff"),
                         "l": [STATUSES[x][1] for x in sts], "t": [tone(x) for x in sts]})
+        story = self.story(total, breakdown, everywhere, diff_count)
+        marquee = self.marquee(examples)
         self.page("/", "home.html", priority=1.0,
                   page_title=f"{SITE_NAME}: is this food additive allowed in the EU, UK, US, Canada or Australia?",
                   home=True, compare=compare, classes=classes, counts=counts, chart=chart, breakdown=breakdown, lab=lab,
+                  story=story, marquee=marquee,
                   diff_count=diff_count, everywhere=everywhere, facts=self.facts(counts, compare),
                   examples=examples, recent=recent, eu_recent=eu_recent, by_id=self.by_id,
                   description="Search any E-number or additive name and see its official status in the EU, UK (GB), "
                               "US, Canada and Australia/New Zealand side by side, with links to the sources. "
                               "Free, no ads, no tracking.")
+
+    def story(self, total: int, breakdown: dict, everywhere: int, diff_count: int) -> dict:
+        """Data for the home page's scroll story: one dot per additive, sorted into piles step by step.
+
+        Every number and sentence is computed from the published data, so the story is true by
+        construction. The text is rendered server-side (readable without JavaScript); the dots are
+        drawn by motion.js from the compact `rows` list."""
+        code = {"ok": "o", "warn": "w", "no": "n", "unknown": "u"}
+        rows = []
+        for a in self.additives:
+            sts = [status_of(a, j) for j in JUR_ORDER]
+            groups = ["a" if allowed(s) else "n" if not_allowed(s) else "u" for s in sts]
+            summ = "a" if all(g == "a" for g in groups) else "d" if a["differs"] else "r"
+            rows.append([a["id"], (a["e"] + " " if a.get("e") else "") + a["name"],
+                         "".join(code[tone(s)] for s in sts), "".join(groups) + summ])
+        steps = [{"key": "start", "tab": "Start", "title": f"{total} additives",
+                  "text": f"Every dot is one of the {total} food additives tracked here. "
+                          "Keep scrolling and they sort themselves, one place at a time.",
+                  "piles": []}]
+        prev = None
+        for k, j in enumerate(JUR_ORDER):
+            b = breakdown[j]
+            text = (f"{b['yes']} allowed, {b['no']} not allowed"
+                    + (f" and {b['unk']} unclear" if b["unk"] else "") + ".")
+            if prev is not None:
+                moved = sum(1 for r in rows if r[3][k] != r[3][k - 1])
+                text += f" {moved} additives changed pile compared with {JURISDICTIONS[prev]['short']}."
+            if b["unk"]:
+                text += " Unclear means not on a list that does not cover everything, or no data. It does not mean banned."
+            steps.append({"key": j, "tab": JUR_CODE[j], "title": JURISDICTIONS[j]["name"], "text": text,
+                          "piles": [["a", "Allowed", b["yes"]], ["n", "Not allowed", b["no"]], ["u", "Unclear", b["unk"]]]})
+            prev = j
+        rest = total - everywhere - diff_count
+        steps.append({"key": "sum", "tab": "All five", "title": "All five together",
+                      "text": f"{everywhere} are allowed in all five places. {diff_count} are allowed in at least one place "
+                              f"and not allowed in another. The other {rest} are unclear somewhere, or allowed nowhere.",
+                      "piles": [["a", "Allowed in all five", everywhere], ["d", "Allowed in one, not in another", diff_count],
+                                ["r", "Unclear somewhere, or allowed nowhere", rest]]})
+        return {"rows": rows, "steps": steps, "total": total}
+
+    def marquee(self, examples: list[dict]) -> dict:
+        """Two bands of real additives for the moving ticker: famous ones whose status differs between
+        places, and ones allowed everywhere."""
+        seen = {a["id"] for a in examples}
+        differs = [a for a in examples if a["differs"]]
+        differs += [a for a in self.additives if a["differs"] and a.get("e") and a["id"] not in seen][:14 - len(differs)]
+        same = [a for a in self.additives if a.get("e") and not a["differs"]
+                and all(allowed(status_of(a, j)) for j in JUR_ORDER)]
+        step = max(1, len(same) // 14)
+        same = same[::step][:14]
+
+        def item(a: dict) -> dict:
+            sts = [status_of(a, j) for j in JUR_ORDER]
+            return {"id": a["id"], "e": a.get("e") or "", "n": a["name"].split(",")[0].split("/")[0].strip(),
+                    "t": [tone(s) for s in sts]}
+        return {"big": [item(a) for a in differs], "chips": [item(a) for a in same + differs[:4]]}
 
     def build_sitemap_robots(self) -> None:
         lines = ['<?xml version="1.0" encoding="UTF-8"?>',

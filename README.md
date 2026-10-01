@@ -53,6 +53,9 @@ The site's privacy policy, terms of use, cookies-and-storage page and accessibil
 `web/templates/`. The fonts (Unbounded and Instrument Sans) are self-hosted from `web/static/fonts/`
 under the SIL Open Font License 1.1; the licence texts are next to the font files.
 
+All animation lives in `web/static/motion.js` (no libraries). It is decoration only: pages read the same without
+it, it stops for visitors who ask their system for reduced motion, and the menu has a *Pause animations* button.
+
 ## Local use
 
 ```

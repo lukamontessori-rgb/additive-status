@@ -1,30 +1,34 @@
 {% extends "base.html" %}
-{% from "_macros.html" import chip, dots, additive_card, search_box, heatmap, enum, elem %}
+{% from "_macros.html" import chip, dots, additive_card, search_box, heatmap, enum, elem, split %}
 {% block head %}
 <script type="application/ld+json">{{ ld_json({"@context": "https://schema.org", "@type": "WebSite", "name": SITE_NAME, "url": abs_url('/'),
   "description": TAGLINE,
   "potentialAction": {"@type": "SearchAction", "target": abs_url('/additives/') ~ "?q={search_term_string}", "query-input": "required name=search_term_string"}})|safe }}</script>
 {% endblock %}
 {% block main %}
-<section class="hero">
-  <div class="hero-text">
-    <p class="kicker"><span class="pulse" aria-hidden="true"></span><span>Rechecked every Monday from the official lists</span></p>
-    <h1 class="hero-title">Is this food additive allowed?</h1>
-    <p class="lede">Type an E-number or a name to see its status in the <strong>EU</strong>, the <strong>UK</strong>, the <strong>US</strong>, <strong>Canada</strong> and <strong>Australia/New Zealand</strong>, side by side, with the official source behind every answer.</p>
-    {{ search_box('q-home', big=True, placeholder='Try E171, Red 40 or aspartame') }}
-    <div class="try">
+<section class="hero" data-hero>
+  <div class="hero-bg" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>
+  <div class="hero-text" data-depth="-0.18">
+    <p class="kicker load-in" style="--li:0"><span class="pulse" aria-hidden="true"></span><span>Rechecked every Monday from the official lists</span></p>
+    <h1 class="hero-title">{{ split("Is this food additive allowed?", 1) }}</h1>
+    <p class="lede load-in" style="--li:5">Type an E-number or a name to see its status in the <strong>EU</strong>, the <strong>UK</strong>, the <strong>US</strong>, <strong>Canada</strong> and <strong>Australia/New Zealand</strong>, side by side, with the official source behind every answer.</p>
+    <div class="load-in" style="--li:6">{{ search_box('q-home', big=True, placeholder='Try E171, Red 40 or aspartame') }}</div>
+    <div class="try load-in" style="--li:7">
       <span class="muted">Try</span>
       {% for a in examples[:5] %}<a class="pill" href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e or a.name }}{% if a.e %} <span class="muted">{{ a.name.split(',')[0].split('/')[0] }}</span>{% endif %}</a>{% endfor %}
     </div>
-    <div class="hero-actions">
+    <div class="hero-actions load-in" style="--li:8">
       <a class="btn btn-soft" href="{{ url('/additives/') }}" data-random>{{ icon('dice') }} Surprise me</a>
       <a class="btn btn-soft" href="{{ url('/scan/') }}">{{ icon('tag') }} Check a label</a>
       <a class="btn btn-soft" href="{{ url('/quiz/') }}">{{ icon('spark') }} Play the quiz</a>
     </div>
   </div>
   {% if lab %}{% set d = lab[0] %}
-  <div class="hero-art">
-    <div class="lab" data-lab='{{ lab|tojson }}' style="--dye: {{ d.dye }}" aria-hidden="true">
+  <div class="hero-art load-in" style="--li:3" data-depth="0.1">
+    <div class="hero-orbit" aria-hidden="true">
+      {% for m in marquee.big[:6] %}<span class="orb o{{ loop.index }}">{{ m.e or m.n }}</span>{% endfor %}
+    </div>
+    <div class="lab" data-lab='{{ lab|tojson }}' data-tilt style="--dye: {{ d.dye }}" aria-hidden="true">
       <div class="lab-top"><span class="lab-e">{{ d.e or 'No E-number' }}</span><span class="lab-name">{{ d.n }}</span></div>
       <div class="lab-plate">
         <span class="lab-front">Allowed</span>
@@ -39,12 +43,27 @@
           {% endfor %}
         </div>
       </div>
-      <div class="lab-dots">{% for x in lab %}<i{% if loop.first %} class="on"{% endif %}></i>{% endfor %}</div>
+      <div class="lab-dots">{% for x in lab %}<i{% if loop.first %} class="on"{% endif %} data-lab-go="{{ loop.index0 }}"></i>{% endfor %}</div>
     </div>
-    <p class="lab-caption">Each lane is one place. The dot rises when the additive is allowed there and stays low when it is not.</p>
+    <p class="lab-caption">Each lane is one place. The dot rises when the additive is allowed there and stays low when it is not. <button type="button" class="link-btn lab-pause js-only" data-lab-pause aria-pressed="false">Pause</button></p>
   </div>
   {% endif %}
+  <a class="scroll-cue" href="#story"><span class="cue-mouse" aria-hidden="true"><i></i></span>Scroll to sort all {{ total }} additives</a>
 </section>
+
+{% if marquee.big %}
+<section class="band" aria-label="Example additives on a moving band">
+  <button class="band-pause js-only" type="button" data-band-pause aria-pressed="false">{{ icon('pause', 16) }}<span>Pause the band</span></button>
+  <div class="band-rows" aria-hidden="true">
+    <div class="band-row band-big" data-marquee="-1"><div class="band-track"><ul class="band-list">
+      {% for m in marquee.big %}<li><a href="{{ url('/additive/' ~ m.id ~ '/') }}" tabindex="-1">{% if m.e %}<span class="bm-e">{{ m.e }}</span>{% endif %}<span class="bm-n{% if loop.index is even %} outline{% endif %}">{{ m.n }}</span></a><span class="bm-sep" style="--h: {{ (loop.index0 * 47) % 360 }}"></span></li>{% endfor %}
+    </ul></div></div>
+    <div class="band-row band-chips" data-marquee="1"><div class="band-track"><ul class="band-list">
+      {% for m in marquee.chips %}<li><a href="{{ url('/additive/' ~ m.id ~ '/') }}" tabindex="-1">{% if m.e %}<span class="enum">{{ m.e }}</span>{% endif %}<span class="bc-n">{{ m.n }}</span><span class="bc-dots">{% for t in m.t %}<i class="bd-{{ t }}" title="{{ JUR_CODE[JUR_ORDER[loop.index0]] }}">{{ TONE_ICON[t] }}</i>{% endfor %}</span></a></li>{% endfor %}
+    </ul></div></div>
+  </div>
+</section>
+{% endif %}
 
 <section class="legend-strip" aria-label="What the colours mean">
   {% for key in ['authorised', 'phase_out', 'not_authorised', 'not_listed'] %}
@@ -52,6 +71,36 @@
   {% endfor %}
   <a href="{{ url('/about/') }}#statuses">What the statuses mean</a>
 </section>
+
+{% if story %}
+<section class="story" id="story" aria-labelledby="story-h" data-story>
+  <h2 id="story-h" class="story-h">One dot for every additive, sorted place by place</h2>
+  <ol class="story-list">
+    {% for s in story.steps %}<li><strong>{{ s.title }}.</strong> {{ s.text }}</li>{% endfor %}
+  </ol>
+  <div class="story-stage js-only">
+    <div class="story-copy" aria-hidden="true">
+      {% for s in story.steps %}
+      <div class="story-text{% if loop.first %} on{% endif %}" data-i="{{ loop.index0 }}">
+        <p class="story-step">{{ loop.index }} of {{ story.steps|length }}</p>
+        <p class="story-title">{{ s.title }}</p>
+        <p class="story-body">{{ s.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="story-viz" aria-hidden="true">
+      <div class="story-labels"><span></span><span></span><span></span></div>
+      <div class="story-dots"></div>
+    </div>
+    <nav class="story-nav" aria-label="Story steps">
+      {% for s in story.steps %}<button type="button" data-story-go="{{ loop.index0 }}"{% if loop.first %} aria-current="step"{% endif %}><span class="sr">Go to step {{ loop.index }}: </span>{{ s.tab }}</button>{% endfor %}
+    </nav>
+    <a class="story-skip" href="#after-story">Skip the story</a>
+  </div>
+  <script type="application/json" id="story-data">{{ {"rows": story.rows, "steps": story.steps|map(attribute='piles')|list}|tojson }}</script>
+</section>
+<div id="after-story" class="anchor"></div>
+{% endif %}
 
 {% if facts %}
 <section class="facts-sec reveal" aria-labelledby="facts-h" data-facts>
@@ -91,9 +140,9 @@
       </details>
     </div>
     <div class="panel stat-panel">
-      <a class="stat" href="{{ url('/additives/') }}?differ=1"><strong data-count="{{ diff_count }}">{{ diff_count }}</strong><span>additives are allowed in one place but not in another</span></a>
-      <a class="stat" href="{{ url('/additives/') }}?allow={{ JUR_ORDER|join(',') }}"><strong data-count="{{ everywhere }}">{{ everywhere }}</strong><span>are allowed in all five places</span></a>
-      <a class="stat" href="{{ url('/changes/') }}#eu-history"><strong{% if EU_HISTORY.versions %} data-count="{{ EU_HISTORY.versions }}"{% endif %}>{{ EU_HISTORY.versions or '—' }}</strong><span>versions of the EU list compared since {{ (EU_HISTORY.first or '2013')[:4] }}</span></a>
+      <a class="stat" href="{{ url('/additives/') }}?differ=1" data-tilt><strong data-count="{{ diff_count }}">{{ diff_count }}</strong><span>additives are allowed in one place but not in another</span></a>
+      <a class="stat" href="{{ url('/additives/') }}?allow={{ JUR_ORDER|join(',') }}" data-tilt><strong data-count="{{ everywhere }}">{{ everywhere }}</strong><span>are allowed in all five places</span></a>
+      <a class="stat" href="{{ url('/changes/') }}#eu-history" data-tilt><strong{% if EU_HISTORY.versions %} data-count="{{ EU_HISTORY.versions }}"{% endif %}>{{ EU_HISTORY.versions or '—' }}</strong><span>versions of the EU list compared since {{ (EU_HISTORY.first or '2013')[:4] }}</span></a>
     </div>
   </div>
 </section>
@@ -107,13 +156,39 @@
   {{ heatmap() }}
 </section>
 
+<section class="statement" aria-label="What a status means">
+  <p class="statement-text" data-scrub>A different status is a legal fact, not a safety verdict. Regulators assess different evidence, at different times, under different laws.</p>
+</section>
+
+<section class="why hs" aria-labelledby="why-h" data-hs>
+  <div class="hs-pin">
+    <div class="hs-head">
+      <h2 id="why-h">Why can the same additive be allowed in one place and not in another?</h2>
+      <p class="muted">Five places, five rulebooks. Each one decides in its own way.</p>
+    </div>
+    <div class="hs-view">
+      <div class="hs-track">
+        {% for j in JUR_ORDER %}
+        <article class="why-card" data-tilt>
+          <span class="why-big" aria-hidden="true">{{ JUR_CODE[j] }}</span>
+          <h3>{{ JUR[j].name }}</h3>
+          <p>{{ JUR[j].system_note }}</p>
+          <p class="why-stat"><strong data-count="{{ breakdown[j].yes }}">{{ breakdown[j].yes }}</strong> of {{ total }} allowed · <a href="{{ url('/additives/') }}?allow={{ j }}">See them</a></p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="hs-progress" aria-hidden="true"><span></span></div>
+  </div>
+</section>
+
 <section class="tools reveal" aria-labelledby="tools-h">
   <h2 id="tools-h">Play and explore</h2>
-  <div class="tool-grid">
-    <a class="tool" href="{{ url('/scan/') }}"><span class="tool-ico" aria-hidden="true">{{ icon('tag') }}</span><strong>Label checker</strong><span>Paste an ingredients list. The additives it recognises light up with their status in the five places.</span></a>
-    <a class="tool" href="{{ url('/quiz/') }}"><span class="tool-ico" aria-hidden="true">{{ icon('spark') }}</span><strong>Where is it allowed?</strong><span>A ten-round quiz. Guess which places allow each additive, then see the official answer.</span></a>
-    <a class="tool" href="{{ url('/compare/') }}"><span class="tool-ico" aria-hidden="true">{{ icon('scale') }}</span><strong>Compare two places</strong><span>Pick any two and see what one allows that the other does not.</span></a>
-    <a class="tool" href="{{ url('/additives/') }}" data-random><span class="tool-ico" aria-hidden="true">{{ icon('dice') }}</span><strong>Random additive</strong><span>Land on a random additive page and learn something new.</span></a>
+  <div class="tool-grid" data-stack>
+    <a class="tool" href="{{ url('/scan/') }}"><span class="tool-ico" aria-hidden="true">{{ icon('tag') }}</span><strong>Label checker</strong><span class="tool-d">Paste an ingredients list. The additives it recognises light up with their status in the five places.</span><span class="tool-go" aria-hidden="true">{{ icon('arrow', 22) }}</span></a>
+    <a class="tool" href="{{ url('/quiz/') }}"><span class="tool-ico" aria-hidden="true">{{ icon('spark') }}</span><strong>Where is it allowed?</strong><span class="tool-d">A ten-round quiz. Guess which places allow each additive, then see the official answer.</span><span class="tool-go" aria-hidden="true">{{ icon('arrow', 22) }}</span></a>
+    <a class="tool" href="{{ url('/compare/') }}"><span class="tool-ico" aria-hidden="true">{{ icon('scale') }}</span><strong>Compare two places</strong><span class="tool-d">Pick any two and see what one allows that the other does not.</span><span class="tool-go" aria-hidden="true">{{ icon('arrow', 22) }}</span></a>
+    <a class="tool" href="{{ url('/additives/') }}" data-random><span class="tool-ico" aria-hidden="true">{{ icon('dice') }}</span><strong>Random additive</strong><span class="tool-d">Land on a random additive page and learn something new.</span><span class="tool-go" aria-hidden="true">{{ icon('arrow', 22) }}</span></a>
   </div>
 </section>
 
@@ -154,15 +229,5 @@
       {% for c in classes %}<li><a href="{{ url(c.path) }}">{{ elem(c.name) }}<span class="type-name">{{ c.name }}</span><span class="type-n">{{ c.count }}</span></a></li>{% endfor %}
     </ul>
   </div>
-</section>
-
-<section class="why reveal" aria-labelledby="why-h">
-  <h2 id="why-h">Why can the same additive be allowed in one place and not in another?</h2>
-  <div class="why-grid">
-    {% for j in JUR_ORDER %}
-    <div class="why-card"><span class="jbadge">{{ JUR_CODE[j] }}</span><strong>{{ JUR[j].name }}</strong><p>{{ JUR[j].system_note }}</p></div>
-    {% endfor %}
-  </div>
-  <p class="muted">A different status is a legal fact, not a safety verdict. Regulators assess different evidence, at different times, under different laws.</p>
 </section>
 {% endblock %}

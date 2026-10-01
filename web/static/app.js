@@ -11,11 +11,13 @@
   const MAX_Q = 100;
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
-  const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // animations live in motion.js; these helpers are no-ops when it is missing or motion is off
+  const M = () => (window.Motion && window.Motion.on() ? window.Motion : null);
+  const motionOn = () => !!M();
 
   // Per-visitor conveniences only; nothing is ever sent anywhere. Settings are kept in
   // localStorage only after the visitor chose "Remember my settings" (key privacy-choice).
-  const KEYS = ["theme", "quiz-best", "scan-home"];
+  const KEYS = ["theme", "motion", "quiz-best", "scan-home"];
   const store = {
     choice() { try { return localStorage.getItem("privacy-choice"); } catch (e) { return null; } },
     get(k) { try { return localStorage.getItem(k) || sessionStorage.getItem(k); } catch (e) { return null; } },
@@ -33,6 +35,7 @@
     },
     clearAll() { try { KEYS.concat("privacy-choice").forEach((k) => { localStorage.removeItem(k); sessionStorage.removeItem(k); }); } catch (e) { /* ignore */ } },
   };
+  window.__store = store;
 
   // ------------------------------------------------------------ text helpers
   function norm(s) {
@@ -193,6 +196,7 @@
       });
       list.hidden = false;
       input.setAttribute("aria-expanded", "true");
+      if (M()) M().cascade(list, "li", { y: 10, d: 28, max: 8 });
     }
     function highlight(i) {
       const items = $$("li[role=option]:not([aria-disabled])", list);
@@ -236,13 +240,13 @@
   function setupTheme() {
     const btn = $("[data-theme-toggle]");
     if (!btn) return;
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (e) => {
       const root = document.documentElement;
       const cur = root.getAttribute("data-theme") ||
         (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
       const next = cur === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      store.set("theme", next, true);
+      const apply = () => { root.setAttribute("data-theme", next); store.set("theme", next, true); };
+      if (window.Motion) window.Motion.themeSwitch(e, apply); else apply();
     });
   }
   function setupMenu() {
@@ -350,95 +354,56 @@
     let order = shuffle(facts.map((_, i) => i)), pos = 0;
     const firstDiff = order.findIndex((i) => facts[i].classList.contains("k-differs"));
     if (firstDiff > 0) order.unshift(order.splice(firstDiff, 1)[0]);
-    function show() {
+    function show(dir) {
       facts.forEach((f) => f.classList.remove("on"));
-      facts[order[pos]].classList.add("on");
+      const f = facts[order[pos]];
+      f.classList.add("on");
       count.textContent = (pos + 1) + " / " + facts.length;
+      if (dir && M()) M().cardIn(f, dir);
     }
-    $("[data-fact-next]", box).addEventListener("click", () => { pos = (pos + 1) % facts.length; show(); });
-    $("[data-fact-prev]", box).addEventListener("click", () => { pos = (pos - 1 + facts.length) % facts.length; show(); });
-    $("[data-fact-shuffle]", box).addEventListener("click", () => { order = shuffle(order); pos = 0; show(); });
+    $("[data-fact-next]", box).addEventListener("click", () => { pos = (pos + 1) % facts.length; show(1); });
+    $("[data-fact-prev]", box).addEventListener("click", () => { pos = (pos - 1 + facts.length) % facts.length; show(-1); });
+    $("[data-fact-shuffle]", box).addEventListener("click", () => { order = shuffle(order); pos = 0; show(1); });
     show();
   }
 
   // ------------------------------------------------------------ hero "chromatography" lanes (decorative)
   function setupLab() {
     const lab = $("[data-lab]");
-    if (!lab || reduceMotion) return;
+    if (!lab) return;
     let items;
     try { items = JSON.parse(lab.getAttribute("data-lab")); } catch (e) { return; }
     if (!items || items.length < 2) return;
-    const lanes = $$(".lane", lab), dotsEl = $$(".lab-dots i", lab);
-    let k = 0, paused = false;
-    function show(it) {
+    const lanes = $$(".lane", lab), dotsEl = $$(".lab-dots i", lab), pauseBtn = $("[data-lab-pause]");
+    let k = 0, hover = false, paused = false;
+    function show(i) {
+      k = (i + items.length) % items.length;
+      const it = items[k];
       lab.style.setProperty("--dye", it.dye);
       $(".lab-e", lab).textContent = it.e || "No E-number";
       $(".lab-name", lab).textContent = it.n;
-      lanes.forEach((lane, i) => {
-        lane.style.setProperty("--y", it.y[i]);
+      lanes.forEach((lane, j) => {
+        lane.style.setProperty("--y", it.y[j]);
         const st = $(".lane-st", lane);
-        st.className = "lane-st t-" + it.t[i];
-        $("i", st).textContent = ICON[it.t[i]];
-        $("b", st).textContent = it.l[i];
+        st.className = "lane-st t-" + it.t[j];
+        $("i", st).textContent = ICON[it.t[j]];
+        $("b", st).textContent = it.l[j];
       });
-      dotsEl.forEach((d, i) => d.classList.toggle("on", i === k));
+      dotsEl.forEach((d, j) => d.classList.toggle("on", j === k));
+      if (M()) M().anim($(".lab-top", lab), [{ opacity: 0, translate: "0 12px" }, { opacity: 1, translate: "0 0" }], { duration: 520 });
     }
-    lab.addEventListener("pointerenter", () => { paused = true; });
-    lab.addEventListener("pointerleave", () => { paused = false; });
+    lab.addEventListener("pointerenter", () => { hover = true; });
+    lab.addEventListener("pointerleave", () => { hover = false; });
+    dotsEl.forEach((d, j) => d.addEventListener("click", () => show(j)));
+    if (pauseBtn) pauseBtn.addEventListener("click", () => {
+      paused = !paused;
+      pauseBtn.setAttribute("aria-pressed", paused ? "true" : "false");
+      pauseBtn.textContent = paused ? "Play" : "Pause";
+    });
     setInterval(() => {
-      if (paused || document.hidden) return;
-      k = (k + 1) % items.length;
-      show(items[k]);
+      if (paused || hover || document.hidden || !motionOn()) return;
+      show(k + 1);
     }, 4200);
-  }
-
-  // ------------------------------------------------------------ scroll effects
-  function setupScroll() {
-    const bar = $(".progress span");
-    let ticking = false;
-    function update() {
-      ticking = false;
-      const max = document.documentElement.scrollHeight - innerHeight;
-      if (bar) bar.style.setProperty("--p", max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
-      document.body.classList.toggle("scrolled", scrollY > 8);
-    }
-    addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    addEventListener("resize", update, { passive: true });
-    update();
-    // reveal sections and animate charts once they come into view
-    const targets = $$(".reveal, .sbars, .heat, .vcols");
-    function countUp(root) {
-      $$("[data-count]", root).forEach((el) => {
-        const n = +el.getAttribute("data-count");
-        if (!n || reduceMotion) return;
-        const t0 = performance.now(), dur = 1300;
-        (function step(t) {
-          const x = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - x, 3);
-          el.textContent = String(Math.round(n * e));
-          if (x < 1) requestAnimationFrame(step);
-        })(t0);
-      });
-    }
-    if (reduceMotion || !("IntersectionObserver" in window)) { targets.forEach((t) => t.classList.add("in")); return; }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (!en.isIntersecting) return;
-        en.target.classList.add("in");
-        countUp(en.target);
-        io.unobserve(en.target);
-      });
-    }, { rootMargin: "0px 0px -48px 0px", threshold: 0 });
-    targets.forEach((t) => io.observe(t));
-  }
-
-  // ------------------------------------------------------------ cursor spotlight on tool cards
-  function setupSpotlight() {
-    if (reduceMotion) return;
-    $$(".tool").forEach((el) => el.addEventListener("pointermove", (e) => {
-      const r = el.getBoundingClientRect();
-      el.style.setProperty("--mx", (e.clientX - r.left) + "px");
-      el.style.setProperty("--my", (e.clientY - r.top) + "px");
-    }));
   }
 
   // ------------------------------------------------------------ privacy choices (no cookies)
@@ -454,7 +419,6 @@
     }
     let opener = null;
     function show(e) { if (box) { opener = e && e.currentTarget; box.hidden = false; const b = $("button", box); if (b) b.focus({ preventScroll: true }); } }
-    if (box && !store.choice()) box.hidden = false;
     $$("[data-consent]").forEach((b) => b.addEventListener("click", () => {
       store.decide(b.getAttribute("data-consent"));
       if (b.getAttribute("data-consent") === "yes") {
@@ -472,7 +436,6 @@
       store.clearAll();
       describe();
       if (status) status.textContent = "Deleted. Nothing from this site is stored on this device now.";
-      if (box) box.hidden = false;
     });
     describe();
   }
@@ -498,13 +461,28 @@
     });
     const all = el("button", { type: "button", class: "tab tab-all", "aria-pressed": "false" }, "Show all");
     bar.appendChild(all);
+    const ink = el("span", { class: "tab-ink", "aria-hidden": "true" });
+    bar.appendChild(ink);
+    bar.classList.add("has-ink");
     panels[0].parentNode.insertBefore(bar, panels[0]);
+    let cur = -1;
+    function moveInk(t) {
+      if (!t) { ink.style.opacity = "0"; return; }
+      ink.style.opacity = "1";
+      ink.style.width = t.offsetWidth + "px"; ink.style.height = t.offsetHeight + "px";
+      ink.style.transform = "translate(" + t.offsetLeft + "px," + t.offsetTop + "px)";
+    }
     function select(i, focus) {
+      const dir = cur < 0 ? 0 : i > cur ? 1 : -1;
       tabs.forEach((t, k) => { t.setAttribute("aria-selected", k === i ? "true" : "false"); t.tabIndex = k === i ? 0 : -1; });
       panels.forEach((p, k) => { p.hidden = k !== i; });
       all.setAttribute("aria-pressed", "false");
+      moveInk(tabs[i]);
+      if (dir && M()) M().anim(panels[i], [{ opacity: 0, translate: (dir * 40) + "px 0" }, { opacity: 1, translate: "0 0" }], { duration: 480 });
+      cur = i;
       if (focus) tabs[i].focus();
     }
+    addEventListener("resize", () => { if (all.getAttribute("aria-pressed") !== "true" && cur >= 0) moveInk(tabs[cur]); }, { passive: true });
     tabs.forEach((t, i) => {
       t.addEventListener("click", () => select(i));
       t.addEventListener("keydown", (e) => {
@@ -516,6 +494,8 @@
       panels.forEach((p) => { p.hidden = false; });
       tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
       all.setAttribute("aria-pressed", "true");
+      moveInk(null);
+      if (M()) M().cascade(box, ".jur-panel", { y: 30, d: 70 });
     });
     function fromHash() {
       const m = /^#jur-(\w+)$/.exec(location.hash);
@@ -530,7 +510,7 @@
       e.preventDefault();
       select(i);
       history.replaceState(null, "", "#" + panels[i].id);
-      box.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      box.scrollIntoView({ behavior: motionOn() ? "smooth" : "auto", block: "start" });
     }));
   }
 
@@ -579,8 +559,9 @@
         if (ok) shown++;
       });
       const by = sort.value;
-      if (by !== lastSort) reorder(by);
-      count.textContent = shown === rows.length ? rows.length + " additives" : shown + " of " + rows.length + " additives";
+      if (by !== lastSort) { if (M()) M().flipRows(tbody, () => reorder(by)); else reorder(by); }
+      const label = shown === rows.length ? rows.length + " additives" : shown + " of " + rows.length + " additives";
+      if (count.textContent !== label) { count.textContent = label; if (push !== false && M()) M().bump(count); }
       empty.hidden = shown !== 0;
       table.parentNode.hidden = shown === 0;
       if (push !== false && history.replaceState) {
@@ -609,8 +590,21 @@
     const so = params.get("sort");
     if (so && Array.from(sort.options).some((o) => o.value === so)) sort.value = so;
     if (params.get("differ") === "1") press(diff, true);
-    q.addEventListener("input", apply);
-    form.addEventListener("change", apply);
+    function applyAnimated() {
+      const before = new Set(rows.filter((r) => !r.tr.hidden).map((r) => r.tr));
+      apply();
+      if (!M()) return;
+      let n = 0;
+      rows.forEach((r) => {
+        if (r.tr.hidden || before.has(r.tr) || n > 18) return;
+        const b = r.tr.getBoundingClientRect();
+        if (b.top > innerHeight || b.bottom < 0) return;
+        r.tr.animate([{ opacity: 0, translate: "0 18px" }, { opacity: 1, translate: "0 0" }], { duration: 480, delay: n * 28, easing: "cubic-bezier(.2,.8,.2,1)", fill: "backwards" });
+        n++;
+      });
+    }
+    q.addEventListener("input", applyAnimated);
+    form.addEventListener("change", (e) => { if (e.target === sort) apply(); else applyAnimated(); });
     [diff].concat(allowBtns, denyBtns).forEach((b) => b.addEventListener("click", () => {
       press(b, !pressed(b));
       // a place cannot be both "allowed in" and "not allowed in"
@@ -619,11 +613,11 @@
         const other = b.hasAttribute("data-allow") ? denyBtns : allowBtns;
         other.forEach((o) => { if ((o.getAttribute("data-allow") || o.getAttribute("data-deny")) === k) press(o, false); });
       }
-      apply();
+      applyAnimated();
     }));
     form.addEventListener("reset", () => setTimeout(() => {
       [diff].concat(allowBtns, denyBtns).forEach((b) => press(b, false));
-      apply();
+      applyAnimated();
     }, 0));
     apply(false);
   }
@@ -645,6 +639,7 @@
       h.appendChild(el("span", { class: "n" }, String(items.length)));
       c.appendChild(h);
       const ul = el("ul");
+      c.__n = $(".n", h); c.__count = items.length;
       const LIMIT = 40;
       function fill(n) {
         ul.textContent = "";
@@ -693,6 +688,11 @@
         cols.appendChild(column("Allowed in " + A.c + ", not in " + B.c, onlyA));
         cols.appendChild(column("Allowed in " + B.c + ", not in " + A.c, onlyB));
         cols.appendChild(column("Allowed in both", both));
+        if (M()) {
+          M().cascade(cols, ".cmp-col", { y: 30, d: 90 });
+          $$(".cmp-col", cols).forEach((c) => { M().cascade(c, "li", { y: 12, d: 22, max: 14 }); if (c.__n) M().odometer(c.__n, c.__count, true); });
+          $$("strong", summaryEl).forEach((s) => M().bump(s));
+        }
         if (history.replaceState) history.replaceState(null, "", location.pathname + "?a=" + A.k + "&b=" + B.k);
       }).catch(() => {
         out.hidden = false;
@@ -701,7 +701,7 @@
     }
     selA.addEventListener("change", render);
     selB.addEventListener("change", render);
-    $("[data-swap]", box).addEventListener("click", () => { const t = selA.value; selA.value = selB.value; selB.value = t; render(); });
+    $("[data-swap]", box).addEventListener("click", () => { const t = selA.value; selA.value = selB.value; selB.value = t; if (M()) M().swap(selA, selB); render(); });
     render();
   }
 
@@ -832,7 +832,7 @@
         const r = x.r;
         const flag = h >= 0 && isNotAllowed(r.s[h]);
         const li = el("li", { class: "scan-item" + (flag ? " flag" : "") });
-        li.style.animationDelay = reduceMotion ? "0s" : (n * 40) + "ms";
+        li.style.animationDelay = motionOn() ? (n * 60) + "ms" : "0s";
         const name = el("div", { class: "si-name" });
         const a = el("a", { href: pageUrl(r.i) });
         if (r.e) a.appendChild(enumBadge(r.e));
@@ -853,7 +853,11 @@
     ta.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(run, 250); });
     home.addEventListener("change", () => { store.set("scan-home", home.value); run(); });
     $("[data-scan-run]", box).addEventListener("click", run);
-    $("[data-scan-example]", box).addEventListener("click", () => { ta.value = EXAMPLE; run(); ta.focus(); });
+    const exBtn = $("[data-scan-example]", box);
+    exBtn.addEventListener("click", () => {
+      if (M()) { exBtn.disabled = true; M().typeInto(ta, EXAMPLE, () => { exBtn.disabled = false; run(); ta.focus(); }); }
+      else { ta.value = EXAMPLE; run(); ta.focus(); }
+    });
     $("[data-scan-clear]", box).addEventListener("click", () => { ta.value = ""; run(); ta.focus(); });
     if (ta.value.trim()) run();
   }
@@ -912,6 +916,7 @@
       });
       q("check").hidden = false; q("next").hidden = true;
       q("check").focus({ preventScroll: true });
+      if (M()) { M().cardIn($(".quiz-card", box), 1); M().cascade($(".quiz-opts", box), ".quiz-opt", { y: 22, d: 60 }); }
     }
     function check() {
       if (checked) return;
@@ -930,9 +935,11 @@
         o.setAttribute("aria-label", JUR[k].s + ": " + (truth ? "allowed" : "not allowed") + (ok ? ", you were right" : ", you were wrong"));
         o.disabled = true;
       });
+      if (M()) M().flipSeq(opts, (o) => { if (o.classList.contains("wrong")) M().shake(o); else M().pop(o); });
       total += pts;
       log.push({ r, pts });
       q("score").textContent = String(total);
+      if (M()) M().bump(q("score"));
       const fb = q("feedback");
       fb.textContent = "";
       const line = el("p", { class: "qf-line" }, pts + " / 5: " + (pts === 5 ? "perfect!" : pts >= 4 ? "so close." : pts >= 3 ? "not bad." : "a tricky one."));
@@ -969,6 +976,7 @@
         requestAnimationFrame(() => requestAnimationFrame(() => { ring.style.strokeDashoffset = String(c * (1 - total / 50)); }));
       }
       if (ringText) ringText.textContent = String(total);
+      if (M()) { M().odometer(q("final"), total, true); M().cascade(q("review"), ".qr", { y: 16, d: 50, max: 10 }); }
       const rev = q("review"); rev.textContent = "";
       log.forEach(({ r, pts }) => {
         const row = el("div", { class: "qr" });
@@ -994,7 +1002,7 @@
       showBest();
     }
     function confetti(k) {
-      if (reduceMotion) return;
+      if (!motionOn()) return;
       const dyes = ["#ffd23f", "#ff8a3d", "#ff3d5e", "#a77bff", "#4d8bff", "#3fd39a"];
       for (let i = 0; i < k; i++) {
         const s = el("span", { class: "confetti", "aria-hidden": "true" });
@@ -1029,7 +1037,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     $$("form[data-search]").forEach(setupSearch);
     setupTheme(); setupMenu(); setupShortcut(); setupRandom(); setupTooltips(); setupShare();
-    setupFilters(); setupFacts(); setupLab(); setupScroll(); setupSpotlight(); setupConsent(); setupTabs(); setupList(); setupCompare(); setupScan(); setupQuiz();
+    setupFilters(); setupFacts(); setupLab(); setupConsent(); setupTabs(); setupList(); setupCompare(); setupScan(); setupQuiz();
   });
   // exported for tests
   window.__additive = { norm, enumKey, scanText, buildScanMaps };

@@ -51,6 +51,12 @@
 </div>
 {%- endmacro %}
 
+{# Words wrapped for the rise-in animation. The real text stays in a visually hidden copy, so screen
+   readers and search engines read one normal sentence; the animated copy is hidden from them. #}
+{% macro split(text, start=0) -%}
+<span class="sr">{{ text }}</span><span class="split" aria-hidden="true">{% for w in text.split() %}<span class="w"><span class="wi" style="--i:{{ start + loop.index0 }}">{{ w }}</span></span>{% if not loop.last %} {% endif %}{% endfor %}</span>
+{%- endmacro %}
+
 {% macro breadcrumbs(items) -%}
 <nav class="crumbs" aria-label="Breadcrumb"><ol>
   <li><a href="{{ url('/') }}">Home</a></li>
