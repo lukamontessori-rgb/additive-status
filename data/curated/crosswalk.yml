@@ -207,7 +207,7 @@ ca_uncertain:
   e153: "Canada's List of Permitted Colouring Agents has an entry for carbon black but none for vegetable carbon. The list does not say whether the two are treated as the same substance."
 
 # Not on a closed Canadian list under their own name, but the list may cover them another way.
-ca_closed_exclude: [e558, e960b, e960c, e960d]
+ca_closed_exclude: [e558, e960b, e960c, e960d, us-diethyl-pyrocarbonate]
 
 # Extra notes shown with a Canadian status (reviewed).
 ca_notes:

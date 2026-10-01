@@ -21,7 +21,7 @@ from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
 
 # Bump when parsing or matching rules change. Status differences caused by a method
 # change are not reported as regulatory changes on the changes page.
-METHOD_VERSION = "2026-10-01.3"
+METHOD_VERSION = "2026-10-01.4"
 
 STATUS_RANK = {"authorised": 7, "phase_out": 6, "listed_noreg": 5, "prohibited": 4, "delisted": 3,
                "not_authorised": 2, "not_listed": 1, "unknown": 0}
@@ -905,6 +905,26 @@ class Build:
         additives = []
         for k, ent in ents.items():
             prev = self.prev_by_id.get(k, {}).get("jur", {})
+            classes = list(dict.fromkeys(ent["classes"]))
+            for r, _ in ca_m.get(k, []):
+                for c in r.get("classes", []):
+                    if c not in classes:
+                        classes.append(c)
+            good_us = [m for m in us_m.get(k, []) if not (m[1] or "").startswith("alternative")]
+            if not classes and good_us:
+                # FDA effect lists are long and noisy (talc lists "non-nutritive sweetener"), so only
+                # the first two effects of the best match are used.
+                best_us = max(good_us, key=lambda m: match_rank(m, match_key(ent["name"])))[0]
+                eff = {e.lower() for e in best_us["effects"][:2]}
+                for e, c in (("color or coloring adjunct", "Colours"), ("preservative", "Preservatives"),
+                             ("antioxidant", "Antioxidants"), ("non-nutritive sweetener", "Sweeteners"),
+                             ("emulsifier or emulsifier salt", "Emulsifiers, stabilisers, thickeners and gelling agents"),
+                             ("stabilizer or thickener", "Emulsifiers, stabilisers, thickeners and gelling agents"),
+                             ("dough strengthener", "Flour treatment agents"), ("flour treating agent", "Flour treatment agents")):
+                    colour_cfr = any(re.match(r"^7[34]\.\d{1,3}$", x) for x in best_us["cfr"])
+                    if e in eff and c not in classes and (c != "Colours" or colour_cfr):
+                        classes.append(c)
+            self._ent_classes[k] = classes
             jur = {}
             for j, fn in (("eu", lambda: self.eu_status(k, ent)), ("gb", lambda: self.gb_status(k, ent)),
                           ("us", lambda: self.us_status(k, us_m.get(k, []))),
@@ -915,20 +935,6 @@ class Build:
                     rec = dict(prev.get(j, {"status": "unknown", "headline": "Source temporarily unavailable"}))
                     rec["stale"] = True
                 jur[j] = rec
-            classes = list(dict.fromkeys(ent["classes"]))
-            for r, _ in ca_m.get(k, []):
-                for c in r.get("classes", []):
-                    if c not in classes:
-                        classes.append(c)
-            if not classes:
-                eff = {e.lower() for r, _ in us_m.get(k, []) for e in r["effects"]}
-                for e, c in (("color or coloring adjunct", "Colours"), ("preservative", "Preservatives"),
-                             ("antioxidant", "Antioxidants"), ("non-nutritive sweetener", "Sweeteners"),
-                             ("emulsifier or emulsifier salt", "Emulsifiers, stabilisers, thickeners and gelling agents"),
-                             ("stabilizer or thickener", "Emulsifiers, stabilisers, thickeners and gelling agents"),
-                             ("dough strengthener", "Flour treatment agents"), ("flour treating agent", "Flour treatment agents")):
-                    if e in eff and c not in classes:
-                        classes.append(c)
             aka, seen = [], {match_key(ent["name"])}
             pool = ent["names"] + [m[0]["display"] for m in us_m.get(k, [])
                                    if m[0]["status"] != "delisted" and not (m[1] or "").startswith("alternative")
