@@ -1,7 +1,7 @@
 {# Status chip: icon + label, never colour alone. #}
-{% macro chip(status, short=False) -%}
+{% macro chip(status, short=False, tip=True) -%}
 {% set s = STATUSES.get(status, STATUSES['unknown']) %}
-<span class="st st-{{ s[2] }}" title="{{ s[0] }}: {{ s[3] }}"><i aria-hidden="true">{{ TONE_ICON[s[2]] }}</i>{{ s[1] if short else s[0] }}</span>
+<span class="st st-{{ s[2] }}"{% if tip %} title="{{ s[0] }}: {{ s[3] }}"{% endif %}><i aria-hidden="true">{{ TONE_ICON[s[2]] }}</i>{{ s[1] if short else s[0] }}</span>
 {%- endmacro %}
 
 {# Five compact status pills with jurisdiction codes, e.g. for cards and results. #}
@@ -38,7 +38,7 @@
   <tr>
     <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ enum(a) }} <span class="nm">{{ a.name }}</span></a></th>
     {% if show_class %}<td class="c-type">{{ a.classes|join(', ') }}</td>{% endif %}
-    {% for j in JUR_ORDER %}{% set st = status_of(a, j) %}<td data-label="{{ JUR_CODE[j] }}" data-s="{{ st }}">{{ chip(st, True) }}</td>{% endfor %}
+    {% for j in JUR_ORDER %}{% set st = status_of(a, j) %}<td data-label="{{ JUR_CODE[j] }}" data-s="{{ st }}">{{ chip(st, True, False) }}</td>{% endfor %}
   </tr>
   {% endfor %}
   </tbody>

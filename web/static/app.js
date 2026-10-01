@@ -457,6 +457,17 @@
         o: +tr.getAttribute("data-o"), name: norm($(".nm", tr).textContent), s,
         yes: s.filter(isAllowed).length, no: s.filter(isNotAllowed).length };
     });
+    let lastSort = "e";   // rows are rendered in E-number order
+    function reorder(by) {
+      lastSort = by;
+      const sorted = rows.slice().sort((a, b) =>
+        by === "name" ? a.name.localeCompare(b.name) :
+        by === "allowed" ? (b.yes - a.yes) || (a.o - b.o) :
+        by === "restricted" ? (b.no - a.no) || (a.o - b.o) : a.o - b.o);
+      const frag = document.createDocumentFragment();
+      sorted.forEach((r) => frag.appendChild(r.tr));
+      tbody.appendChild(frag);
+    }
     const pressed = (b) => b.getAttribute("aria-pressed") === "true";
     const press = (b, v) => b.setAttribute("aria-pressed", v ? "true" : "false");
     function apply(push) {
@@ -475,13 +486,7 @@
         if (ok) shown++;
       });
       const by = sort.value;
-      const sorted = rows.slice().sort((a, b) =>
-        by === "name" ? a.name.localeCompare(b.name) :
-        by === "allowed" ? (b.yes - a.yes) || (a.o - b.o) :
-        by === "restricted" ? (b.no - a.no) || (a.o - b.o) : a.o - b.o);
-      const frag = document.createDocumentFragment();
-      sorted.forEach((r) => frag.appendChild(r.tr));
-      tbody.appendChild(frag);
+      if (by !== lastSort) reorder(by);
       count.textContent = shown === rows.length ? rows.length + " additives" : shown + " of " + rows.length + " additives";
       empty.hidden = shown !== 0;
       table.parentNode.hidden = shown === 0;

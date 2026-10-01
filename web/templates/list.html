@@ -55,7 +55,7 @@
   {% for a in additives %}
   <tr data-q="{{ ([a.e or '', a.name] + a.aka + a.cas + (['INS ' ~ a.ins, 'E ' ~ a.ins] if a.ins else []))|join('|')|lower }}" data-c="{{ a.classes|join('|') }}" data-d="{{ 1 if a.differs else 0 }}" data-o="{{ loop.index0 }}">
     <th scope="row"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ enum(a) }} <span class="nm">{{ a.name }}</span></a></th>
-    {% for j in JUR_ORDER %}{% set st = status_of(a, j) %}<td data-label="{{ JUR_CODE[j] }}" data-s="{{ st }}">{{ chip(st, True) }}</td>{% endfor %}
+    {% for j in JUR_ORDER %}{% set st = status_of(a, j) %}<td data-label="{{ JUR_CODE[j] }}" data-s="{{ st }}">{{ chip(st, True, False) }}</td>{% endfor %}
   </tr>
   {% endfor %}
   </tbody>

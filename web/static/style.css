@@ -169,7 +169,7 @@ a.tag:hover { background: var(--brand-soft); color: var(--brand-soft-ink); }
 .st-no { color: var(--no); background: var(--no-bg); border-color: var(--no-line); } .st-no i { background: var(--no); color: var(--no-bg); }
 .st-unknown { color: var(--unk); background: var(--unk-bg); border-color: var(--unk-line); } .st-unknown i { background: var(--unk); color: var(--unk-bg); }
 .dots { display: inline-flex; flex-wrap: wrap; gap: 4px; }
-.d { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px; border-radius: 999px; font-size: .74rem; font-weight: 700; border: 1px solid; line-height: 1.5; }
+.d { display: inline-flex; align-items: center; gap: 3px; padding: 1px 7px; border-radius: 999px; font-size: .75rem; font-weight: 700; border: 1px solid; line-height: 1.5; }
 .d b { font-weight: 800; }
 .d-ok { color: var(--ok); background: var(--ok-bg); border-color: var(--ok-line); }
 .d-warn { color: var(--warn); background: var(--warn-bg); border-color: var(--warn-line); }
@@ -431,8 +431,8 @@ a.tag:hover { background: var(--brand-soft); color: var(--brand-soft-ink); }
   .stat-tbl tr { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px 4px; padding: 12px; border-bottom: 1px solid var(--line); }
   .stat-tbl tbody th { grid-column: 1 / -1; min-width: 0; padding: 0 0 2px; border: 0; }
   .stat-tbl td { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0; border: 0; }
-  .stat-tbl td::before { content: attr(data-label); font-size: .68rem; font-weight: 800; color: var(--muted); letter-spacing: .03em; }
-  .stat-tbl td .st { padding: 2px 6px 2px 3px; font-size: .72rem; }
+  .stat-tbl td::before { content: attr(data-label); font-size: .75rem; font-weight: 800; color: var(--muted); letter-spacing: .03em; }
+  .stat-tbl td .st { padding: 2px 6px 2px 3px; font-size: .75rem; }
   .stat-tbl .c-type { grid-column: 1 / -1; display: block; }
   .stat-tbl .c-type::before { display: none; }
 }
