@@ -160,13 +160,13 @@
     <h3 class="subh">EU list since 2013</h3>
     <ol class="timeline">
       {% for h in a.eu_history|sort(attribute='date', reverse=True) %}
-      <li><time datetime="{{ h.date }}">{{ fmt_date(h.date) }}</time> <span>{{ h.change }} (<a href="{{ h.url }}" rel="noopener">consolidated text</a>)</span></li>
+      <li><time datetime="{{ h.date }}">{{ fmt_date(h.date) }}</time> <span>{{ h.change }} — first shown in the <a href="{{ h.url }}" rel="noopener">consolidated text of this date</a></span></li>
       {% endfor %}
     </ol>
-    <p class="muted small">Each date is the first EU consolidated text that shows the change. The amending act may be older, and transition periods can apply.</p>
+    <p class="muted small">Each date is the first EU consolidated text that shows the change, not the legal date of the change. The amending act (see "Entry last amended by" above) can be older, and transition periods can apply.</p>
     {% elif a.eu_history_unclear %}
     <h3 class="subh">EU list since 2013</h3>
-    <p class="muted">Our automated comparison of the {{ EU_HISTORY.versions }} consolidated versions gives inconsistent results for this additive, so no EU history is shown here. The consolidated versions are listed on <a href="https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008R1333" rel="noopener">EUR-Lex</a>.</p>
+    <p class="muted">EU history is not shown for this additive: its entries could not be compared reliably across the {{ EU_HISTORY.versions }} consolidated versions. The versions are listed on <a href="https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008R1333" rel="noopener">EUR-Lex</a>.</p>
     {% elif EU_HISTORY.versions and a.e %}
     <p class="muted">No change to its EU status in the {{ EU_HISTORY.versions }} consolidated versions of the EU list since {{ fmt_date(EU_HISTORY.first[:4] ~ '-' ~ EU_HISTORY.first[4:6] ~ '-' ~ EU_HISTORY.first[6:]) }}.</p>
     {% endif %}

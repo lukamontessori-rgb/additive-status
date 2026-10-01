@@ -116,9 +116,11 @@ def classify(sections: list[tuple[int, int]], flags: set[str], fema: bool,
     labels = []
     colour_first = effects is None or any("color" in e.lower() for e in effects)
     other = []
-    for part, text in ((172, "Approved food additive (21 CFR 172)"), (173, "Approved secondary direct food additive (21 CFR 173)"),
-                       (180, "Interim food additive (21 CFR 180)"), (184, "Affirmed as GRAS (21 CFR 184)"),
-                       (182, "Listed as GRAS (21 CFR 182)"), (181, "Prior-sanctioned (21 CFR 181)")):
+    # GRAS first: a substance that is GRAS (182/184) and also cited in 172 (often only for a
+    # narrow use, e.g. MSG and 172.320) is best described by its GRAS status.
+    for part, text in ((184, "Affirmed as GRAS (21 CFR 184)"), (182, "Listed as GRAS (21 CFR 182)"),
+                       (172, "Approved food additive (21 CFR 172)"), (173, "Approved secondary direct food additive (21 CFR 173)"),
+                       (180, "Interim food additive (21 CFR 180)"), (181, "Prior-sanctioned (21 CFR 181)")):
         if part in parts:
             other.append(text)
     if other and not colour_first:

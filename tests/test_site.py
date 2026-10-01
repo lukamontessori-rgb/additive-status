@@ -20,8 +20,8 @@ def test_summary_sentence_is_factual():
     a = {"name": "X", "e": "E 1", "jur": {"eu": {"status": "authorised"}, "gb": {"status": "authorised"},
                                           "us": {"status": "not_listed"}, "ca": {"status": "not_authorised"}}}
     s = summary_sentence(a)
-    assert s == ("X (E 1) is authorised in the EU and the UK (GB); not authorised in Canada; "
-                 "not on the list in the US, which does not cover every permitted substance.")
+    assert s == ("X (E 1): authorised in the EU and the UK (GB); not authorised in Canada; "
+                 "not on the list in the US (that list does not cover every permitted substance).")
 
 
 def test_not_listed_is_never_counted_as_not_allowed(tmp_path):

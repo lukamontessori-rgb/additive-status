@@ -162,11 +162,13 @@ def summary_sentence(a: dict) -> str:
     if groups.get("listed_noreg"):
         parts.append("in the FDA inventory without a cited regulation (US)")
     if groups.get("not_listed"):
-        parts.append(f"not on the list in {places(groups['not_listed'])}, which does not cover every permitted substance")
+        nl = groups["not_listed"]
+        parts.append(f"not on the list in {places(nl)} "
+                     + ("(that list does not cover every permitted substance)" if len(nl) == 1
+                        else "(those lists do not cover every permitted substance)"))
     if not parts:
         return f"We have no status data for {label(a)}."
-    s = f"{label(a)} is " + "; ".join(parts) + "."
-    return s[0].upper() + s[1:]
+    return f"{label(a)}: " + "; ".join(parts) + "."
 
 
 def differs(a: dict) -> bool:
@@ -213,6 +215,33 @@ def bar_chart(rows: list[tuple[str, str, int]], total: int, *, title: str, unit:
                    f'<span class="hb-lbl">{esc(lbl)}</span>'
                    f'<span class="hb-track"><span class="hb-bar" style="width:{pct:.2f}%"></span>'
                    f'<span class="hb-val" style="left:{pct:.2f}%">{v}</span></span></div>')
+    out.append("</div>")
+    return Markup("".join(out))
+
+
+def breakdown_chart(rows: list[tuple[str, str, dict]], total: int, *, title: str) -> Markup:
+    """Stacked horizontal bars per place: allowed / not allowed / unclear (HTML/CSS).
+
+    rows: (key, label, {"yes": n, "no": n, "unk": n}). Status colours always come with a legend
+    and direct labels; small segments rely on the tooltip and the table view."""
+    segs = (("yes", "allowed", "ok"), ("no", "not allowed", "no"), ("unk", "unclear", "unk"))
+    out = [f'<div class="sbars" role="list" aria-label="{esc(title)}">',
+           '<p class="sb-legend" aria-hidden="true">' + "".join(
+               f'<span><i class="sw sw-{t}"></i>{lbl.capitalize()}</span>' for _, lbl, t in segs) + "</p>"]
+    for key, lbl, c in rows:
+        aria = f"{lbl}: " + ", ".join(f"{c[k]} {name}" for k, name, _ in segs)
+        out.append(f'<div class="sb-row" role="listitem" tabindex="0" aria-label="{esc(aria)}" data-tip="{esc(aria)}">'
+                   f'<span class="sb-lbl" aria-hidden="true">{esc(lbl)}</span><span class="sb-track" aria-hidden="true">')
+        for k, name, t in segs:
+            v = c[k]
+            if not v:
+                continue
+            pct = 100 * v / total if total else 0
+            tip = f"{lbl}: {v} of {total} {name} ({round(pct)}%)"
+            show = pct >= 7
+            out.append(f'<span class="sb-seg sb-{t}" style="width:{pct:.2f}%" data-tip="{esc(tip)}">'
+                       f'{v if show else ""}</span>')
+        out.append("</span></div>")
     out.append("</div>")
     return Markup("".join(out))
 
@@ -626,15 +655,20 @@ class Builder:
         total = len(self.additives)
         diff_count = sum(1 for a in self.additives if a["differs"])
         everywhere = sum(1 for a in self.additives if all(allowed(status_of(a, j)) for j in JUR_ORDER))
-        chart = bar_chart([(j, JURISDICTIONS[j]["short"], counts[j]) for j in JUR_ORDER], total,
-                          title=f"Additives allowed in each place, out of {total} tracked", unit="additives allowed")
+        breakdown = {}
+        for j in JUR_ORDER:
+            sts = [status_of(a, j) for a in self.additives]
+            breakdown[j] = {"yes": sum(1 for x in sts if allowed(x)), "no": sum(1 for x in sts if not_allowed(x))}
+            breakdown[j]["unk"] = total - breakdown[j]["yes"] - breakdown[j]["no"]
+        chart = breakdown_chart([(j, JURISDICTIONS[j]["short"], breakdown[j]) for j in JUR_ORDER], total,
+                                title=f"Status of the {total} additives tracked here, in each place")
         examples = [self.by_id[i] for i in ("e171", "e129", "e127", "us-potassium-bromate", "e951",
                                             "us-brominated-vegetable-oil", "e621", "e102") if i in self.by_id]
         recent = sorted(self.changelog.get("entries", []), key=lambda e: e.get("date", ""), reverse=True)[:5]
         eu_recent = self.data.get("eu_history_events", [])[:5]
         self.page("/", "home.html", priority=1.0,
                   page_title=f"{SITE_NAME}: is this food additive allowed in the EU, UK, US, Canada or Australia?",
-                  home=True, compare=compare, classes=classes, counts=counts, chart=chart,
+                  home=True, compare=compare, classes=classes, counts=counts, chart=chart, breakdown=breakdown,
                   diff_count=diff_count, everywhere=everywhere, facts=self.facts(counts, compare),
                   examples=examples, recent=recent, eu_recent=eu_recent, by_id=self.by_id,
                   description="Search any E-number or additive name and see its official status in the EU, UK (GB), "

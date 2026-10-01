@@ -68,17 +68,16 @@
   <h2 id="glance-h">At a glance</h2>
   <div class="glance-grid">
     <div class="panel">
-      <h3>Allowed in each place</h3>
-      <p class="muted small">Out of the {{ total }} additives tracked here. Allowed means authorised or still in a phase-out period.</p>
+      <h3>Allowed, not allowed or unclear</h3>
+      <p class="muted small">The {{ total }} additives tracked here, in each place. <em>Unclear</em> means not on a list that does not cover everything (for example US substances that are generally recognized as safe), or no data — it does not mean banned.</p>
       <figure class="chart-fig">
         {{ chart }}
-        <figcaption class="sr">Bar chart. {% for j in JUR_ORDER %}{{ JUR[j].short }}: {{ counts[j] }}. {% endfor %}</figcaption>
       </figure>
       <details class="table-view">
         <summary>Show as a table</summary>
         <table class="tbl mini">
-          <thead><tr><th scope="col">Place</th><th scope="col">Allowed</th><th scope="col">Share</th></tr></thead>
-          <tbody>{% for j in JUR_ORDER %}<tr><th scope="row"><a href="{{ url('/additives/') }}?allow={{ j }}">{{ JUR[j].name }}</a></th><td>{{ counts[j] }}</td><td>{{ (100 * counts[j] / total)|round|int if total else 0 }}%</td></tr>{% endfor %}</tbody>
+          <thead><tr><th scope="col">Place</th><th scope="col">Allowed</th><th scope="col">Not allowed</th><th scope="col">Unclear</th></tr></thead>
+          <tbody>{% for j in JUR_ORDER %}<tr><th scope="row">{{ JUR[j].name }}</th><td><a href="{{ url('/additives/') }}?allow={{ j }}">{{ breakdown[j].yes }}</a></td><td><a href="{{ url('/additives/') }}?deny={{ j }}">{{ breakdown[j].no }}</a></td><td>{{ breakdown[j].unk }}</td></tr>{% endfor %}</tbody>
         </table>
       </details>
     </div>

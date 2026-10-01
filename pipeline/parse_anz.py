@@ -155,6 +155,14 @@ def status_of(parsed: dict, key: str) -> tuple[str, list[str]]:
     return ("authorised" if reasons else "not_authorised"), reasons
 
 
+def spelling_pattern(name: str) -> str:
+    """Regex for a name that accepts British and American spellings (sulphate/sulfate, aluminium/aluminum)."""
+    alts = {"sulph": "sul(?:ph|f)", "sulf": "sul(?:ph|f)", "aluminium": "alumin(?:i)?um",
+            "aluminum": "alumin(?:i)?um", "colour": "colou?r", "color": "colou?r"}
+    parts = re.split(r"(sulph|sulf|aluminium|aluminum|colour|color)", name.lower())
+    return "".join(alts.get(p, re.escape(p)) for p in parts)
+
+
 def processing_aid(parsed: dict, names: list[str]) -> str | None:
     """The Schedule 18 line that lists one of these names as a processing aid, if any.
 
@@ -166,8 +174,9 @@ def processing_aid(parsed: dict, names: list[str]) -> str | None:
         nm = re.sub(r"\s+", " ", nm or "").strip()
         if len(nm) < 4:
             continue
-        pat = re.compile(r"^(?:\([a-z]\) )?(?i:" + re.escape(nm) + r")(?=$| ?[;,.(]| (?:GMP|\d)| [A-Z])")
-        perm = re.compile(r"Permission to use (?i:" + re.escape(nm) + r") as ")
+        body = spelling_pattern(nm)
+        pat = re.compile(r"^(?:\([a-z]\) )?(?i:" + body + r")(?=$| ?[;,.(]| (?:GMP|\d)| [A-Z])")
+        perm = re.compile(r"Permission to use (?i:" + body + r") as ")
         for line in lines:
             if pat.search(line) or perm.search(line):
                 return line

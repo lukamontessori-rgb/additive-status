@@ -21,7 +21,7 @@ from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
 
 # Bump when parsing or matching rules change. Status differences caused by a method
 # change are not reported as regulatory changes on the changes page.
-METHOD_VERSION = "2026-10-01.2"
+METHOD_VERSION = "2026-10-01.3"
 
 STATUS_RANK = {"authorised": 7, "phase_out": 6, "listed_noreg": 5, "prohibited": 4, "delisted": 3,
                "not_authorised": 2, "not_listed": 1, "unknown": 0}
@@ -402,7 +402,7 @@ class Build:
         facts = [["EU list section", listed["section"] or "—"]]
         lc = parse_eu.last_change(eu, key)
         if lc:
-            facts.append(["Last changed by", f"{lc['act']} ({lc.get('oj_date') or lc.get('adopted')})"])
+            facts.append(["Entry last amended by", f"{lc['act']} ({lc.get('oj_date') or lc.get('adopted')})"])
             if lc.get("url"):
                 refs.append({"label": lc["act"], "url": lc["url"]})
         base = {"facts": facts, "notes": notes, "refs": refs, "source": "eu_annex2", "match": "e_number",
@@ -493,7 +493,9 @@ class Build:
         def indirect(c):  # food-contact sections (see parse_us.classify)
             p, x = (int(v) for v in c.split(".")[:2])
             return p in (175, 176, 177, 178, 186) or (p == 181 and x not in (33, 34)) or (p == 182 and x in parse_us.INDIRECT_182)
-        food_cfr = [c for c in cfr if not re.match(r"^(73|74)\.\d{4}$", c) and not indirect(c)]
+        # 73.1xxx/74.1xxx are drugs/cosmetics; part 81/82 are provisional listings and terminations
+        food_cfr = [c for c in cfr if not re.match(r"^(73|74)\.\d{4}$", c) and not indirect(c)
+                    and not c.startswith(("81.", "82."))]
         if food_cfr:
             feed_only = r["status"] == "not_authorised" and all(
                 c.startswith("73.") and int(c.split(".")[1]) in parse_us.FEED_ONLY_73 for c in food_cfr)
@@ -502,7 +504,7 @@ class Build:
                 refs.append({"label": f"21 CFR {c} (eCFR)", "url": f"https://www.ecfr.gov/current/title-21/section-{c}"})
         effects = sorted({e for m in matches for e in m[0]["effects"]})
         if effects:
-            facts.append(["Used for", ", ".join(effects[:6])])
+            facts.append(["Technical effects (FDA inventory)", ", ".join(effects[:6])])
         notes = []
         if r.get("revocation"):
             rv = r["revocation"]
@@ -531,6 +533,16 @@ class Build:
                 return {"status": "not_listed", "headline": "Not on the list under this name", "notes": [unsure],
                         "refs": refs, "source": "ca_lists", "match": None,
                         "match_detail": "No entry with this name or its synonyms. See the note for a related Canadian entry."}
+            closed = {"Sweeteners": ("List 9", "List of Permitted Sweeteners"),
+                      "Flour treatment agents": ("List 2", "List of Permitted Bleaching, Maturing and Dough Conditioning Agents")}
+            cls = [c for c in self._ent_classes.get(key, []) if c in closed]
+            if cls and key not in (self.curated.get("ca_closed_exclude") or []):
+                no, title = closed[cls[0]]
+                note = (self.curated.get("ca_notes") or {}).get(key)
+                return {"status": "not_authorised", "headline": f"Not on Health Canada's {title}",
+                        "notes": [note] if note else [], "refs": refs, "source": "ca_lists", "match": None,
+                        "match_detail": f"{cls[0]} may be used as food additives in Canada only if they are on {no}. "
+                                        "The list was searched by name and known synonyms."}
             if "Colours" in self._ent_classes.get(key, []):
                 return {"status": "not_authorised", "headline": "Not on Health Canada's List of Permitted Food Colours",
                         "refs": refs, "source": "ca_lists", "match": None,
@@ -547,7 +559,8 @@ class Build:
         names = sorted({n for r, _ in matches for n in r["names"]})
         facts = [["Listed as", "; ".join(names[:4])],
                  ["Lists", ", ".join(f"List {n}" for n in sorted(lists))]]
-        purposes = sorted({p for L in lists.values() for p in L["purposes"]})[:6]
+        purposes = list({p.lower(): p for L in lists.values() for p in sorted(L["purposes"], reverse=True)}.values())
+        purposes = sorted(purposes, key=str.lower)[:6]
         if purposes:
             facts.append(["Purpose of use", "; ".join(purposes)])
         refs = [{"label": f"List {L['no']}: {L['title'].replace('List of Permitted ', '')}", "url": L["url"]}
@@ -604,7 +617,9 @@ class Build:
                         "facts": [["Listed as", nm]], "refs": refs, "source": "anz_code", "match": "name",
                         "match_detail": "Schedule 15 lists this substance by name, without an INS number."}
         for code, nms in anz["names"].items():
-            if any(match_key(n) in wanted for n in nms):
+            # Schedule 8 names can join alternatives: "Carbon blacks or Vegetable carbon"
+            parts = [p for n in nms for p in re.split(r"\s+or\s+", n)]
+            if any(match_key(n) in wanted for n in nms + parts):
                 st, reasons = parse_anz.status_of(anz, code)
                 if st == "authorised":
                     return {"status": "authorised", "headline": "Permitted as a food additive",
@@ -622,13 +637,21 @@ class Build:
                     "refs": refs + [{"label": "Schedule 18 Processing aids", "url": "https://www.legislation.gov.au/F2015L00452/latest/text"}],
                     "source": "anz_code", "match": "name",
                     "match_detail": "Not in Schedule 15 or on the Schedule 16 lists; its name is listed in Schedule 18 (processing aids)."}
+        unsure = (self.curated.get("anz_uncertain") or {}).get(key)
+        if unsure:
+            return {"status": "not_listed", "headline": "Not in the food additive schedules", "notes": [unsure],
+                    "refs": refs, "source": "anz_code", "match": None,
+                    "match_detail": "No Schedule 8, 15, 16 or 18 entry matches its names. See the note."}
         if ent.get("e") or ent.get("ins"):
             return {"status": "not_authorised", "headline": "Not permitted as a food additive in Australia and New Zealand",
                     "refs": refs, "source": "anz_code", "match": "INS number",
                     "match_detail": "Its INS number is not in Schedule 15 or on the Schedule 16 lists, and no entry matches its name."}
-        return {"status": "not_listed", "headline": "Not found in the Food Standards Code schedules",
-                "refs": refs, "source": "anz_code", "match": None,
-                "match_detail": "No INS number, and no Schedule 8, 15 or 16 entry matches its names. Processing aids and foods are regulated separately."}
+        # Substances without an INS number on this site are US or Canadian food additives. Under
+        # Standard 1.3.1 an additive may be used only if Schedule 15 or 16 permits it.
+        return {"status": "not_authorised", "headline": "Not permitted as a food additive in Australia and New Zealand",
+                "refs": refs, "source": "anz_code", "match": "name",
+                "match_detail": "No Schedule 8, 15, 16 or 18 entry matches its names. Food additives may be used only "
+                                "if Schedule 15 or Schedule 16 permits them."}
 
     # ------------------------------------------------------------ details and overview
     def details(self, key, ent, us_matches, ca_matches) -> dict:
@@ -696,12 +719,16 @@ class Build:
                 else:
                     add(L["title"].replace("List of Permitted ", ""))
         good = [m for m in us_matches if m[1] and not m[1].startswith("alternative")]
-        if good:
+        src = "lists"
+        if good and not functions:
+            # FDA's technical effects are long, noisy lists: used only when nothing better exists
             ent_key = match_key(ent["name"])
             best = max(good, key=lambda m: match_rank(m, ent_key))[0]
-            for e in best["effects"][: (1 if functions else 2)]:
+            for e in best["effects"][:2]:
                 add(e)
+            src = "fda"
         out["functions"] = functions[:3]
+        out["functions_source"] = src
         return out
 
     def overview(self, a: dict) -> list[str]:
@@ -713,7 +740,10 @@ class Build:
         if fn:
             fl = fn[:3]
             fs = fl[0] if len(fl) == 1 else ", ".join(fl[:-1]) + " and " + fl[-1]
-            sents.append(f"{name} is a food additive. The official lists give {'this use' if len(fl) == 1 else 'these uses'}: {fs}.")
+            if a.get("functions_source") == "fda":
+                sents.append(f"{name} is a food additive. FDA's inventory lists {'this technical effect' if len(fl) == 1 else 'these technical effects'}: {fs}.")
+            else:
+                sents.append(f"{name} is a food additive. The official lists name {'this function' if len(fl) == 1 else 'these functions'}: {fs}.")
         else:
             sents.append(f"{name} is a food additive.")
         ident = a.get("identity", {})
@@ -739,7 +769,7 @@ class Build:
             sents.append(f"In the EU: {h[0].lower() + h[1:]}." if h else "")
         for h in (a.get("eu_history") or [])[-1:]:
             d = date.fromisoformat(h["date"])
-            sents.append(f"EU history: {h['change'].lower()} in the consolidated text of {d.strftime('%-d %B %Y')}.")
+            sents.append(f"EU history: {h['change'].lower()}, first shown in the consolidated text of {d.strftime('%-d %B %Y')}.")
         us = a["jur"]["us"]
         fda = next((f[1] for f in us.get("facts", []) if f[0] == "FDA name"), None)
         if us.get("status") in ("authorised", "phase_out", "delisted", "prohibited") and fda:

@@ -70,7 +70,7 @@ STATUSES = {
         "A previous authorisation was removed from the regulations.",
     ),
     "listed_noreg": (
-        "In FDA inventory, no regulation cited", "Listed", "unknown",
+        "In FDA inventory, no regulation cited", "No regulation", "unknown",
         "In FDA's Substances Added to Food inventory, but no regulation, GRAS listing or FEMA flavouring status is cited. FDA says inclusion does not mean approval.",
     ),
     "not_listed": (

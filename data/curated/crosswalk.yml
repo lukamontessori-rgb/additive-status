@@ -205,3 +205,16 @@ anz_names:
 # name may or may not be the same substance. Shown as "Not on the list" (never "not authorised").
 ca_uncertain:
   e153: "Canada's List of Permitted Colouring Agents has an entry for carbon black but none for vegetable carbon. The list does not say whether the two are treated as the same substance."
+
+# Not on a closed Canadian list under their own name, but the list may cover them another way.
+ca_closed_exclude: [e558, e960b, e960c, e960d]
+
+# Extra notes shown with a Canadian status (reviewed).
+ca_notes:
+  e952: "Canada allows cyclamate only in table-top sweeteners sold under Part E of the Food and Drug Regulations, not as a food additive."
+
+# Substances not in the Food Standards Code additive schedules that may be permitted in another way.
+anz_uncertain:
+  ca-alpha-cyclodextrin: "Not in the food additive schedules. It may be permitted in Australia and New Zealand under another standard (for example as a novel food), which this site does not cover."
+  ca-calcium-iodate: "Not in the food additive schedules. Iodine compounds can be permitted as nutritive substances or for iodised salt under other standards, which this site does not cover."
+  ca-potassium-iodate: "Not in the food additive schedules. Iodine compounds can be permitted as nutritive substances or for iodised salt under other standards, which this site does not cover."
