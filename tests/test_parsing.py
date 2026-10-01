@@ -28,6 +28,8 @@ def test_norm_name():
     assert norm_name("FD&C Red No. 40") == norm_name("FD and C red no 40") == "fdc red 40"
     assert norm_name("Sulphur dioxide") == norm_name("sulfur dioxide")
     assert norm_name("Allura Red*") == "allura red"
+    assert norm_name("Polyoxyethylene (8) Stearate") != norm_name("Polyoxyethylene (40) stearate")
+    assert norm_name("Carmine (Coccus cacti L.)") == "carmine"
     assert "sunset yellow fcf" in name_variants("Sunset Yellow FCF/Orange Yellow S")
     assert "orange yellow s" in name_variants("Sunset Yellow FCF/Orange Yellow S")
 

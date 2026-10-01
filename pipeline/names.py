@@ -82,7 +82,8 @@ def norm_name(name: str) -> str:
     s = re.sub(r"[\*†‡]+", " ", s)           # footnote markers
     # drop annotation parentheticals like "Carmine (Coccus cacti L.)" or "BHA (E 320)", but keep
     # brackets that are part of a chemical name, e.g. "(4-hydroxyphenyl)propane"
-    s = re.sub(r"(^|\s)\([^()]*\)(?=\s|$|,|;)", " ", s)
+    # (a bare number is kept: "polyoxyethylene (8) stearate" is not "polyoxyethylene (40) stearate")
+    s = re.sub(r"(^|\s)\((?!\s*\d+\s*\))[^()]*\)(?=\s|$|,|;)", " ", s)
     s = s.replace("(", " ").replace(")", " ")
     s = _ROMAN_END.sub(r"\2", s)                       # "no. 40" -> "40"
     s = re.sub(r"[^a-z0-9]+", " ", s)

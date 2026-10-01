@@ -21,7 +21,7 @@ from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
 
 # Bump when parsing or matching rules change. Status differences caused by a method
 # change are not reported as regulatory changes on the changes page.
-METHOD_VERSION = "2026-10-01.1"
+METHOD_VERSION = "2026-10-01.2"
 
 STATUS_RANK = {"authorised": 7, "phase_out": 6, "listed_noreg": 5, "prohibited": 4, "delisted": 3,
                "not_authorised": 2, "not_listed": 1, "unknown": 0}
