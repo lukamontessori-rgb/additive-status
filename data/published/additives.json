@@ -1,7 +1,7 @@
 {
- "generated_at": "2026-10-01T05:59:36+00:00",
+ "generated_at": "2026-10-01T06:06:54+00:00",
  "data_version": "2026-10-01",
- "method_version": "2026-09-30.2",
+ "method_version": "2026-10-01.1",
  "eu_history": {
   "versions": 57,
   "first": "20130601",
@@ -156,7 +156,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-01T05:58:21+00:00",
+   "retrieved_at": "2026-10-01T06:05:43+00:00",
    "content_changed_at": "2026-09-30T21:07:33+00:00",
    "version": "02008R1333-20260818",
    "state": "ok"
@@ -168,8 +168,8 @@
    "licence": "Open Government Licence v3.0",
    "licence_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
    "attribution": "Contains public sector information licensed under the Open Government Licence v3.0 (Food Standards Agency).",
-   "retrieved_at": "2026-10-01T05:58:22+00:00",
-   "content_changed_at": "2026-10-01T05:43:50+00:00",
+   "retrieved_at": "2026-10-01T06:05:45+00:00",
+   "content_changed_at": "2026-10-01T06:05:45+00:00",
    "version": null,
    "state": "ok"
   },
@@ -180,7 +180,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.fda.gov/about-fda/about-website/website-policies",
    "attribution": "Source: U.S. Food and Drug Administration.",
-   "retrieved_at": "2026-10-01T05:58:26+00:00",
+   "retrieved_at": "2026-10-01T06:05:49+00:00",
    "content_changed_at": "2026-10-01T05:43:55+00:00",
    "version": null,
    "state": "ok"
@@ -192,7 +192,7 @@
    "licence": "Open Government Licence – Canada",
    "licence_url": "https://open.canada.ca/en/open-government-licence-canada",
    "attribution": "Contains information licensed under the Open Government Licence – Canada (Health Canada).",
-   "retrieved_at": "2026-10-01T05:58:59+00:00",
+   "retrieved_at": "2026-10-01T06:06:22+00:00",
    "content_changed_at": "2026-09-30T21:08:09+00:00",
    "version": null,
    "state": "ok"
@@ -204,7 +204,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-01T05:59:07+00:00",
+   "retrieved_at": "2026-10-01T06:06:29+00:00",
    "content_changed_at": "2026-09-30T21:08:14+00:00",
    "version": "02012R0231-20260818",
    "state": "ok"
@@ -216,7 +216,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.federalregister.gov/reader-aids/policy/legal-status",
    "attribution": "Source: Federal Register (federalregister.gov).",
-   "retrieved_at": "2026-10-01T05:59:07+00:00",
+   "retrieved_at": "2026-10-01T06:06:30+00:00",
    "content_changed_at": "2026-09-30T20:36:24+00:00",
    "version": null,
    "state": "ok"
@@ -228,7 +228,7 @@
    "licence": "Creative Commons Attribution 4.0 (CC BY 4.0)",
    "licence_url": "https://www.foodstandards.gov.au/copyright",
    "attribution": "Food Standards Australia New Zealand",
-   "retrieved_at": "2026-10-01T05:59:08+00:00",
+   "retrieved_at": "2026-10-01T06:06:30+00:00",
    "content_changed_at": "2026-09-30T21:08:16+00:00",
    "version": null,
    "state": "ok"
@@ -244,7 +244,7 @@
  },
  "quality": [
   "Health Canada lists: 289 of 454 listed substances linked to an additive on this site; the rest are mostly enzymes, solvents and substances with no counterpart here.",
-  "FDA inventory: 308 additives on this site are linked to at least one FDA inventory entry.",
+  "FDA inventory: 306 additives on this site are linked to at least one FDA inventory entry.",
   "340 additives with an E-number (all entries on the EU and GB lists) and 65 US substances without an E-number."
  ],
  "additives": [
@@ -25194,7 +25194,7 @@
       ],
       [
        "Group",
-       "Group II: Food colours authorised at quantum satis; Group I"
+       "Group I; Group II: Food colours authorised at quantum satis"
       ],
       [
        "Register entry updated",
@@ -25226,7 +25226,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.70, 181.29, 184.1191"
+       "73.70, 184.1191"
       ],
       [
        "Used for",
@@ -25242,10 +25242,6 @@
       {
        "label": "21 CFR 73.70 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-73.70"
-      },
-      {
-       "label": "21 CFR 181.29 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.29"
       },
       {
        "label": "21 CFR 184.1191 (eCFR)",
@@ -26674,7 +26670,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.350, 73.575, 181.30"
+       "73.350, 73.575"
       ],
       [
        "Used for",
@@ -26694,10 +26690,6 @@
       {
        "label": "21 CFR 73.575 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-73.575"
-      },
-      {
-       "label": "21 CFR 181.30 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.30"
       }
      ],
      "source": "us_fda_substances",
@@ -27013,7 +27005,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.200, 186.1374"
+       "73.200"
       ],
       [
        "Used for",
@@ -27029,10 +27021,6 @@
       {
        "label": "21 CFR 73.200 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-73.200"
-      },
-      {
-       "label": "21 CFR 186.1374 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-186.1374"
       }
      ],
      "source": "us_fda_substances",
@@ -28728,7 +28716,7 @@
       ],
       [
        "Group",
-       "E 200 – 202: Sorbic acid – potassium sorbate (SA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202: Sorbic acid – potassium sorbate (SA)"
       ],
       [
        "Register entry updated",
@@ -28760,7 +28748,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.872, 181.23, 182.3089"
+       "172.872, 182.3089"
       ],
       [
        "Used for",
@@ -28776,10 +28764,6 @@
       {
        "label": "21 CFR 172.872 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-172.872"
-      },
-      {
-       "label": "21 CFR 181.23 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.23"
       },
       {
        "label": "21 CFR 182.3089 (eCFR)",
@@ -30081,7 +30065,7 @@
       ],
       [
        "Group",
-       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -30113,7 +30097,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.90, 182.3640"
+       "182.3640"
       ],
       [
        "Used for",
@@ -30125,10 +30109,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 182.3640 (eCFR)",
@@ -31413,7 +31393,7 @@
       ],
       [
        "Group",
-       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
+       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA)"
       ],
       [
        "Register entry updated",
@@ -32342,7 +32322,7 @@
       ],
       [
        "Group",
-       "E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -32374,7 +32354,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "181.23, 184.1733"
+       "184.1733"
       ],
       [
        "Used for",
@@ -32386,10 +32366,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 181.23 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.23"
       },
       {
        "label": "21 CFR 184.1733 (eCFR)",
@@ -33275,7 +33251,7 @@
       ],
       [
        "Group",
-       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -34195,7 +34171,7 @@
       ],
       [
        "Group",
-       "E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 210–213: Benzoic acid — benzoates (BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -35616,7 +35592,7 @@
       ],
       [
        "Group",
-       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB)"
       ],
       [
        "Register entry updated",
@@ -35648,7 +35624,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.515, 181.23, 184.1490"
+       "172.515, 184.1490"
       ],
       [
        "Used for",
@@ -35664,10 +35640,6 @@
       {
        "label": "21 CFR 172.515 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-172.515"
-      },
-      {
-       "label": "21 CFR 181.23 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.23"
       },
       {
        "label": "21 CFR 184.1490 (eCFR)",
@@ -36004,7 +35976,7 @@
       ],
       [
        "Group",
-       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
       ],
       [
        "Register entry updated",
@@ -52566,7 +52538,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "173.310, 182.70, 184.1721, 184.1754"
+       "173.310, 184.1721, 184.1754"
       ],
       [
        "Used for",
@@ -52586,12 +52558,12 @@
        "url": "https://www.ecfr.gov/current/title-21/section-173.310"
       },
       {
-       "label": "21 CFR 182.70 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.70"
-      },
-      {
        "label": "21 CFR 184.1721 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-184.1721"
+      },
+      {
+       "label": "21 CFR 184.1754 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/section-184.1754"
       }
      ],
      "source": "us_fda_substances",
@@ -53607,7 +53579,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "181.29, 182.6197, 184.1185"
+       "182.6197, 184.1185"
       ],
       [
        "Used for",
@@ -53619,10 +53591,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 181.29 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.29"
       },
       {
        "label": "21 CFR 182.6197 (eCFR)",
@@ -57134,7 +57102,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "179.45, 181.23, 184.1221"
+       "179.45, 184.1221"
       ],
       [
        "Used for",
@@ -57150,10 +57118,6 @@
       {
        "label": "21 CFR 179.45 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-179.45"
-      },
-      {
-       "label": "21 CFR 181.23 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.23"
       },
       {
        "label": "21 CFR 184.1221 (eCFR)",
@@ -57721,16 +57685,12 @@
      "match_detail": "Matched by E-number in the FSA register."
     },
     "us": {
-     "status": "authorised",
-     "headline": "Prior-sanctioned (21 CFR 181)",
+     "status": "not_listed",
+     "headline": "Listed only for indirect (food-contact) uses",
      "facts": [
       [
        "FDA name",
        "Boric Acid"
-      ],
-      [
-       "21 CFR (food uses)",
-       "181.30"
       ],
       [
        "Used for",
@@ -57742,10 +57702,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 181.30 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.30"
       }
      ],
      "source": "us_fda_substances",
@@ -57827,10 +57783,9 @@
    "overview": [
     "Boric acid (E 284) is a food additive.",
     "The EU specification describes it as: “Colourless, odourless, transparent crystals or white granules or powder; slightly unctuous to the touch; occurs in nature as the mineral sassolite.”",
-    "In the EU it may be used in 1 food category, in these food groups: fish and fisheries products.",
-    "In the US it is listed as Boric Acid: prior-sanctioned (21 CFR 181)."
+    "In the EU it may be used in 1 food category, in these food groups: fish and fisheries products."
    ],
-   "updated": "2026-09-30"
+   "updated": "2026-10-01"
   },
   {
    "id": "e285",
@@ -68656,7 +68611,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.615, 181.24, 184.1660"
+       "172.615, 184.1660"
       ],
       [
        "Used for",
@@ -68672,10 +68627,6 @@
       {
        "label": "21 CFR 172.615 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-172.615"
-      },
-      {
-       "label": "21 CFR 181.24 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.24"
       },
       {
        "label": "21 CFR 184.1660 (eCFR)",
@@ -70273,7 +70224,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.110, 172.115, 172.185, 172.515, 172.615, 173.340, 179.45, 181.24"
+       "172.110, 172.115, 172.185, 172.515, 172.615, 173.340, 179.45, 182.3169"
       ],
       [
        "Used for",
@@ -76868,15 +76819,15 @@
     },
     "us": {
      "status": "authorised",
-     "headline": "Prior-sanctioned (21 CFR 181)",
+     "headline": "Affirmed as GRAS (21 CFR 184)",
      "facts": [
       [
        "FDA name",
-       "Disodium Citrate"
+       "Trisodium Citrate"
       ],
       [
        "21 CFR (food uses)",
-       "179.45, 181.29, 184.1751"
+       "179.45, 184.1751"
       ],
       [
        "Used for",
@@ -76884,7 +76835,7 @@
       ]
      ],
      "notes": [
-      "Matching FDA inventory entries: Disodium Citrate (Prior-sanctioned (21 CFR 181)); Trisodium Citrate (Affirmed as GRAS (21 CFR 184))"
+      "Matching FDA inventory entries: Disodium Citrate (Listed only for indirect (food-contact) uses); Trisodium Citrate (Affirmed as GRAS (21 CFR 184))"
      ],
      "refs": [
       {
@@ -76894,10 +76845,6 @@
       {
        "label": "21 CFR 179.45 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-179.45"
-      },
-      {
-       "label": "21 CFR 181.29 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.29"
       },
       {
        "label": "21 CFR 184.1751 (eCFR)",
@@ -77933,7 +77880,7 @@
     "Sodium citrates (E 331) is a food additive. The official lists give these uses: emulsifier, stabiliser and acidity regulator.",
     "The EU specification describes it as: “Crystalline white powder or colourless crystals.”",
     "In the EU it may be used in 84 food categories, in these food groups: dairy products and analogues; fats and oils and fat and oil emulsions; edible ices; fruit and vegetables…",
-    "In the US it is listed as Disodium Citrate: prior-sanctioned (21 CFR 181).",
+    "In the US it is listed as Trisodium Citrate: affirmed as GRAS (21 CFR 184).",
     "Canada permits it as Sodium Citrate (on 4 of Health Canada's permitted lists)."
    ],
    "updated": "2026-09-30"
@@ -84536,7 +84483,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.85, 172.892, 173.310, 181.29, 182.1778, 182.6085, 182.6290, 182.6778"
+       "73.85, 172.892, 173.310, 182.1778, 182.6085, 182.6290, 182.6778, 182.8778"
       ],
       [
        "Used for",
@@ -87444,7 +87391,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "181.29, 182.1217, 182.6215, 182.8217"
+       "182.1217, 182.6215, 182.8217"
       ],
       [
        "Used for",
@@ -87460,16 +87407,16 @@
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
       },
       {
-       "label": "21 CFR 181.29 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.29"
-      },
-      {
        "label": "21 CFR 182.1217 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-182.1217"
       },
       {
        "label": "21 CFR 182.6215 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-182.6215"
+      },
+      {
+       "label": "21 CFR 182.8217 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/section-182.8217"
       }
      ],
      "source": "us_fda_substances",
@@ -105392,7 +105339,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.20, 184.1343, 186.1343"
+       "182.20, 184.1343"
       ],
       [
        "Used for",
@@ -105412,10 +105359,6 @@
       {
        "label": "21 CFR 184.1343 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-184.1343"
-      },
-      {
-       "label": "21 CFR 186.1343 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-186.1343"
       }
      ],
      "source": "us_fda_substances",
@@ -113107,7 +113050,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.90, 184.1835"
+       "184.1835"
       ],
       [
        "Used for",
@@ -113119,10 +113062,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 184.1835 (eCFR)",
@@ -114285,7 +114224,7 @@
       ],
       [
        "Group",
-       "Group IV: Polyols; Group I"
+       "Group I; Group IV: Polyols"
       ],
       [
        "Register entry updated",
@@ -115498,7 +115437,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.811, 182.90, 182.1320"
+       "172.811, 182.1320"
       ],
       [
        "Used for",
@@ -115514,10 +115453,6 @@
       {
        "label": "21 CFR 172.811 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-172.811"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 182.1320 (eCFR)",
@@ -123340,7 +123275,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "173.310, 173.315, 181.29, 182.70, 182.1087, 182.6787, 182.6789, 182.8223"
+       "173.310, 173.315, 182.1087, 182.6787, 182.6789, 182.8223"
       ],
       [
        "Used for",
@@ -123364,8 +123299,8 @@
        "url": "https://www.ecfr.gov/current/title-21/section-173.315"
       },
       {
-       "label": "21 CFR 181.29 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.29"
+       "label": "21 CFR 182.1087 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/section-182.1087"
       }
      ],
      "source": "us_fda_substances",
@@ -124753,7 +124688,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "74.302, 172.892, 173.310, 182.90, 182.1810, 182.6810"
+       "74.302, 172.892, 173.310, 182.1810, 182.6810"
       ],
       [
        "Used for",
@@ -126072,7 +126007,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.892, 173.310, 182.90, 182.6760, 182.6769"
+       "172.892, 173.310, 182.6760, 182.6769"
       ],
       [
        "Used for",
@@ -126096,8 +126031,8 @@
        "url": "https://www.ecfr.gov/current/title-21/section-173.310"
       },
       {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
+       "label": "21 CFR 182.6760 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/section-182.6760"
       }
      ],
      "source": "us_fda_substances",
@@ -130037,7 +129972,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.1, 172.868, 182.90"
+       "73.1, 172.868"
       ],
       [
        "Used for",
@@ -130057,10 +129992,6 @@
       {
        "label": "21 CFR 172.868 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-172.868"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       }
      ],
      "source": "us_fda_substances",
@@ -160164,7 +160095,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.85, 172.615, 173.310, 186.1797"
+       "73.85, 172.615, 173.310"
       ],
       [
        "Used for",
@@ -163250,7 +163181,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.892, 179.45, 182.90, 182.1125"
+       "172.892, 179.45, 182.1125"
       ],
       [
        "Used for",
@@ -163258,7 +163189,7 @@
       ]
      ],
      "notes": [
-      "Matching FDA inventory entries: Alum (Double Sulfate of Al and Nh4, K, or Na) (Listed as GRAS (21 CFR 182)); Aluminum Sulfate (Approved food additive (21 CFR 172))"
+      "Matching FDA inventory entries: Alum (Double Sulfate of Al and Nh4, K, or Na) (Listed only for indirect (food-contact) uses); Aluminum Sulfate (Approved food additive (21 CFR 172))"
      ],
      "refs": [
       {
@@ -163274,8 +163205,8 @@
        "url": "https://www.ecfr.gov/current/title-21/section-179.45"
       },
       {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
+       "label": "21 CFR 182.1125 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/section-182.1125"
       }
      ],
      "source": "us_fda_substances",
@@ -163586,7 +163517,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.90, 182.1131"
+       "182.1131"
       ],
       [
        "Used for",
@@ -163598,10 +163529,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 182.1131 (eCFR)",
@@ -163886,7 +163813,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.90, 182.1129"
+       "182.1129"
       ],
       [
        "Used for",
@@ -163898,10 +163825,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 182.1129 (eCFR)",
@@ -164184,7 +164107,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.90, 182.1127"
+       "182.1127"
       ],
       [
        "Used for",
@@ -164196,10 +164119,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 182.1127 (eCFR)",
@@ -172111,7 +172030,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.90, 182.1781"
+       "182.1781"
       ],
       [
        "Used for",
@@ -172123,10 +172042,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 182.1781 (eCFR)",
@@ -172374,7 +172289,7 @@
       ],
       [
        "Group",
-       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
+       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
       ],
       [
        "Register entry updated",
@@ -172406,7 +172321,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.1, 73.575, 172.230, 172.480, 173.340, 182.90"
+       "73.1, 73.575, 172.230, 172.480, 173.340"
       ],
       [
        "Used for",
@@ -172943,7 +172858,7 @@
       ],
       [
        "Group",
-       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
+       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
       ],
       [
        "Register entry updated",
@@ -173499,7 +173414,7 @@
       ],
       [
        "Group",
-       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
+       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
       ],
       [
        "Register entry updated",
@@ -174069,7 +173984,7 @@
       ],
       [
        "Group",
-       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
+       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
       ],
       [
        "Register entry updated",
@@ -174092,16 +174007,12 @@
      "match_detail": "Matched by E-number in the FSA register."
     },
     "us": {
-     "status": "authorised",
-     "headline": "Listed as GRAS (21 CFR 182)",
+     "status": "not_listed",
+     "headline": "Listed only for indirect (food-contact) uses",
      "facts": [
       [
        "FDA name",
        "Talc"
-      ],
-      [
-       "21 CFR (food uses)",
-       "182.70, 182.90"
       ],
       [
        "Used for",
@@ -174113,14 +174024,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.70 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.70"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       }
      ],
      "source": "us_fda_substances",
@@ -174518,10 +174421,9 @@
     "Talc (E 553b) is a food additive.",
     "The EU specification describes it as: “Light, homogeneous, white or almost white powder, greasy to the touch.”",
     "In the EU it may be used in 23 food categories, in these food groups: all foods; dairy products and analogues; fats and oils and fat and oil emulsions; confectionery…",
-    "In the US it is listed as Talc: listed as GRAS (21 CFR 182).",
     "Canada permits it (on the List of Permitted Food Additives with Other Purposes of Use)."
    ],
-   "updated": "2026-09-30"
+   "updated": "2026-10-01"
   },
   {
    "id": "e554",
@@ -182022,7 +181924,7 @@
       ],
       [
        "Group",
-       "Group I; E 620–625: Glutamic acid — glutamates"
+       "E 620–625: Glutamic acid — glutamates; Group I"
       ],
       [
        "Register entry updated",
@@ -182912,7 +182814,7 @@
       ],
       [
        "Group",
-       "Group I; E 620–625: Glutamic acid — glutamates"
+       "E 620–625: Glutamic acid — glutamates; Group I"
       ],
       [
        "Register entry updated",
@@ -183800,7 +183702,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -185555,7 +185457,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -186435,7 +186337,7 @@
       ],
       [
        "Group",
-       "Group I; E 620–625: Glutamic acid — glutamates"
+       "E 620–625: Glutamic acid — glutamates; Group I"
       ],
       [
        "Register entry updated",
@@ -187292,7 +187194,7 @@
       ],
       [
        "Group",
-       "E 626–635: Ribonucleotides; Group I"
+       "Group I; E 626–635: Ribonucleotides"
       ],
       [
        "Register entry updated",
@@ -191555,7 +191457,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -193285,7 +193187,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -194961,7 +194863,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -197179,7 +197081,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "173.340, 181.28"
+       "173.340"
       ],
       [
        "Used for",
@@ -197195,10 +197097,6 @@
       {
        "label": "21 CFR 173.340 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-173.340"
-      },
-      {
-       "label": "21 CFR 181.28 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.28"
       }
      ],
      "source": "us_fda_substances",
@@ -217824,7 +217722,7 @@
       ],
       [
        "Group",
-       "Group IV: Polyols; Group I"
+       "Group I; Group IV: Polyols"
       ],
       [
        "Register entry updated",
@@ -219011,7 +218909,7 @@
       ],
       [
        "Group",
-       "Group I; Group IV: Polyols"
+       "Group IV: Polyols; Group I"
       ],
       [
        "Register entry updated",
@@ -221348,7 +221246,7 @@
       ],
       [
        "Group",
-       "Group IV: Polyols; Group I"
+       "Group I; Group IV: Polyols"
       ],
       [
        "Register entry updated",
@@ -226210,7 +226108,7 @@
     },
     "us": {
      "status": "authorised",
-     "headline": "Prior-sanctioned (21 CFR 181)",
+     "headline": "Colour additive for food, exempt from certification (21 CFR 73.1)",
      "facts": [
       [
        "FDA name",
@@ -226218,7 +226116,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "73.1, 181.30"
+       "73.1"
       ],
       [
        "Used for",
@@ -226234,10 +226132,6 @@
       {
        "label": "21 CFR 73.1 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-73.1"
-      },
-      {
-       "label": "21 CFR 181.30 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.30"
       }
      ],
      "source": "us_fda_substances",
@@ -226316,7 +226210,7 @@
     "Polyvinyl alcohol (PVA) (E 1203) is a food additive. The official lists give this use: carrier or solvent.",
     "The EU specification describes it as: “Odourless, tasteless, translucent, white or cream-coloured granular powder.”",
     "In the EU it may be used in 1 food category, in these food groups: food supplements as defined in Directive 2002/46/EC.",
-    "In the US it is listed as Polyvinyl Alcohol: prior-sanctioned (21 CFR 181)."
+    "In the US it is listed as Polyvinyl Alcohol: colour additive for food, exempt from certification (21 CFR 73.1)."
    ],
    "updated": "2026-09-30"
   },
@@ -237374,15 +237268,11 @@
     },
     "us": {
      "status": "authorised",
-     "headline": "Prior-sanctioned (21 CFR 181)",
+     "headline": "Flavouring considered GRAS by the FEMA expert panel",
      "facts": [
       [
        "FDA name",
        "Triethyl Citrate"
-      ],
-      [
-       "21 CFR (food uses)",
-       "181.27"
       ],
       [
        "Used for",
@@ -237394,10 +237284,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 181.27 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.27"
       }
      ],
      "source": "us_fda_substances",
@@ -237559,7 +237445,7 @@
     "Triethyl citrate (E 1505) is a food additive. The official lists give these uses: flavour enhancer and flavouring.",
     "The EU specification describes it as: “Odourless, practically colourless, oily liquid.”",
     "In the EU it may be used in 2 food categories, in these food groups: eggs and egg products; food supplements as defined in Directive 2002/46/EC.",
-    "In the US it is listed as Triethyl Citrate: prior-sanctioned (21 CFR 181).",
+    "In the US it is listed as Triethyl Citrate: flavouring considered GRAS by the FEMA expert panel.",
     "Canada permits it (on 2 of Health Canada's permitted lists)."
    ],
    "updated": "2026-09-30"
@@ -237861,7 +237747,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "181.27, 184.1901"
+       "184.1901"
       ],
       [
        "Used for",
@@ -237873,10 +237759,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 181.27 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.27"
       },
       {
        "label": "21 CFR 184.1901 (eCFR)",
@@ -238885,7 +238767,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.190, 181.24"
+       "172.190"
       ],
       [
        "Used for",
@@ -238901,10 +238783,6 @@
       {
        "label": "21 CFR 172.190 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-172.190"
-      },
-      {
-       "label": "21 CFR 181.24 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.24"
       }
      ],
      "source": "us_fda_substances",
@@ -243547,7 +243425,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "181.24, 189.165"
+       "189.165"
       ],
       [
        "Used for",
@@ -243559,10 +243437,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 181.24 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.24"
       },
       {
        "label": "21 CFR 189.165 (eCFR)",
@@ -244231,7 +244105,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "172.515, 181.23, 184.1670"
+       "172.515, 184.1670"
       ],
       [
        "Used for",
@@ -244247,10 +244121,6 @@
       {
        "label": "21 CFR 172.515 (eCFR)",
        "url": "https://www.ecfr.gov/current/title-21/section-172.515"
-      },
-      {
-       "label": "21 CFR 181.23 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.23"
       },
       {
        "label": "21 CFR 184.1670 (eCFR)",
@@ -247351,9 +247221,12 @@
    "e": null,
    "sort": "~~ca-monoisopropyl-citrate",
    "name": "Monoisopropyl Citrate",
-   "aka": [],
+   "aka": [
+    "Isopropyl Citrate"
+   ],
    "cas": [
-    "1321-57-9"
+    "1321-57-9",
+    "39413-05-3"
    ],
    "classes": [
     "Preservatives"
@@ -247391,35 +247264,37 @@
     },
     "us": {
      "status": "authorised",
-     "headline": "Prior-sanctioned (21 CFR 181)",
+     "headline": "Affirmed as GRAS (21 CFR 184)",
      "facts": [
       [
        "FDA name",
-       "Monoisopropyl Citrate"
+       "Isopropyl Citrate"
       ],
       [
        "21 CFR (food uses)",
-       "181.27"
+       "184.1386"
       ],
       [
        "Used for",
        "Formulation aid, Sequestrant, Synergist"
       ]
      ],
-     "notes": [],
+     "notes": [
+      "Matching FDA inventory entries: Monoisopropyl Citrate (Listed only for indirect (food-contact) uses); Isopropyl Citrate (Affirmed as GRAS (21 CFR 184))"
+     ],
      "refs": [
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
       },
       {
-       "label": "21 CFR 181.27 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-181.27"
+       "label": "21 CFR 184.1386 (eCFR)",
+       "url": "https://www.ecfr.gov/current/title-21/section-184.1386"
       }
      ],
      "source": "us_fda_substances",
-     "match": "name",
-     "match_detail": "Matched to the FDA inventory by name."
+     "match": "reviewed match table",
+     "match_detail": "Matched to the FDA inventory by reviewed match table."
     },
     "ca": {
      "status": "authorised",
@@ -247509,11 +247384,12 @@
     }
    ],
    "functions": [
-    "preservative"
+    "preservative",
+    "sequestrant"
    ],
    "overview": [
-    "Monoisopropyl Citrate is a food additive. The official lists give this use: preservative.",
-    "In the US it is listed as Monoisopropyl Citrate: prior-sanctioned (21 CFR 181).",
+    "Monoisopropyl Citrate is a food additive. The official lists give these uses: preservative and sequestrant.",
+    "In the US it is listed as Isopropyl Citrate: affirmed as GRAS (21 CFR 184).",
     "Canada permits it (on the List of Permitted Preservatives)."
    ],
    "updated": "2026-09-30"
@@ -248417,7 +248293,7 @@
       ],
       [
        "21 CFR (food uses)",
-       "182.90, 182.3795"
+       "182.3795"
       ],
       [
        "Used for",
@@ -248429,10 +248305,6 @@
       {
        "label": "FDA Substances Added to Food",
        "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/index.cfm?set=FoodSubstances"
-      },
-      {
-       "label": "21 CFR 182.90 (eCFR)",
-       "url": "https://www.ecfr.gov/current/title-21/section-182.90"
       },
       {
        "label": "21 CFR 182.3795 (eCFR)",

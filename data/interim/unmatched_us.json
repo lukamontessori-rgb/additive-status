@@ -3578,7 +3578,7 @@
   "cfr": [
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": []
  },
  {
@@ -8969,7 +8969,7 @@
    "175.300",
    "181.27"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Formulation aid",
    "Sequestrant",
@@ -13160,7 +13160,7 @@
    "178.1010",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Anticaking agent or free-flow agent",
    "Drying agent",
@@ -13455,7 +13455,7 @@
   "cfr": [
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": []
  },
  {
@@ -13470,7 +13470,7 @@
    "177.2800",
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Flavor enhancer",
    "Flavoring agent or adjuvant",
@@ -15037,7 +15037,7 @@
    "178.3297",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_authorised",
   "effects": [
    "Color or coloring adjunct",
    "Processing aid"
@@ -15189,7 +15189,7 @@
    "175.300",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Emulsifier or emulsifier salt",
    "Stabilizer or thickener"
@@ -15276,7 +15276,7 @@
    "182.70",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Anticaking agent or free-flow agent",
    "Drying agent",
@@ -15642,7 +15642,7 @@
    "175.300",
    "181.25"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Drying agent"
   ]
@@ -15803,7 +15803,7 @@
   "cfr": [
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Flavor enhancer",
    "Flavoring agent or adjuvant",
@@ -15932,7 +15932,7 @@
    "176.180",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Emulsifier or emulsifier salt",
    "Formulation aid",
@@ -16096,7 +16096,7 @@
   "cfr": [
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Nutritive sweetener",
    "Stabilizer or thickener"
@@ -16199,7 +16199,7 @@
   "cfr": [
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Flavor enhancer",
    "Flavoring agent or adjuvant",
@@ -16326,7 +16326,7 @@
   "cfr": [
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Emulsifier or emulsifier salt",
    "Flavor enhancer",
@@ -16488,7 +16488,7 @@
   "cfr": [
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Emulsifier or emulsifier salt",
    "Formulation aid",
@@ -16504,7 +16504,7 @@
    "176.210",
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Surface-active agent"
   ]
@@ -16863,7 +16863,7 @@
    "175.300",
    "181.29"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Formulation aid"
   ]
@@ -16967,7 +16967,7 @@
    "177.2800",
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Color or coloring adjunct",
    "Flavor enhancer",
@@ -17051,7 +17051,7 @@
    "177.2800",
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Flavor enhancer",
    "Flavoring agent or adjuvant",
@@ -17137,7 +17137,7 @@
    "177.2800",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": []
  },
  {
@@ -17149,7 +17149,7 @@
    "177.2800",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Nutrient supplement"
   ]
@@ -17179,7 +17179,7 @@
    "178.3297",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": []
  },
  {
@@ -17371,7 +17371,7 @@
    "177.2800",
    "182.70"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Surface-active agent"
   ]
@@ -17606,7 +17606,7 @@
    "175.300",
    "181.25"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Drying agent"
   ]
@@ -17637,7 +17637,7 @@
    "175.300",
    "181.25"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Drying agent"
   ]
@@ -17660,7 +17660,7 @@
    "175.300",
    "181.25"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Drying agent"
   ]
@@ -17727,7 +17727,7 @@
    "175.105",
    "182.90"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Stabilizer or thickener"
   ]
