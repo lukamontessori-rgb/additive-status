@@ -452,7 +452,8 @@
         : c === "no" ? "You chose not to remember settings. Only that choice is kept."
         : "You have not chosen yet. Nothing is remembered until you do.";
     }
-    function show() { if (box) { box.hidden = false; const b = $("button", box); if (b) b.focus({ preventScroll: true }); } }
+    let opener = null;
+    function show(e) { if (box) { opener = e && e.currentTarget; box.hidden = false; const b = $("button", box); if (b) b.focus({ preventScroll: true }); } }
     if (box && !store.choice()) box.hidden = false;
     $$("[data-consent]").forEach((b) => b.addEventListener("click", () => {
       store.decide(b.getAttribute("data-consent"));
@@ -460,7 +461,9 @@
         const t = document.documentElement.getAttribute("data-theme");
         if (t) store.set("theme", t);
       }
+      const inBox = box && box.contains(b);
       if (box) box.hidden = true;
+      if (inBox && opener) { opener.focus({ preventScroll: true }); opener = null; }
       describe();
     }));
     $$("[data-privacy-choices]").forEach((b) => b.addEventListener("click", show));
