@@ -2,7 +2,7 @@
  "title": "FSA Regulated Products Register — food additive authorisations",
  "publisher": "Food Standards Agency (UK)",
  "licence": "Open Government Licence v3.0",
- "last_attempt": "2026-10-02T10:05:21+00:00",
+ "last_attempt": "2026-10-02T10:44:53+00:00",
  "files": {
   "authorisations.json": {
    "url": "https://data.food.gov.uk/regulated-products/id/food-additives/authorisation.json",
@@ -12,11 +12,11 @@
    "stored_as": "authorisations.json.gz",
    "sha256": "491cb360cdc46cd7483dddde4a81ea3cfbca869a3b69719e2e2c2ffe1d3a61d3",
    "fingerprint": "491cb360cdc46cd7483dddde4a81ea3cfbca869a3b69719e2e2c2ffe1d3a61d3",
-   "fetched_at": "2026-10-02T10:05:22+00:00",
+   "fetched_at": "2026-10-02T10:44:55+00:00",
    "content_changed_at": "2026-10-02T10:05:22+00:00",
    "items": 333
   }
  },
- "last_success": "2026-10-02T10:05:22+00:00",
+ "last_success": "2026-10-02T10:44:55+00:00",
  "last_error": null
 }
