@@ -6,8 +6,8 @@
   "potentialAction": {"@type": "SearchAction", "target": abs_url('/additives/') ~ "?q={search_term_string}", "query-input": "required name=search_term_string"}})|safe }}</script>
 {% endblock %}
 {% block main %}
-<section class="hero" data-hero>
-  <div class="hero-bg" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i></div>
+{% if intro %}{% include "_intro.html" %}{% endif %}
+<section class="hero" id="start" data-hero>
   <div class="hero-text" data-depth="-0.18">
     <p class="kicker load-in" style="--li:0"><span class="pulse" aria-hidden="true"></span><span>Rechecked every Monday from the official lists</span></p>
     <h1 class="hero-title">{{ split("Is this food additive allowed?", 1) }}</h1>

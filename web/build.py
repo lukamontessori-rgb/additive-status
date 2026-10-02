@@ -760,15 +760,67 @@ class Builder:
                         "l": [STATUSES[x][1] for x in sts], "t": [tone(x) for x in sts]})
         story = self.story(total, breakdown, everywhere, diff_count)
         marquee = self.marquee(examples)
+        intro = self.intro()
         self.page("/", "home.html", priority=1.0,
                   page_title=f"{SITE_NAME}: is this food additive allowed in the EU, UK, US, Canada or Australia?",
                   home=True, compare=compare, classes=classes, counts=counts, chart=chart, breakdown=breakdown, lab=lab,
-                  story=story, marquee=marquee,
+                  story=story, marquee=marquee, intro=intro,
                   diff_count=diff_count, everywhere=everywhere, facts=self.facts(counts, compare),
                   examples=examples, recent=recent, eu_recent=eu_recent, by_id=self.by_id,
                   description="Search any E-number or additive name and see its official status in the EU, UK (GB), "
                               "US, Canada and Australia/New Zealand side by side, with links to the sources. "
                               "Free, no ads, no tracking.")
+
+    def intro(self) -> dict | None:
+        """Data for the opening scene: a jar of sweets whose six colours are checked in the five places.
+
+        The statuses are the real ones from the published data; the jar and its label are an illustration."""
+        import random
+        picks = [("e129", "#e3263d"), ("e102", "#f6c400"), ("e133", "#1f6fe0"),
+                 ("e171", "#ffffff"), ("e127", "#f06aa8"), ("e104", "#c8d419")]
+        if not all(i in self.by_id for i, _ in picks):
+            return None
+        items = []
+        for i, col in picks:
+            a = self.by_id[i]
+            sts = [status_of(a, j) for j in JUR_ORDER]
+            items.append({"id": i, "e": a["e"], "n": a["name"].split(",")[0].split("/")[0].strip(), "c": col,
+                          "t": [tone(x) for x in sts], "l": [STATUSES[x][1] for x in sts]})
+        rnd = random.Random(11)
+        pts: list[tuple[float, float]] = []
+        tries = 0
+        while len(pts) < 78 and tries < 60000:
+            tries += 1
+            x, y = rnd.uniform(292, 608), rnd.uniform(392, 836)
+            if y < 408 + 26 * abs((x - 450) / 160) ** 2:      # the pile is a little lower at the sides
+                continue
+            if y > 800 and abs(x - 450) > 150 - (836 - y):   # rounded bottom corners
+                continue
+            if all((x - a) ** 2 + (y - b) ** 2 >= 41 ** 2 for a, b in pts):
+                pts.append((x, y))
+        pts.sort(key=lambda q: q[1])
+        sweets = []
+        for k, (x, y) in enumerate(pts):
+            sweets.append([round(x, 1), round(y, 1), rnd.randrange(-40, 41), k % 3, 0, -1])
+        # colours in turn, but shuffled so neighbours differ; the six featured sweets are the top one of each colour
+        order = list(range(len(sweets)))
+        rnd.shuffle(order)
+        for n, k in enumerate(order):
+            sweets[k][4] = n % 6
+        seen = set()
+        for sw in sweets:
+            if sw[4] not in seen:
+                seen.add(sw[4])
+                sw[5] = sw[4]
+                sw[3] = 0
+        bars = []
+        x = 0.0
+        while x < 140:
+            w = rnd.choice([2, 2, 3, 4, 6])
+            bars.append([round(x, 1), w])
+            x += w + rnd.choice([2, 3, 4])
+        return {"items": items, "sweets": sweets, "bars": bars, "codes": [JUR_CODE[j] for j in JUR_ORDER],
+                "places": [JURISDICTIONS[j]["name"] for j in JUR_ORDER]}
 
     def story(self, total: int, breakdown: dict, everywhere: int, diff_count: int) -> dict:
         """Data for the home page's scroll story: one dot per additive, sorted into piles step by step.

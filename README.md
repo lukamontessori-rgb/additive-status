@@ -53,10 +53,12 @@ The site's legal notice and licences, disclaimer, privacy policy, terms of use, 
 corrections-and-notices page and accessibility statement are in `web/templates/`. Who is named as operator
 (country, optional contact email, name, address) is set in `data/curated/operator.yml`; fill in `contact_email`
 and push to show it on every legal page. Code is MIT-licensed (`LICENSE`); original text and compiled tables are
-CC BY 4.0, always subject to the source licences. The fonts (Unbounded and Instrument Sans) are self-hosted from `web/static/fonts/`
+CC BY 4.0, always subject to the source licences. The fonts (Bricolage Grotesque and Instrument Sans) are self-hosted from `web/static/fonts/`
 under the SIL Open Font License 1.1; the licence texts are next to the font files.
 
-All animation lives in `web/static/motion.js` (no libraries). It is decoration only: pages read the same without
+The look is paper and ink: a white page, black line drawings, and colour only for statuses and for the dyes themselves.
+The home page opens with a scroll-driven drawing (`web/templates/_intro.html`): a jar of sweets whose six colours are
+stamped for the five places, using the real statuses. All animation lives in `web/static/motion.js` (no libraries). It is decoration only: pages read the same without
 it, it stops for visitors who ask their system for reduced motion, and the menu has a *Pause animations* button.
 
 ## Local use

@@ -87,8 +87,17 @@
   addEventListener("scroll", kick, { passive: true });
 
   // progress bar, condensed header and back-to-top: always on (they are cheap and informative)
-  let bar, toTop, maxScroll = 1, upward = false;
+  let bar, toTop, maxScroll = 1, upward = false, bgs = null;
   function chrome(st) {
+    // background drawings drift past at their own speeds and wrap round, so there is always one or two in view
+    if (bgs === null) bgs = $$(".bg-s").map((el) => { const v = (el.getAttribute("data-bg") || "").split(",").map(Number); return { el, k: v[0], r: v[1], x: v[2], y: v[3] }; });
+    if (on()) for (let i = 0; i < bgs.length; i++) {
+      const b = bgs[i], span = st.vh + 420;
+      const y = ((((b.y / 100) * st.vh + st.y * b.k) % span) + span) % span - 260;
+      const w = b.el.clientWidth || 150;
+      b.el.style.transform = `translate3d(${((b.x / 100) * (st.vw - w)).toFixed(1)}px,${y.toFixed(1)}px,0) rotate(${(st.y * b.r).toFixed(2)}deg)`;
+      if (!b.set) { b.set = true; b.el.classList.add("set"); }
+    }
     maxScroll = Math.max(1, document.documentElement.scrollHeight - st.vh);
     const p = clamp(st.y / maxScroll, 0, 1);
     if (bar) bar.style.setProperty("--p", p.toFixed(4));
@@ -200,20 +209,158 @@
   }
   function setPlain(el, text) { if (el.textContent !== text || el.children.length) el.textContent = text; }
 
+  // ------------------------------------------------------------ home: the opening scene (a jar of sweets, scrubbed by scrolling)
+  function setupIntro() {
+    const sec = $("[data-intro]"), dataEl = $("#intro-data");
+    if (!sec || !dataEl) return;
+    let data;
+    try { data = JSON.parse(dataEl.textContent); } catch (e) { return; }
+    const q = (id) => document.getElementById(id);
+    const lid = q("in-lid"), ridges = q("in-ridges"), speed = q("in-speed"), jar = q("in-jar"), shadow = q("in-shadow");
+    const label = q("in-label"), sheet = q("in-sheet"), tool = q("in-tool"), cam = q("in-cam"), svg = $(".intro-svg", sec);
+    const cue = $(".intro-cue", sec), skip = $(".intro-skip", sec);
+    const marks = $$(".in-mark", sec);
+    const els = $$(".sw", sec);
+    if (!lid || !jar || !label || !sheet || !tool || els.length !== data.sweets.length) return;
+    // a small seeded generator, so the scene looks the same on every visit
+    let seed = 20261002;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    const io = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+    const out = (t) => 1 - Math.pow(1 - t, 3);
+    const seg = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const N = els.length;
+    const sw = data.sweets.map((d, i) => {
+      const feat = d[5];
+      const o = { el: els[i], x: d[0], y: d[1], feat, delay: (i / N) * 0.17, ph: rnd() * 6.28, spin: (rnd() - 0.5) * 540 };
+      o.cx = 450 + (rnd() - 0.5) * 170;                                    // every sweet leaves through the mouth
+      if (feat >= 0) { o.sx = 150 + feat * 120; o.sy = 70 + (feat % 2) * 50; o.delay = feat * 0.012; o.kx = lerp(o.cx, o.sx, 0.3); o.ky = -40; }
+      else {
+        const side = o.cx < 450 ? -1 : 1;
+        o.sx = 450 + side * (260 + rnd() * 520); o.sy = 30 + rnd() * 800;
+        o.kx = o.cx + side * (60 + rnd() * 120); o.ky = -120 + rnd() * 160;
+        o.fx = o.sx + side * (300 + rnd() * 320); o.fy = o.sy + (rnd() - 0.2) * 380;
+      }
+      return o;
+    });
+    const set = (el, v) => el.setAttribute("transform", v);
+    let top = 0, range = 1, lastP = -1, lastStamp = -1, zmax = 1;
+    function draw(p, t) {
+      // the camera starts close on the jar and pulls back as the sweets spread out
+      const z = lerp(zmax, 1, io(seg(p, 0.3, 0.48)));
+      if (cam) set(cam, `translate(450 ${(lerp(528, 500, (z - 1) / Math.max(0.01, zmax - 1))).toFixed(1)}) scale(${z.toFixed(3)}) translate(-450 -528)`);
+      // 1. the lid unscrews, then lifts off
+      const un = seg(p, 0.04, 0.15), lift = io(seg(p, 0.13, 0.33));
+      set(ridges, `translate(${(-un * 48).toFixed(1)} 0)`);
+      set(lid, `translate(${(lift * 300).toFixed(1)} ${(-un * 12 - lift * 640).toFixed(1)}) rotate(${(lift * 34).toFixed(1)} 450 200)`);
+      lid.setAttribute("opacity", (1 - seg(p, 0.27, 0.34)).toFixed(2));
+      speed.setAttribute("opacity", (Math.sin(Math.PI * seg(p, 0.14, 0.3)) * 0.7).toFixed(2));
+      // 2. the jar sinks away once it is empty
+      const gone = io(seg(p, 0.43, 0.56));
+      set(jar, `translate(0 ${(gone * 340).toFixed(1)})`);
+      jar.setAttribute("opacity", (1 - gone).toFixed(2));
+      shadow.setAttribute("opacity", (1 - seg(p, 0.4, 0.5)).toFixed(2));
+      // 3. the ingredients label unrolls, then moves up to make room
+      const roll = out(seg(p, 0.46, 0.57)), up = io(seg(p, 0.63, 0.73));
+      const ls = lerp(1, 0.62, up), lty = lerp(150, 46, up);
+      set(label, `translate(450 ${lty.toFixed(1)}) scale(${ls.toFixed(3)} ${(ls * Math.max(0.02, roll)).toFixed(3)})`);
+      label.setAttribute("opacity", seg(p, 0.46, 0.49).toFixed(2));
+      label.style.setProperty("--hl", out(seg(p, 0.585, 0.64)).toFixed(3));
+      // 4. the sheet slides in under it
+      const sh = out(seg(p, 0.64, 0.74));
+      set(sheet, `translate(0 ${((1 - sh) * 150).toFixed(1)})`);
+      sheet.setAttribute("opacity", sh.toFixed(2));
+      // 5. sweets
+      const bob = p > 0.22 && p < 0.72;
+      for (let i = 0; i < N; i++) {
+        const o = sw[i];
+        const a = seg(p, 0.22 + o.delay, 0.4 + o.delay);
+        let x, y;
+        if (a < 0.4) {                                   // up to the mouth of the jar
+          const u = io(a / 0.4);
+          x = lerp(o.x, o.cx, u); y = lerp(o.y, 292, u);
+        } else {                                         // out and away in an arc
+          const u = out((a - 0.4) / 0.6), v = 1 - u;
+          x = v * v * o.cx + 2 * v * u * o.kx + u * u * o.sx;
+          y = v * v * 292 + 2 * v * u * o.ky + u * u * o.sy;
+        }
+        const a2 = Math.max(0, (a - 0.3) / 0.7);
+        let r = a2 * o.spin, sc = 1 + a2 * 0.12, op = 1;
+        if (bob && a2 > 0) { y += Math.sin(t / 900 + o.ph) * 7 * a2; x += Math.cos(t / 1300 + o.ph) * 4 * a2; }
+        if (o.feat >= 0) {
+          const b = io(seg(p, 0.5 + o.feat * 0.012, 0.6 + o.feat * 0.012));       // onto the label
+          const lx = 450 + ls * (-263 + o.feat * 94), ly = lty + ls * 167;
+          const c = io(seg(p, 0.645 + o.feat * 0.008, 0.74 + o.feat * 0.008));     // down to its row on the sheet
+          const rx = 122, ry = 364 + o.feat * 104 + (1 - sh) * 150;
+          if (b > 0) { x = lerp(x, lx, b); y = lerp(y, ly, b); r = lerp(r, 0, b); sc = lerp(sc, 0.5 * ls, b); }
+          if (c > 0) { x = lerp(x, rx, c); y = lerp(y, ry, c) - Math.sin(Math.PI * c) * 40; sc = lerp(sc, 0.92, c); }
+        } else {
+          const f = seg(p, 0.52 + o.delay * 0.5, 0.68 + o.delay * 0.5);
+          if (f > 0) { const e = io(f); x = lerp(x, o.fx, e); y = lerp(y, o.fy, e); op = 1 - e; sc *= 1 - e * 0.4; r += e * 120; }
+        }
+        set(o.el, `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${r.toFixed(1)}) scale(${sc.toFixed(3)})`);
+        if (o.op !== op) { o.op = op; o.el.setAttribute("opacity", op.toFixed(2)); }
+      }
+      // 6. the stamp works through the sheet, one colour at a time
+      const sp = seg(p, 0.745, 0.955) * marks.length, k = Math.min(marks.length - 1, Math.floor(sp)), fr = sp - Math.floor(sp);
+      for (let i = 0; i < marks.length; i++) {
+        const done = i < k || (i === k && fr > 0.55) || sp >= marks.length;
+        const m = marks[i];
+        if (m.__on !== done) {
+          m.__on = done; m.setAttribute("opacity", done ? "1" : "0");
+          if (done && lastStamp >= 0) anim(m.firstElementChild, [{ scale: 1.7, opacity: 0.2 }, { scale: 1, opacity: 1 }], { duration: 260, easing: "ease-out", fill: "none" });
+        }
+      }
+      lastStamp = k;
+      const tin = seg(p, 0.72, 0.745), tout = seg(p, 0.955, 0.995);
+      const row = Math.floor(k / 5), col = k % 5;
+      const hop = sp >= marks.length ? 0 : Math.abs(Math.sin(Math.PI * Math.min(1, fr / 0.55))) * (fr < 0.55 ? 1 : 0);
+      const press = fr >= 0.55 ? 0 : 1;
+      const tx = 420 + col * 88 + tout * 520, ty = 364 + row * 104 - 4 - (press ? 46 * (1 - hop * 0.0) * (1 - Math.pow(fr / 0.55, 3)) : 0) - (1 - tin) * 300 - tout * 260;
+      set(tool, `translate(${tx.toFixed(1)} ${ty.toFixed(1)})`);
+      tool.setAttribute("opacity", Math.min(tin, 1 - tout).toFixed(2));
+      if (cue) cue.style.opacity = String(1 - seg(p, 0.01, 0.05));
+      if (skip) skip.style.opacity = String(1 - seg(p, 0.9, 0.98));
+    }
+    register(sec, {
+      measure() {
+        const head = $(".top");
+        if (head) sec.style.setProperty("--head", head.offsetHeight + "px");
+        top = docTop(sec); range = Math.max(1, sec.offsetHeight - innerHeight);
+        const r = svg ? svg.getBoundingClientRect() : null;
+        if (r && r.width && r.height) { const k = Math.min(r.width / 900, r.height / 1000); zmax = clamp(Math.min(r.width / k / 450, r.height / k / 840), 1, 2.2); }
+        lastP = -1;
+      },
+      update(st) {
+        if (!on()) return false;
+        const p = clamp((st.y - top) / range, 0, 1);
+        const moving = p > 0.22 && p < 0.72;
+        if (p === lastP && !moving) return false;
+        lastP = p;
+        draw(p, st.t);
+        return moving;
+      },
+    });
+    if (skip) skip.addEventListener("click", (e) => {
+      e.preventDefault();
+      const tgt = document.getElementById("start");
+      if (tgt) { scrollTo({ top: docTop(tgt) - 84, behavior: on() ? "smooth" : "auto" }); const i = $("#q-home"); if (i) setTimeout(() => i.focus({ preventScroll: true }), on() ? 800 : 0); }
+    });
+  }
+
   // ------------------------------------------------------------ home: hero
   function setupHero() {
     const hero = $("[data-hero]");
     if (!hero) return;
     const text = $(".hero-text", hero), art = $(".hero-art", hero), bg = $(".hero-bg", hero);
-    let h = 1, wide = false;
+    let h = 1, wide = false, htop = 0;
     register(hero, {
-      measure() { h = hero.offsetHeight || 1; wide = innerWidth >= 900; },
+      measure() { h = hero.offsetHeight || 1; wide = innerWidth >= 900; htop = Math.max(0, docTop(hero) - 100); },
       update(st) {
         if (!on() || !wide) { [text, art, bg].forEach((e) => e && (e.style.transform = "", e.style.opacity = "")); return false; }
-        const p = clamp(st.y / h, 0, 1);
-        if (text) { text.style.transform = `translate3d(0, ${(st.y * 0.2).toFixed(1)}px, 0)`; text.style.opacity = String(clamp(1 - (p - 0.25) * 1.6, 0, 1)); }
-        if (art) art.style.transform = `translate3d(0, ${(st.y * 0.08).toFixed(1)}px, 0) rotate(${(-p * 5).toFixed(2)}deg) scale(${(1 - p * 0.1).toFixed(3)})`;
-        if (bg) bg.style.transform = `translate3d(0, ${(st.y * 0.32).toFixed(1)}px, 0)`;
+        const y = Math.max(0, st.y - htop), p = clamp(y / h, 0, 1);
+        if (text) { text.style.transform = `translate3d(0, ${(y * 0.2).toFixed(1)}px, 0)`; text.style.opacity = String(clamp(1 - (p - 0.25) * 1.6, 0, 1)); }
+        if (art) art.style.transform = `translate3d(0, ${(y * 0.08).toFixed(1)}px, 0) rotate(${(-p * 5).toFixed(2)}deg) scale(${(1 - p * 0.1).toFixed(3)})`;
         return false;
       },
     });
@@ -314,17 +461,21 @@
       const d = document.createElement("i");
       d.dataset.i = i;
       d.style.setProperty("--dd", Math.round(Math.random() * 320) + "ms");
-      d.style.setProperty("--hue", Math.round(250 + (i / rows.length) * 200));
+      d.style.setProperty("--c", `var(--dye-${"roybvg"[(i * 7) % 6]})`);
       frag.appendChild(d);
       return d;
     });
+    // one jar per pile: the sweets drop into the jar of the group they belong to
+    const jars = [0, 1, 2].map(() => { const j = document.createElement("span"); j.className = "story-jar"; box.appendChild(j); return j; });
+    let jarGeo = [];
     box.appendChild(frag);
     let step = -1, W = 0, H = 0, size = 8, gap = 2, cg = 16, secTop = 0, range = 1, stick = 80;
+    const FLOOR = 12, RIM = 26;
     const group = (r, s) => (s <= N - 2 ? r[3][s - 1] : r[3][5]);
     const toneCls = (r, s) => (s === 0 ? "t0" : s <= N - 2 ? "t-" + r[2][s - 1] : "s-" + r[3][5]);
     function fit() {
       W = box.clientWidth; H = box.clientHeight;
-      cg = Math.max(12, Math.round(W * 0.05));
+      cg = Math.max(24, Math.round(W * 0.05));
       viz.style.setProperty("--cg", cg + "px");
       const maxPile = Math.max(1, ...steps.map((p) => Math.max(0, ...p.map((x) => x[2]))));
       for (let s = 16; s >= 3; s--) {
@@ -332,26 +483,30 @@
         const perG = Math.floor((W + g) / (s + g));
         if (perG < 1 || Math.ceil(rows.length / perG) * (s + g) > H) continue;
         const cw = (W - cg * 2) / 3, per = Math.floor((cw + g) / (s + g));
-        if (per < 1 || Math.ceil(maxPile / per) * (s + g) > H) continue;
+        if (per < 2 || Math.ceil(maxPile / (per - 1)) * (s + g) > H - FLOOR - RIM) continue;
         size = s; gap = g; return;
       }
       size = 3; gap = 1;
     }
     function layout(s) {
       const piles = steps[s], pos = new Array(rows.length), u = size + gap;
+      jarGeo = [];
       if (!piles.length) {
         const per = Math.max(1, Math.floor((W + gap) / u)), nr = Math.ceil(rows.length / per);
         const ox = (W - (per * u - gap)) / 2, oy = (H - (nr * u - gap)) / 2;
         rows.forEach((r, i) => { pos[i] = [ox + (i % per) * u, oy + Math.floor(i / per) * u]; });
         return pos;
       }
-      const cols = piles.length, cw = (W - cg * (cols - 1)) / cols, per = Math.max(1, Math.floor((cw + gap) / u));
+      const cols = piles.length, cw = (W - cg * (cols - 1)) / cols, per = Math.max(1, Math.floor((cw + gap) / u) - 1);
       const pw = per * u - gap, at = {};
       piles.forEach((p, k) => { at[p[0]] = { k, n: 0 }; });
       rows.forEach((r, i) => {
         const c = at[group(r, s)] || at[piles[piles.length - 1][0]], n = c.n++;
-        pos[i] = [c.k * (cw + cg) + (cw - pw) / 2 + (n % per) * u, H - size - Math.floor(n / per) * u];
+        pos[i] = [c.k * (cw + cg) + (cw - pw) / 2 + (n % per) * u, H - FLOOR - size - Math.floor(n / per) * u];
       });
+      const tall = Math.max(1, ...piles.map((p) => p[2]));
+      const jh = Math.min(H - 6, Math.ceil(tall / per) * u + FLOOR + RIM);
+      piles.forEach((p, k) => { jarGeo[k] = [k * (cw + cg) + (cw - pw) / 2 - 7, H - jh, pw + 14, jh - 2]; });
       return pos;
     }
     const pileCls = { a: "sw-a", n: "sw-n", u: "sw-u", d: "sw-d", r: "sw-r" };
@@ -363,6 +518,11 @@
       dots.forEach((d, i) => {
         d.style.transform = `translate(${pos[i][0].toFixed(1)}px,${pos[i][1].toFixed(1)}px)`;
         d.className = toneCls(rows[i], s);
+      });
+      jars.forEach((j, k) => {
+        const g = jarGeo[k];
+        j.classList.toggle("on", !!g);
+        if (g) { j.style.transform = `translate(${g[0].toFixed(1)}px,${g[1].toFixed(1)}px)`; j.style.width = g[2].toFixed(1) + "px"; j.style.height = g[3].toFixed(1) + "px"; }
       });
       texts.forEach((t, k) => t.classList.toggle("on", k === s));
       nav.forEach((b, k) => { if (k === s) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
@@ -734,7 +894,7 @@
       if (brand) setTimeout(() => brand.focus({ preventScroll: true }), on() ? 700 : 0);
     });
     setupReveals();
-    setupHero(); setupStory(); setupPointer(); setupTransitions();
+    setupIntro(); setupHero(); setupStory(); setupPointer(); setupTransitions();
     const idle = window.requestIdleCallback || ((f) => setTimeout(f, 120));
     idle(() => { setupBand(); setupScrub(); setupSideways(); setupStack(); setupTimelines(); kick(); }, { timeout: 600 });
     listeners.push(() => $$(".reveal, [data-stagger], [data-solo], .split-h, .sbars, .heat, .vcols, .timeline").forEach((el) => el.classList.add("in")));

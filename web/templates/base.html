@@ -7,8 +7,8 @@
 <meta name="description" content="{{ description|default(TAGLINE) }}">
 {% if noindex %}<meta name="robots" content="noindex">{% else %}<link rel="canonical" href="{{ abs_url(path) }}">{% endif %}
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#f5f7ff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0b1026" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111214" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ SITE_NAME }}">
 <meta property="og:title" content="{{ page_title }}">
@@ -16,7 +16,7 @@
 {% if not noindex %}<meta property="og:url" content="{{ abs_url(path) }}">{% endif %}
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-<link rel="preload" href="{{ asset('fonts/unbounded-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ asset('fonts/bricolage-grotesque-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ asset('fonts/instrument-sans-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{{ asset('style.css') }}">
 <script>(function(){var d=document.documentElement,m=null;try{var t=localStorage.getItem("theme")||sessionStorage.getItem("theme");if(t==="dark"||t==="light")d.setAttribute("data-theme",t);m=localStorage.getItem("motion")||sessionStorage.getItem("motion");}catch(e){}d.classList.add("js");
@@ -30,7 +30,7 @@ window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson
 <body class="{{ body_class|default('') }}{% if home %} home{% endif %}">
 <a class="skip" href="#main">Skip to content</a>
 <div class="progress" aria-hidden="true"><span></span></div>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+{% include "_bgart.html" %}
 <div class="site">
 <header class="top">
   <div class="top-inner">
