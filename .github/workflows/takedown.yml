@@ -1,0 +1,24 @@
+name: Take site offline
+# Replaces the published site with a blank "offline" page. The normal pipeline is
+# parked in .github/disabled-workflows/update.yml.off (move it back to restore).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  pages: write
+  id-token: write
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: offline
+      - id: deployment
+        uses: actions/deploy-pages@v4
