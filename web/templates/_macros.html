@@ -101,3 +101,8 @@
 </table>
 </div>
 {%- endmacro %}
+
+{# How to reach the operator: email if one is set, always the public GitHub issues page. #}
+{% macro contact(lead="Contact") -%}
+{{ lead }}: {% if OPERATOR.contact_email %}<a href="mailto:{{ OPERATOR.contact_email }}">{{ OPERATOR.contact_email }}</a>{% if REPO_URL %}, or <a href="{{ REPO_URL }}/issues">open an issue on GitHub</a> (public){% endif %}{% elif REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a> (issues are public){% else %}through the project's GitHub page{% endif %}.
+{%- endmacro %}

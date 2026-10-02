@@ -49,8 +49,11 @@ official sources ──► pipeline/fetch.py ──► data/raw/          (weekl
 The only hand-made data is `data/curated/crosswalk.yml`, a small reviewed table of name matches.
 See the site's *About* and *Legal* pages for status definitions, matching rules, limits and licences.
 
-The site's privacy policy, terms of use, cookies-and-storage page and accessibility statement are in
-`web/templates/`. The fonts (Unbounded and Instrument Sans) are self-hosted from `web/static/fonts/`
+The site's legal notice and licences, disclaimer, privacy policy, terms of use, cookies-and-storage page,
+corrections-and-notices page and accessibility statement are in `web/templates/`. Who is named as operator
+(country, optional contact email, name, address) is set in `data/curated/operator.yml`; fill in `contact_email`
+and push to show it on every legal page. Code is MIT-licensed (`LICENSE`); original text and compiled tables are
+CC BY 4.0, always subject to the source licences. The fonts (Unbounded and Instrument Sans) are self-hosted from `web/static/fonts/`
 under the SIL Open Font License 1.1; the licence texts are next to the font files.
 
 All animation lives in `web/static/motion.js` (no libraries). It is decoration only: pages read the same without

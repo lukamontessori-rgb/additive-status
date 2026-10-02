@@ -1,5 +1,5 @@
 /* Additive Status — motion.
-   Scroll scenes, reveals, cursor effects and page transitions. Everything here is decoration:
+   Scroll scenes, reveals, pointer effects and page transitions. Everything here is decoration:
    every page works and reads the same without it. No dependencies, no network requests.
    Motion runs only when the html element has class "mo" (set in <head> unless the visitor's
    system asks for reduced motion or the visitor pressed "Pause animations"). */
@@ -542,34 +542,9 @@
     });
   }
 
-  // ------------------------------------------------------------ cursor ring, magnetic buttons, tilt, ripples
+  // ------------------------------------------------------------ magnetic buttons, tilt, ripples
   function setupPointer() {
     if (FINE.matches) {
-      const ring = document.createElement("div");
-      ring.className = "cursor"; ring.setAttribute("aria-hidden", "true");
-      document.body.appendChild(ring);
-      let x = -100, y = -100, tx = -100, ty = -100, rq = 0, last = 0, seen = false;
-      const HOT = "a, button, select, summary, label, [data-tilt], .story-dots i, [role=option]";
-      addEventListener("pointermove", (e) => {
-        if (e.pointerType !== "mouse" || !on()) { ring.classList.remove("on"); return; }
-        tx = e.clientX; ty = e.clientY;
-        if (!seen) { x = tx; y = ty; seen = true; }
-        const t = e.target;
-        ring.classList.add("on");
-        ring.classList.toggle("hot", !!(t.closest && t.closest(HOT)));
-        ring.classList.toggle("text", !!(t.closest && t.closest("input[type=search], input[type=text], textarea")));
-        if (!rq) rq = requestAnimationFrame(step);
-      }, { passive: true });
-      document.addEventListener("mouseleave", () => { ring.classList.remove("on"); seen = false; });
-      addEventListener("pointerdown", () => ring.classList.add("down"));
-      addEventListener("pointerup", () => ring.classList.remove("down"));
-      function step(t) {
-        const dt = Math.min(50, t - (last || t - 16.7)); last = t;
-        const k = 1 - Math.pow(0.74, dt / 16.7);
-        x += (tx - x) * k; y += (ty - y) * k;
-        ring.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
-        rq = Math.abs(tx - x) + Math.abs(ty - y) > 0.3 ? requestAnimationFrame(step) : (last = 0, 0);
-      }
       // magnetic buttons: they lean toward the pointer (the hit area stays where it is)
       const MAG = ".btn, .icon-btn, .pill, .tog, .tab, .to-top, .band-pause, .story-nav button, .nav-motion";
       let mag = null;

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, contact %}
+{% block main %}
+{{ breadcrumbs([("Legal", "/legal/"), ("Corrections and notices", None)]) }}
+<article class="prose">
+<h1>Corrections and legal notices</h1>
+<p class="lede">Found a mistake, or think something on the site infringes your rights? Here is how to tell us and what happens next.</p>
+<p class="muted small">Last updated {{ LEGAL_UPDATED }}.</p>
+
+<nav class="toc" aria-label="On this page">
+  <a href="#mistake">Report a mistake</a><a href="#notice">Legal or rights-holder notice</a><a href="#after">What happens next</a><a href="#authorities">Authorities</a>
+</nav>
+
+<h2 id="mistake">Report a mistake</h2>
+<p>{{ contact("Contact") }} Please include:</p>
+<ul>
+  <li>the page address (URL) and the place (EU, GB, US, Canada or Australia/New Zealand) you think is wrong,</li>
+  <li>what you think the correct status is, and a link to the official source that shows it.</li>
+</ul>
+<p>Reports on GitHub are public and covered by GitHub's terms and privacy statement, so please do not include personal information in them.</p>
+
+<h2 id="notice">Legal or rights-holder notice</h2>
+<p>If you believe content on the site infringes copyright, a trade mark or another right, is inaccurate in a way that harms you, or is unlawful, please send a notice that contains:</p>
+<ol>
+  <li>your name and a way to contact you (an email address is enough),</li>
+  <li>the exact address (URL) of the page, and a description of the content in question,</li>
+  <li>an explanation of why you believe it is unlawful or incorrect, and the right you claim (for example, which work you own),</li>
+  <li>a statement that you are acting in good faith and that the information in your notice is accurate and complete.</li>
+</ol>
+<p>{{ contact("Send it to") }} {% if not OPERATOR.contact_email %}Because GitHub issues are public, do not include sensitive personal details in them; say only that you have a notice and how you can be reached.{% endif %}</p>
+<p>The site has no user-generated content: there are no comments, uploads or accounts, so the only content is what the operator publishes.</p>
+
+<h2 id="after">What happens next</h2>
+<ul>
+  <li>The operator is one private person, so replies are not instant. Reports are read and answered as soon as practical, and accessibility problems and clear errors come first.</li>
+  <li>If a notice is well founded, the content is corrected or removed quickly, and the change is recorded in the public history of the site's code.</li>
+  <li>If a report is not accepted, you will be told why where you gave a way to reach you.</li>
+  <li>Notices that are plainly unfounded, abusive or repeated may be declined.</li>
+</ul>
+
+<h2 id="authorities">Authorities and courts</h2>
+<p>Requests from authorities and courts are welcome through the same contact. You keep every right you have under the law to go to a court or to the competent authority; for personal data, see the <a href="{{ url('/privacy/') }}#rights">privacy policy</a>.</p>
+</article>
+{% endblock %}

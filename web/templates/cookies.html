@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import breadcrumbs %}
+{% from "_macros.html" import breadcrumbs, contact %}
 {% block main %}
 {{ breadcrumbs([("Legal", "/legal/"), ("Cookies and storage", None)]) }}
 <article class="prose">
@@ -25,6 +25,9 @@
 </div>
 <p>Nothing is stored when you arrive, and nothing pops up to ask you. Your answer is kept only once you choose an option above or under <em>Privacy choices</em> in the footer. The other items are kept only if you choose <em>Remember my settings</em>; without it, a theme you pick or a pause of the animations lasts only until you close the tab, so it does not change back on every page. None of them are ever sent anywhere: they are read only by this site's pages in your own browser.</p>
 
+<h2 id="basis">Why no cookie banner</h2>
+<p>EU and UK rules on cookies and similar technologies (the ePrivacy Directive, in Slovenia the Electronic Communications Act, ZEKom-2) require consent before anything is stored on your device, unless it is strictly necessary for a service you asked for. This site sets no cookies and stores nothing at all until you choose <em>Remember my settings</em>, so there is nothing to ask about when you arrive. When you do choose it, that is your consent, and "Remember" and "Don't remember" are offered as equal choices with no pre-ticked box. You can change your mind at any time, below or under <em>Privacy choices</em> in the footer. The only data involved is the settings listed above; none is used for tracking or advertising.</p>
+
 <h2 id="choices">Your choices</h2>
 <div class="panel consent-panel" data-storage-panel>
   <p class="storage-status" aria-live="polite" data-storage-status>Your current choice is shown here when JavaScript is on.</p>
@@ -35,6 +38,6 @@
   </div>
 </div>
 <p>You can also delete site data at any time in your browser's settings. Deleting it simply resets your theme, animation setting, quiz score, country and privacy choice.</p>
-<p>More detail is in the <a href="{{ url('/privacy/') }}">privacy policy</a>.</p>
+<p>More detail is in the <a href="{{ url('/privacy/') }}">privacy policy</a>. {{ contact("Questions") }}</p>
 </article>
 {% endblock %}

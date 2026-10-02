@@ -1,0 +1,9 @@
+# Who is responsible for the site. Shown on the legal pages.
+# Leave a value empty ("") to hide it. Changing this file and pushing is all that is needed.
+#
+# A reachable contact is the single most useful thing for legal safety (it lets people send
+# corrections and legal notices privately). A free, dedicated email address works well.
+country: "Slovenia"          # used for governing law and the supervisory authority
+contact_email: ""            # e.g. "contact@example.org"
+operator_name: ""            # optional: your name or a project name
+postal_address: ""           # optional: only needed if your country or a notice requires it

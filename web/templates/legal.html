@@ -1,44 +1,61 @@
 {% extends "base.html" %}
-{% from "_macros.html" import breadcrumbs %}
+{% from "_macros.html" import breadcrumbs, contact %}
 {% block main %}
 {{ breadcrumbs([("Legal", None)]) }}
 <article class="prose">
-<h1>Licences and legal notices</h1>
-<p class="lede">The short version: {{ SITE_NAME }} is free, summarises official lists but is not legal advice, uses data under its publishers' open licences, and does not track you.</p>
+<h1>Legal notice, licences and attribution</h1>
+<p class="lede">The short version: {{ SITE_NAME }} is a free, non-commercial site that summarises official food additive lists. It is not legal advice, it uses data under its publishers' open licences, and it does not track you.</p>
 <p class="muted small">Last updated {{ LEGAL_UPDATED }}.</p>
 
 <div class="legal-cards">
-  <a class="legal-card" href="{{ url('/privacy/') }}">{{ icon('lock', 22) }}<strong>Privacy policy</strong><span>What we collect (nothing personal), hosting, your rights.</span></a>
-  <a class="legal-card" href="{{ url('/terms/') }}">{{ icon('file', 22) }}<strong>Terms of use</strong><span>Free service, not advice, acceptable use, liability.</span></a>
+  <a class="legal-card" href="{{ url('/disclaimer/') }}">{{ icon('scale', 22) }}<strong>Disclaimer</strong><span>What the site is and is not: no advice, no safety verdict, known limits.</span></a>
+  <a class="legal-card" href="{{ url('/terms/') }}">{{ icon('file', 22) }}<strong>Terms of use</strong><span>Free service, acceptable use, content licences, liability, governing law.</span></a>
+  <a class="legal-card" href="{{ url('/privacy/') }}">{{ icon('lock', 22) }}<strong>Privacy policy</strong><span>What is processed (almost nothing), hosting, your rights, who to complain to.</span></a>
   <a class="legal-card" href="{{ url('/cookies/') }}">{{ icon('flask', 22) }}<strong>Cookies and storage</strong><span>No cookies. Manage or delete the settings kept on your device.</span></a>
+  <a class="legal-card" href="{{ url('/corrections/') }}">{{ icon('news', 22) }}<strong>Corrections and notices</strong><span>Report a mistake, or send a legal or rights-holder notice.</span></a>
   <a class="legal-card" href="{{ url('/accessibility/') }}">{{ icon('check', 22) }}<strong>Accessibility</strong><span>How the site is made usable for everyone, and how to report a problem.</span></a>
 </div>
 
 <nav class="toc" aria-label="On this page">
-  <a href="#disclaimer">Disclaimer</a><a href="#licences">Licences and attribution</a><a href="#fonts">Fonts and icons</a><a href="#honesty">Honest content</a><a href="#independence">Independence</a><a href="#operator">Who runs the site</a>
+  <a href="#operator">Who runs the site</a><a href="#licences">Licences and attribution</a><a href="#own">Our own content</a><a href="#names">Names and trade marks</a><a href="#fonts">Fonts and icons</a><a href="#ai">How the site is made</a><a href="#honesty">Honest content</a><a href="#independence">Independence</a><a href="#law">Governing law</a>
 </nav>
 
-<h2 id="disclaimer">Disclaimer</h2>
-<div class="note">
-  <p><strong>Not legal advice.</strong> Statuses are automated, simplified summaries of official lists. They are not legal, regulatory, medical or nutritional advice. Read the official source linked on each page before you rely on a status.</p>
-  <p><strong>Not a safety verdict.</strong> Whether a substance is on a list is a legal fact about one place. It does not say whether the substance is safe or harmful.</p>
-</div>
+<h2 id="operator">Who runs the site</h2>
+<p>{{ SITE_NAME }} is run by a private individual{% if OPERATOR.country %} established in {{ OPERATOR.country }}{% endif %} as a non-commercial, open-source project{% if OPERATOR.operator_name %}: <strong>{{ OPERATOR.operator_name }}</strong>{% endif %}. The operator is responsible for the content of the site and is the data controller for the little personal data described in the <a href="{{ url('/privacy/') }}">privacy policy</a>.</p>
+{% if OPERATOR.postal_address %}<p>Address: {{ OPERATOR.postal_address }}</p>{% endif %}
+<p>{{ contact("Contact for questions, corrections and legal notices") }} See <a href="{{ url('/corrections/') }}">corrections and notices</a> for what to include.</p>
+<ul class="check-list">
+  <li><strong>Not a business.</strong> The site has no ads, sponsors, affiliate links, paid features, sales or donations. It earns nothing, and it does not offer goods or services for payment.</li>
+  <li><strong>No commercial messages.</strong> It sends no emails or newsletters and contains no commercial communications.</li>
+  <li><strong>Hosting.</strong> The pages are served by GitHub Pages (GitHub, Inc.). The site code and the history of the data are public{% if REPO_URL %} on <a href="{{ REPO_URL }}">GitHub</a>{% endif %}.</li>
+</ul>
 
-<h2 id="licences">Licences and attribution</h2>
-<p>All statuses are derived from official publications. Each publisher's licence allows reuse on the conditions below. In each case the data has been extracted, matched and summarised — so changes have been made, and the publishers do not endorse this site.</p>
+<h2 id="licences">Licences and attribution of source data</h2>
+<p>All statuses are derived from official publications. Each publisher's licence allows reuse on the conditions below. In every case the data has been <strong>extracted, matched and summarised, so changes have been made</strong>. The publishers have not reviewed or approved this site and do not endorse it. Their names, logos and emblems are not licensed for reuse and are not used here.</p>
 <dl class="lic">
   <div><dt>European Union</dt>
-    <dd>Regulation (EC) No 1333/2008 (Annex II, consolidated versions) and Regulation (EU) No 231/2012, retrieved from the Publications Office of the European Union (EUR-Lex and the Cellar service). © European Union. Reuse is authorised provided the source is acknowledged (Commission Decision 2011/833/EU). <a href="https://eur-lex.europa.eu/content/legal-notice/legal-notice.html" rel="noopener">EUR-Lex legal notice</a>.</dd></div>
-  <div><dt>United Kingdom</dt>
-    <dd>Food Standards Agency, Regulated Products Register (food additives). Contains public sector information licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="noopener">Open Government Licence v3.0</a>.</dd></div>
+    <dd>Regulation (EC) No 1333/2008 (Annex II, consolidated versions) and Regulation (EU) No 231/2012, retrieved from the Publications Office of the European Union (EUR-Lex and the Cellar service). © European Union. Reuse is authorised provided the source is acknowledged and changes are indicated (<a href="https://eur-lex.europa.eu/content/legal-notice/legal-notice.html" rel="noopener">EUR-Lex legal notice</a>; Commission Decision 2011/833/EU; <a href="https://commission.europa.eu/legal-notice_en" rel="noopener">Commission legal notice, CC BY 4.0</a>).
+    <br><strong>Legal value:</strong> consolidated texts are published for convenience. Only the acts published in the Official Journal of the European Union are authentic and produce legal effects, and online documents may not exactly reproduce an adopted text.</dd></div>
+  <div><dt>United Kingdom (Great Britain)</dt>
+    <dd>Food Standards Agency, Regulated Products Register (food additives). <strong>Contains public sector information licensed under the Open Government Licence v3.0.</strong> (<a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="noopener">licence</a>). The information is licensed "as is": the provider excludes liability for errors and omissions, and the licence gives no right to suggest official status or endorsement.</dd></div>
   <div><dt>United States</dt>
-    <dd>U.S. Food and Drug Administration, Substances Added to Food inventory, and final orders published in the Federal Register (via the FederalRegister.gov API). Works of the U.S. Government, which are not subject to copyright in the United States. Their use here does not imply endorsement by the FDA or any U.S. Government agency.</dd></div>
+    <dd>U.S. Food and Drug Administration, Substances Added to Food inventory, and final rules and orders published in the Federal Register (via the FederalRegister.gov API). These are works of the U.S. Government, which the FDA states are in the public domain and may be used freely. FDA content changes often; each page shows when the data was last checked. The official legal edition of the Federal Register and the Code of Federal Regulations is the one published by the Office of the Federal Register. Use here does not imply endorsement by the FDA, HHS or any U.S. Government agency.</dd></div>
   <div><dt>Canada</dt>
-    <dd>Health Canada, Lists of Permitted Food Additives. Contains information licensed under the <a href="https://open.canada.ca/en/open-government-licence-canada" rel="noopener">Open Government Licence – Canada</a>.</dd></div>
+    <dd>Health Canada, Lists of Permitted Food Additives. <strong>Contains information licensed under the Open Government Licence – Canada.</strong> (<a href="https://open.canada.ca/en/open-government-licence-canada" rel="noopener">licence</a>). The information is provided "as is" without warranty. The licence does not cover Health Canada's names, crests or logos and gives no right to suggest official status or endorsement.</dd></div>
   <div><dt>Australia and New Zealand</dt>
-    <dd>Food Standards Australia New Zealand, Australia New Zealand Food Standards Code (compilation: Standard 1.3.1 and Schedules 8, 15, 16 and 18). © Food Standards Australia New Zealand, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">Creative Commons Attribution 4.0 International (CC BY 4.0)</a>. <a href="https://www.foodstandards.gov.au/copyright" rel="noopener">FSANZ copyright notice</a>.</dd></div>
+    <dd>Food Standards Australia New Zealand, Australia New Zealand Food Standards Code (compilation: Standard 1.3.1 and Schedules 8, 15, 16 and 18). Credit: <strong>Food Standards Australia New Zealand</strong>. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">Creative Commons Attribution 4.0 International (CC BY 4.0)</a>; <a href="https://www.foodstandards.gov.au/legal-policies/copyright" rel="noopener">FSANZ copyright notice</a>. The FSANZ logo is excluded from the licence, and FSANZ does not endorse this site or its use of the material. The legally binding text is the Food Standards Code on the Federal Register of Legislation.</dd></div>
 </dl>
-<p>If you reuse the downloadable data, keep these attributions, say that changes were made, and please mention {{ SITE_NAME }} ({{ abs_url('/') }}) as the compiler and the date you downloaded it. The names, logos and emblems of the publishers are not covered by these licences and are not used on this site.</p>
+<p>If you reuse the downloadable data, keep these attributions, say that changes were made, link to the licences, and please mention {{ SITE_NAME }} ({{ abs_url('/') }}) as the compiler and the date you downloaded it.</p>
+
+<h2 id="own">Our own content</h2>
+<ul>
+  <li><strong>Site code:</strong> published under the {% if REPO_URL %}<a href="{{ REPO_URL }}/blob/main/LICENSE">MIT licence</a>{% else %}MIT licence (see the LICENSE file in the repository){% endif %}.</li>
+  <li><strong>Original text, explanations and the compiled data tables</strong> (the selection, matching and wording we added): <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a>, credit "{{ SITE_NAME }}". This never overrides the conditions of the source licences above, which continue to apply to the underlying official information.</li>
+  <li>Third-party material is not covered by these licences and stays with its owners.</li>
+</ul>
+
+<h2 id="names">Names, numbers and trade marks</h2>
+<p>Additive names, E and INS numbers, CAS numbers and colour names (for example "Allura Red AC" or "FD&amp;C Red No. 40") are used only to identify substances named in the official lists. Any trade mark, brand or product name that appears belongs to its owner, appears only to identify what the official source names, and does not imply any connection with the owner. The site names no food brands and makes no claims about any company's products.</p>
 
 <h2 id="fonts">Fonts and icons</h2>
 <ul>
@@ -46,6 +63,9 @@
   <li><strong>Instrument Sans</strong> (text): Copyright 2022 The Instrument Sans Project Authors. Licensed under the <a href="{{ asset('fonts/InstrumentSans-OFL.txt') }}">SIL Open Font License 1.1</a>.</li>
   <li>Both fonts are served from this site, not from a font service. The icons and graphics were drawn for this site. The site uses no photos or stock images.</li>
 </ul>
+
+<h2 id="ai">How the site is made</h2>
+<p>The site's code and the text written for it were produced with the help of an AI assistant (Claude, made by Anthropic) under the direction of the operator, who reviews the site and is responsible for it. The statuses themselves are not written by AI: they are produced by tested, automated code from the official sources named above, and every status links to its source. AI systems can make mistakes, so please <a href="{{ url('/corrections/') }}">report anything that looks wrong</a>.</p>
 
 <h2 id="honesty">Honest content</h2>
 <ul class="check-list">
@@ -56,9 +76,9 @@
 </ul>
 
 <h2 id="independence">Independence</h2>
-<p>{{ SITE_NAME }} is an independent, non-commercial project. It has no ads, sponsors, affiliate links or paid features, and it is not affiliated with, or endorsed by, the European Union, the UK Food Standards Agency, the U.S. Food and Drug Administration, Health Canada, Food Standards Australia New Zealand or any company. The publishers' names, logos and emblems are not used on this site.</p>
+<p>{{ SITE_NAME }} is an independent project. It is not affiliated with, or endorsed by, the European Union, the UK Food Standards Agency, the U.S. Food and Drug Administration, Health Canada, Food Standards Australia New Zealand or any company, and it has no official status in any country.</p>
 
-<h2 id="operator">Who runs the site</h2>
-<p>The site is run as a non-commercial, open-source project{% if REPO_URL %} whose code and data history are public on <a href="{{ REPO_URL }}">GitHub</a>{% endif %}. It does not sell anything and does not collect personal data. For questions, corrections or legal notices, {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a>{% else %}open an issue on the project's GitHub page{% endif %}.</p>
+<h2 id="law">Governing law and supervisory authority</h2>
+<p>{% if OPERATOR.country %}These notices and the <a href="{{ url('/terms/') }}">terms of use</a> are governed by the law of {{ OPERATOR.country }}, without taking away any mandatory consumer rights you have in the country where you live. {% endif %}For data protection questions the competent authority for the operator is the Information Commissioner of the Republic of Slovenia (<a href="https://www.ip-rs.si/en/" rel="noopener">Informacijski pooblaščenec</a>); you can also complain to the authority in your own country. See the <a href="{{ url('/privacy/') }}">privacy policy</a>.</p>
 </article>
 {% endblock %}

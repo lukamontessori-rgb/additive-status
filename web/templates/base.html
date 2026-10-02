@@ -97,11 +97,13 @@ window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson
         <a href="{{ url('/privacy/') }}">Privacy policy</a>
         <a href="{{ url('/terms/') }}">Terms of use</a>
         <a href="{{ url('/cookies/') }}">Cookies and storage</a>
+        <a href="{{ url('/disclaimer/') }}">Disclaimer</a>
+        <a href="{{ url('/corrections/') }}">Corrections and notices</a>
         <a href="{{ url('/legal/') }}">Licences and notices</a>
         <button type="button" class="link-btn" data-privacy-choices>Privacy choices</button>
       </nav>
     </div>
-    <p class="foot-legal"><strong>Not legal advice.</strong> A summary of official lists with links to them. Check the official source before you rely on it. Not affiliated with the EU, the UK Food Standards Agency, the US FDA, Health Canada or Food Standards Australia New Zealand. Sources: European Union, UK Food Standards Agency (Open Government Licence), US FDA and Federal Register, Health Canada (Open Government Licence – Canada), Food Standards Australia New Zealand (CC BY 4.0). <a href="{{ url('/legal/') }}#licences">Licences and attribution</a>.</p>
+    <p class="foot-legal"><strong>Not legal advice.</strong> A summary of official lists with links to them. Check the official source before you rely on it. Not affiliated with, or endorsed by, any government agency. Sources: © European Union, <a href="https://eur-lex.europa.eu/" rel="noopener">EUR-Lex</a>. Contains public sector information licensed under the Open Government Licence v3.0 (UK Food Standards Agency). U.S. Food and Drug Administration and Federal Register (U.S. Government works). Contains information licensed under the Open Government Licence – Canada (Health Canada). Food Standards Australia New Zealand, licensed under CC BY 4.0. Changes were made: the data was extracted, matched and summarised. <a href="{{ url('/legal/') }}#licences">Licences and attribution</a>.</p>
     <p class="foot-mark" aria-hidden="true">{% for w in SITE_NAME.split() %}<span class="fm-w">{% for ch in w %}<span style="--i:{{ loop.index0 }}">{{ ch }}</span>{% endfor %}</span>{% endfor %}</p>
   </div>
 </footer>

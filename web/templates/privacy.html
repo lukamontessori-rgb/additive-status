@@ -1,15 +1,18 @@
 {% extends "base.html" %}
-{% from "_macros.html" import breadcrumbs %}
+{% from "_macros.html" import breadcrumbs, contact %}
 {% block main %}
 {{ breadcrumbs([("Legal", "/legal/"), ("Privacy policy", None)]) }}
 <article class="prose">
 <h1>Privacy policy</h1>
-<p class="lede">The short version: we do not collect personal data. There are no accounts, no cookies, no analytics, no ads, no emails and no third-party trackers.</p>
+<p class="lede">The short version: the site itself collects no personal data. There are no accounts, no cookies, no analytics, no ads, no emails and no third-party trackers. The only personal data involved is what the web host needs to deliver pages, and anything you choose to write in a report.</p>
 <p class="muted small">Last updated {{ LEGAL_UPDATED }}. Earlier versions are kept in the public history of the site's code.</p>
 
 <nav class="toc" aria-label="On this page">
-  <a href="#collect">What we collect</a><a href="#device">On your device</a><a href="#host">Hosting</a><a href="#search">Search and tools</a><a href="#reports">Reporting a mistake</a><a href="#children">Children</a><a href="#rights">Your rights</a><a href="#changes">Changes</a>
+  <a href="#controller">Who is responsible</a><a href="#collect">What we collect</a><a href="#table">Data, purpose, legal basis</a><a href="#device">On your device</a><a href="#host">Hosting</a><a href="#search">Search and tools</a><a href="#reports">Reports</a><a href="#transfers">Transfers</a><a href="#children">Children</a><a href="#rights">Your rights</a><a href="#complaints">Complaints</a><a href="#changes">Changes</a>
 </nav>
+
+<h2 id="controller">Who is responsible</h2>
+<p>The controller for the little personal data described here is the operator of {{ SITE_NAME }}, a private individual{% if OPERATOR.country %} established in {{ OPERATOR.country }}{% endif %}{% if OPERATOR.operator_name %} ({{ OPERATOR.operator_name }}){% endif %}. {{ contact("Contact") }}{% if OPERATOR.postal_address %} Address: {{ OPERATOR.postal_address }}.{% endif %} The operator is not required to have a data protection officer and has not appointed one.</p>
 
 <h2 id="collect">What we collect</h2>
 <p>Nothing that identifies you. {{ SITE_NAME }} is a set of static pages. It has:</p>
@@ -19,14 +22,29 @@
   <li><strong>No cookies</strong>, no analytics, no advertising, no fingerprinting and no session recording.</li>
   <li><strong>No third-party requests.</strong> Every script, style, font and icon is served from this site. There are no embeds, pixels, social buttons or software development kits (SDKs) from other companies.</li>
   <li><strong>No emails.</strong> We never send email, run a newsletter or keep a mailing list, so there is nothing to unsubscribe from.</li>
-  <li><strong>No selling or sharing of data</strong>, because there is no data to sell or share.</li>
+  <li><strong>No selling or sharing of data</strong>, because there is no data to sell or share. There is no profiling and no automated decision-making about you.</li>
+  <li><strong>No "Do Not Track" or opt-out needed.</strong> Because nothing tracks you, there is nothing to opt out of; the site behaves the same whatever signal your browser sends.</li>
 </ul>
 
+<h2 id="table">Data, purpose and legal basis</h2>
+<div class="tbl-wrap">
+<table class="tbl stack-tbl">
+  <thead><tr><th scope="col">Data</th><th scope="col">Who handles it</th><th scope="col">Purpose</th><th scope="col">Legal basis (GDPR)</th><th scope="col">Kept for</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Technical request data such as IP address and the page requested</th><td data-label="Who handles it">GitHub, Inc., the web host. The operator receives no logs and no statistics.</td><td data-label="Purpose">Deliver the pages and keep the service secure</td><td data-label="Legal basis (GDPR)">Legitimate interests, Art. 6(1)(f): a site cannot be delivered without it. GitHub decides how long it keeps it.</td><td data-label="Kept for">Set by GitHub, see its privacy statement</td></tr>
+    <tr><th scope="row">Settings in your browser's storage (theme, animation setting, quiz score, label-checker country, your privacy choice)</th><td data-label="Who handles it">Your own browser only. Nothing is sent to anyone.</td><td data-label="Purpose">Remember what you chose</td><td data-label="Legal basis (GDPR)">Your consent, and only if you choose "Remember my settings". Without it, a theme choice is held only until you close the tab.</td><td data-label="Kept for">Until you delete it, see <a href="{{ url('/cookies/') }}">cookies and storage</a></td></tr>
+    <tr><th scope="row">What you write in a report, and your GitHub user name</th><td data-label="Who handles it">GitHub (it hosts the issues) and the operator, who reads them</td><td data-label="Purpose">Check and fix mistakes, answer you</td><td data-label="Legal basis (GDPR)">Your consent, because you choose to send it (Art. 6(1)(a)), and legitimate interests in keeping the data correct (Art. 6(1)(f))</td><td data-label="Kept for">Until the matter is closed, or until you ask for removal. Issues stay in GitHub's history unless deleted.</td></tr>
+    <tr><th scope="row">An email and its contents, if you write to the contact address</th><td data-label="Who handles it">The operator and the email provider</td><td data-label="Purpose">Answer you and handle a notice</td><td data-label="Legal basis (GDPR)">Your consent / steps at your request (Art. 6(1)(a), 6(1)(b)); legal claims (Art. 6(1)(f))</td><td data-label="Kept for">As long as needed to deal with it, normally no more than 12 months, longer only if a legal claim is open</td></tr>
+  </tbody>
+</table>
+</div>
+<p>You are not required by law or contract to give any of this data. If you do not, the site works the same.</p>
+
 <h2 id="device">Settings kept on your device, with your permission</h2>
-<p>Nothing is stored and nothing pops up when you arrive. If you choose <em>Remember my settings</em> (under <em>Privacy choices</em> in the footer, or on the cookies page), your browser keeps up to four small settings in its local storage: your light or dark theme, whether you paused the animations, your best quiz score and the country you picked in the label checker. They stay on your device and are never sent to us or anyone else. If you choose <em>Don't remember</em>, only that choice is kept; a theme or animation setting you change then lasts only until you close the tab (session storage). The <a href="{{ url('/cookies/') }}">cookies and storage page</a> lists every item and lets you delete them in one click.</p>
+<p>Nothing is stored and nothing pops up when you arrive. If you choose <em>Remember my settings</em> (under <em>Privacy choices</em> in the footer, or on the cookies page), your browser keeps up to four small settings in its local storage: your light or dark theme, whether you paused the animations, your best quiz score and the country you picked in the label checker. They stay on your device and are never sent to us or anyone else. If you choose <em>Don't remember</em>, only that choice is kept; a theme or animation setting you change then lasts only until you close the tab (session storage). You can withdraw consent at any time: the <a href="{{ url('/cookies/') }}">cookies and storage page</a> lists every item and lets you delete them in one click.</p>
 
 <h2 id="host">Hosting</h2>
-<p>The site is hosted on GitHub Pages, a service of GitHub, Inc. Like any web host, GitHub processes technical data such as IP addresses to deliver pages and keep the service secure. GitHub handles this data under its own <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">General Privacy Statement</a>. The site operator does not receive these logs or any visitor statistics.</p>
+<p>The site is hosted on GitHub Pages, a service of GitHub, Inc. (a Microsoft company). Like any web host, GitHub processes technical data such as IP addresses to deliver pages and keep the service secure, and GitHub decides for itself how it does so. GitHub handles this data under its own <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">General Privacy Statement</a>. The site operator does not receive these logs or any visitor statistics and cannot identify visitors from them. The site has no cookie banner because nothing here sets cookies.</p>
 
 <h2 id="search">Search and tools</h2>
 <ul>
@@ -35,17 +53,32 @@
   <li><strong>Quiz.</strong> Your answers stay in your browser. Your best score is kept only if you allowed it.</li>
 </ul>
 
-<h2 id="reports">Reporting a mistake</h2>
-<p>Corrections are reported through GitHub issues, which are public and covered by GitHub's terms and privacy statement. Please do not include personal information in a report. You can edit or delete what you posted through your GitHub account.</p>
+<h2 id="reports">Reports and messages</h2>
+<p>Corrections and notices can be sent through GitHub issues, which are public and covered by GitHub's terms and privacy statement{% if OPERATOR.contact_email %}, or by email{% endif %}. Please do not put personal information in a public issue. You can edit or delete what you posted through your GitHub account, or ask the operator to remove it.</p>
+
+<h2 id="transfers">Transfers outside your country</h2>
+<p>GitHub, Inc. is a company in the United States and may process data in the United States and other countries. The safeguards it uses for such transfers are described in its privacy statement. The operator itself does not send personal data anywhere.</p>
 
 <h2 id="children">Children</h2>
-<p>The site is suitable for all ages. Because it collects no personal data from anyone, it collects none from children, and no age check or parental consent is needed to use it.</p>
+<p>The site is suitable for all ages, but it is not aimed at children and does not ask for anyone's age. Because it collects no personal data from anyone, it collects none from children, and no parental consent is needed to use it. It does not knowingly collect personal information from children under 13 or under the age of digital consent in your country.</p>
 
 <h2 id="rights">Your rights</h2>
-<p>Under data protection laws such as the GDPR you can ask to access, correct or delete personal data held about you. We hold none, so there is nothing for us to return, correct or delete. Settings on your own device can be deleted on the <a href="{{ url('/cookies/') }}">cookies and storage page</a> or in your browser's settings. For data processed by the host, see GitHub's privacy statement, which explains how to make a request to GitHub. You can also complain to your national data protection authority.</p>
+<p>Under the GDPR (and the UK GDPR) you have the right to:</p>
+<ul>
+  <li>get access to personal data held about you, and a copy of it,</li>
+  <li>have inaccurate data corrected and have data erased,</li>
+  <li>restrict how data is used, and object to processing based on legitimate interests,</li>
+  <li>receive data you gave us in a common format (data portability),</li>
+  <li>withdraw consent at any time, without affecting what was done before.</li>
+</ul>
+<p>The operator holds no personal data about visitors, so there is normally nothing to return, correct or delete, apart from what you sent in a report or message. Settings on your own device can be deleted on the <a href="{{ url('/cookies/') }}">cookies and storage page</a> or in your browser. For data processed by the host, see GitHub's privacy statement, which explains how to make a request to GitHub. {{ contact("To use any of these rights") }} Requests are answered within one month.</p>
+<p>Residents of US states with privacy laws (such as California): the site does not sell or share personal information, does not use it for advertising, and does not collect sensitive personal information.</p>
+
+<h2 id="complaints">Complaints</h2>
+<p>You may complain to a data protection authority. For the operator{% if OPERATOR.country == "Slovenia" %} this is the Information Commissioner of the Republic of Slovenia (<a href="https://www.ip-rs.si/en/" rel="noopener">Informacijski pooblaščenec</a>){% else %} this is the authority in the operator's country{% endif %}; you can also contact the authority where you live or work. In the UK this is the <a href="https://ico.org.uk/" rel="noopener">Information Commissioner's Office</a>. We would appreciate the chance to fix a problem first.</p>
 
 <h2 id="changes">Changes to this policy</h2>
 <p>If anything here changes, the new version is published on this page with a new date. Because the site's code is public, every earlier version can be seen{% if REPO_URL %} in the <a href="{{ REPO_URL }}/commits/main/web/templates/privacy.html">history of this page</a>{% endif %}.</p>
-<p>Questions: {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a>{% else %}open an issue on the project's GitHub page{% endif %}.</p>
+<p>{{ contact("Questions") }}</p>
 </article>
 {% endblock %}

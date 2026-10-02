@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, contact %}
+{% block main %}
+{{ breadcrumbs([("Legal", "/legal/"), ("Disclaimer", None)]) }}
+<article class="prose">
+<h1>Disclaimer</h1>
+<p class="lede">{{ SITE_NAME }} is an information tool. It summarises what official food additive lists say. It is not advice, and it does not tell you whether anything is safe.</p>
+<p class="muted small">Last updated {{ LEGAL_UPDATED }}.</p>
+
+<nav class="toc" aria-label="On this page">
+  <a href="#advice">Not advice</a><a href="#safety">Not a safety verdict</a><a href="#accuracy">Accuracy and timing</a><a href="#words">Words like "banned"</a><a href="#scope">What is not covered</a><a href="#business">If you work with food</a><a href="#links">Links and names</a><a href="#liability">Liability</a>
+</nav>
+
+<h2 id="advice">Not legal, medical or nutritional advice</h2>
+<div class="note">
+  <p>Nothing on this site is legal, regulatory, medical, dietary, nutritional or professional advice, and using it does not create a client, patient or advisory relationship with anyone. If a decision matters, read the official source linked on each page and ask the competent authority or a qualified professional.</p>
+</div>
+
+<h2 id="safety">Not a safety verdict</h2>
+<p>Whether a substance is on an official list, or off it, is a legal fact about one place at one time. It is not a statement that the substance is safe or unsafe. The site does not rate, score or rank additives for health. If you have an allergy, a medical condition or a dietary need, talk to a doctor or dietitian and read product labels.</p>
+
+<h2 id="accuracy">Accuracy, completeness and timing</h2>
+<ul>
+  <li><strong>Automated summaries.</strong> Statuses are produced automatically from official files and then simplified into a few plain categories. Reading and matching can go wrong, even though the process is tested and every match shows how it was made.</li>
+  <li><strong>Not up to the minute.</strong> The data is checked about once a week. Laws change between checks, and an official source can lag behind the law. Each page shows when its data was last checked.</li>
+  <li><strong>Not the official text.</strong> Only the official publications are authoritative. For EU law, only the acts in the Official Journal of the European Union are authentic. The linked source always wins over this site.</li>
+  <li><strong>If a source fails.</strong> A download that fails or looks wrong never replaces the last good data. The site then shows older data and says so on the <a href="{{ url('/about/') }}">about page</a>.</li>
+  <li><strong>No guarantee.</strong> No promise is made that the site is complete, error-free or always available.</li>
+</ul>
+
+<h2 id="words">What "allowed", "not allowed" and "not listed" mean here</h2>
+<p>"Allowed" means the substance is authorised or in a phase-out period on that place's official list. "Not allowed" means the list says it is not authorised, prohibited or removed. "Not listed" means the substance was not found on the list we read, which is not the same as "not allowed": some places permit substances by other routes (for example, the United States has substances that are generally recognised as safe without being on the inventory). The full definitions are on the <a href="{{ url('/about/') }}#statuses">about page</a>. A word such as "banned" in other media may mean something different.</p>
+
+<h2 id="scope">What is not covered</h2>
+<ul>
+  <li>Only five places are covered: the European Union, Great Britain, the United States (federal level), Canada, and Australia/New Zealand. Other countries, and US state and local laws, are not covered.</li>
+  <li>The site shows lists of additives. It does not cover contaminants, pesticide residues, novel foods, food contact materials, labelling rules or acceptable daily intake values. Flavourings are not covered systematically, and only parts of the conditions of use are shown.</li>
+  <li>It does not say what is in any particular product or brand.</li>
+</ul>
+
+<h2 id="business">If you make, label, import or sell food</h2>
+<p>Do not rely on this site for compliance. Use the official source and, where needed, advice from the authority or a qualified professional in the country you sell in. The operator does not provide compliance services.</p>
+
+<h2 id="links">Links and names</h2>
+<p>Pages link to official sources and a few other sites for convenience. Their content, availability and privacy practices are their own, and a link is not an endorsement. The site is not affiliated with any government agency or company; see the <a href="{{ url('/legal/') }}#names">notice on names and trade marks</a>.</p>
+
+<h2 id="liability">Liability</h2>
+<p>The site and its data are provided "as is" and "as available". To the fullest extent the law allows, the operator is not liable for any loss or damage that results from using or relying on the site or its data. Nothing here excludes liability that cannot be excluded by law, including liability for intent or gross negligence, and nothing limits mandatory consumer rights. See also the <a href="{{ url('/terms/') }}#warranty">terms of use</a>.</p>
+<p>Found a mistake? Please <a href="{{ url('/corrections/') }}">tell us</a>. {{ contact("Contact") }}</p>
+</article>
+{% endblock %}

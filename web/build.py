@@ -25,6 +25,14 @@ from pipeline.model import (
 )
 
 WEB = ROOT / "web"
+def load_operator() -> dict:
+    """Optional operator details (data/curated/operator.yml); empty values are hidden."""
+    import yaml
+    f = ROOT / "data" / "curated" / "operator.yml"
+    raw = yaml.safe_load(f.read_text(encoding="utf-8")) if f.exists() else {}
+    return {k: str(raw.get(k) or "").strip() for k in ("country", "contact_email", "operator_name", "postal_address")}
+
+
 SITE_NAME = "Additive Status"
 PLACES = "the EU, UK, US, Canada and Australia/New Zealand"
 PLACES_SHORT = "EU, UK, US, Canada, Aus/NZ"
@@ -342,7 +350,7 @@ class Builder:
             url=url, abs_url=abs_url, SITE_NAME=SITE_NAME, TAGLINE=TAGLINE, PLACES=PLACES,
             PLACES_SHORT=PLACES_SHORT, JUR=JURISDICTIONS, JUR_ORDER=JUR_ORDER, JUR_CODE=JUR_CODE,
             JUR_THE=JUR_THE, STATUSES=STATUSES, TONE_ICON=TONE_ICON, CLASS_ICON=CLASS_ICON,
-            CLASS_SYMBOL=CLASS_SYMBOL, icon=icon, LEGAL_UPDATED="1 October 2026",
+            CLASS_SYMBOL=CLASS_SYMBOL, icon=icon, LEGAL_UPDATED="2 October 2026", OPERATOR=load_operator(),
             fmt_date=fmt_date, REPO_URL=REPO_URL if REPO_URL and REPO_URL != "https://github.com/" else "",
             ld_json=ld_json, ld_breadcrumbs=ld_breadcrumbs, asset=lambda n: self.asset[n],
             data_version=self.data.get("data_version"),
@@ -587,6 +595,14 @@ class Builder:
                   page_title="Cookies and storage",
                   description="Additive Status sets no cookies. See the few settings that can be kept on your device with "
                               "your permission, and delete them in one click.")
+        self.page("/disclaimer/", "disclaimer.html", priority=0.3,
+                  page_title="Disclaimer",
+                  description="What Additive Status is and is not: a summary of official food additive lists, not legal, "
+                              "medical or nutritional advice, not a safety verdict, with known limits and no endorsement.")
+        self.page("/corrections/", "corrections.html", priority=0.3,
+                  page_title="Corrections and legal notices",
+                  description="How to report a mistake on Additive Status, and how rights holders and authorities can send "
+                              "a notice about content on the site.")
         self.page("/accessibility/", "accessibility.html", priority=0.3,
                   page_title="Accessibility statement",
                   description="How Additive Status aims to meet WCAG 2.2 AA: keyboard use, contrast, reduced motion, "

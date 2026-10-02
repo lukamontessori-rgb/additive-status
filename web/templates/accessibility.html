@@ -1,11 +1,14 @@
 {% extends "base.html" %}
-{% from "_macros.html" import breadcrumbs %}
+{% from "_macros.html" import breadcrumbs, contact %}
 {% block main %}
 {{ breadcrumbs([("Legal", "/legal/"), ("Accessibility", None)]) }}
 <article class="prose">
 <h1>Accessibility statement</h1>
 <p class="lede">{{ SITE_NAME }} aims to be usable by everyone, and to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA.</p>
 <p class="muted small">Last reviewed {{ LEGAL_UPDATED }}.</p>
+
+<h2 id="status">Conformance status</h2>
+<p>The aim is conformance with WCAG 2.2 level AA. The site has been checked with automated tools and by hand, as described below, but it has not been audited by an outside body, so full conformance is not claimed. This is a free, non-commercial project run by a private individual, so it is not a "product or service offered for payment" under laws such as the European Accessibility Act and the public-sector web accessibility rules; it follows the same standard voluntarily.</p>
 
 <h2 id="measures">What we do</h2>
 <ul class="check-list">
@@ -30,6 +33,6 @@
 </ul>
 
 <h2 id="feedback">Feedback</h2>
-<p>If something does not work for you, please {% if REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a>{% else %}open an issue on the project's GitHub page{% endif %} and say which page and what happened. We aim to fix accessibility problems first.</p>
+<p>If something does not work for you, please tell us which page and what happened. {{ contact("Contact") }} We aim to fix accessibility problems first and to answer within a few working days. If you ask for information in another form, we will try to provide it. If you are not satisfied with our answer, you can contact the market inspection or accessibility authority in your country.</p>
 </article>
 {% endblock %}
