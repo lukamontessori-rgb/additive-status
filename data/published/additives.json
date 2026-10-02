@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-10-01T16:18:20+00:00",
- "data_version": "2026-10-01",
+ "generated_at": "2026-10-02T10:07:17+00:00",
+ "data_version": "2026-10-02",
  "method_version": "2026-10-01.4",
  "eu_history": {
   "versions": 57,
@@ -156,7 +156,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-01T16:17:07+00:00",
+   "retrieved_at": "2026-10-02T10:05:21+00:00",
    "content_changed_at": "2026-09-30T21:07:33+00:00",
    "version": "02008R1333-20260818",
    "state": "ok"
@@ -168,8 +168,8 @@
    "licence": "Open Government Licence v3.0",
    "licence_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
    "attribution": "Contains public sector information licensed under the Open Government Licence v3.0 (Food Standards Agency).",
-   "retrieved_at": "2026-10-01T16:17:08+00:00",
-   "content_changed_at": "2026-10-01T16:17:08+00:00",
+   "retrieved_at": "2026-10-02T10:05:22+00:00",
+   "content_changed_at": "2026-10-02T10:05:22+00:00",
    "version": null,
    "state": "ok"
   },
@@ -180,8 +180,8 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.fda.gov/about-fda/about-website/website-policies",
    "attribution": "Source: U.S. Food and Drug Administration.",
-   "retrieved_at": "2026-10-01T16:17:11+00:00",
-   "content_changed_at": "2026-10-01T05:43:55+00:00",
+   "retrieved_at": "2026-10-02T10:05:26+00:00",
+   "content_changed_at": "2026-10-02T10:05:26+00:00",
    "version": null,
    "state": "ok"
   },
@@ -192,7 +192,7 @@
    "licence": "Open Government Licence – Canada",
    "licence_url": "https://open.canada.ca/en/open-government-licence-canada",
    "attribution": "Contains information licensed under the Open Government Licence – Canada (Health Canada).",
-   "retrieved_at": "2026-10-01T16:17:39+00:00",
+   "retrieved_at": "2026-10-02T10:06:03+00:00",
    "content_changed_at": "2026-09-30T21:08:09+00:00",
    "version": null,
    "state": "ok"
@@ -204,7 +204,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-01T16:17:42+00:00",
+   "retrieved_at": "2026-10-02T10:06:35+00:00",
    "content_changed_at": "2026-09-30T21:08:14+00:00",
    "version": "02012R0231-20260818",
    "state": "ok"
@@ -216,7 +216,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.federalregister.gov/reader-aids/policy/legal-status",
    "attribution": "Source: Federal Register (federalregister.gov).",
-   "retrieved_at": "2026-10-01T16:17:43+00:00",
+   "retrieved_at": "2026-10-02T10:06:37+00:00",
    "content_changed_at": "2026-09-30T20:36:24+00:00",
    "version": null,
    "state": "ok"
@@ -228,7 +228,7 @@
    "licence": "Creative Commons Attribution 4.0 (CC BY 4.0)",
    "licence_url": "https://www.foodstandards.gov.au/copyright",
    "attribution": "Food Standards Australia New Zealand",
-   "retrieved_at": "2026-10-01T16:17:43+00:00",
+   "retrieved_at": "2026-10-02T10:06:38+00:00",
    "content_changed_at": "2026-09-30T21:08:16+00:00",
    "version": null,
    "state": "ok"
@@ -25190,7 +25190,7 @@
       ],
       [
        "Group",
-       "Group I; Group II: Food colours authorised at quantum satis"
+       "Group II: Food colours authorised at quantum satis; Group I"
       ],
       [
        "Register entry updated",
@@ -28718,7 +28718,7 @@
       ],
       [
        "Group",
-       "E 200 – 202: Sorbic acid – potassium sorbate (SA); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
+       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -30067,7 +30067,7 @@
       ],
       [
        "Group",
-       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200 – 202: Sorbic acid – potassium sorbate (SA); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
       ],
       [
        "Register entry updated",
@@ -31396,7 +31396,7 @@
       ],
       [
        "Group",
-       "E 210–213: Benzoic acid — benzoates (BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA)"
       ],
       [
        "Register entry updated",
@@ -33256,7 +33256,7 @@
       ],
       [
        "Group",
-       "E 210–213: Benzoic acid — benzoates (BA); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 210–213: Benzoic acid — benzoates (BA)"
       ],
       [
        "Register entry updated",
@@ -34177,7 +34177,7 @@
       ],
       [
        "Group",
-       "E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 210–213: Benzoic acid — benzoates (BA); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200–213: Sorbic acid — sorbates; Benzoic acid — benzoates (SA + BA); E 210–213: Benzoic acid — benzoates (BA)"
       ],
       [
        "Register entry updated",
@@ -35011,7 +35011,7 @@
       ],
       [
        "Group",
-       "E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB)"
       ],
       [
        "Register entry updated",
@@ -35601,7 +35601,7 @@
       ],
       [
        "Group",
-       "E 214–219: p-hydroxybenzoates (PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 214–219: p-hydroxybenzoates (PHB)"
       ],
       [
        "Register entry updated",
@@ -35986,7 +35986,7 @@
       ],
       [
        "Group",
-       "E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB); E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB)"
+       "E 200–219: Sorbic acid — sorbates; Benzoic acid — benzoates; p-hydroxybenzoates (SA + BA + PHB); E 214–219: p-hydroxybenzoates (PHB); E 200 – 202; 214 – 219: Sorbic acid – potassium sorbate; p-hydroxybenzoates (SA + PHB)"
       ],
       [
        "Register entry updated",
@@ -172401,7 +172401,7 @@
       ],
       [
        "Group",
-       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
+       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
       ],
       [
        "Register entry updated",
@@ -172971,7 +172971,7 @@
       ],
       [
        "Group",
-       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
+       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
       ],
       [
        "Register entry updated",
@@ -173528,7 +173528,7 @@
       ],
       [
        "Group",
-       "E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014); E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014)"
+       "E 551 - 553b: Silicon dioxide - silicates (applicable from 1 February 2014); E 551-559: Silicon dioxide - silicates (applicable until 31 January 2014)"
       ],
       [
        "Register entry updated",
@@ -182051,7 +182051,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -182940,7 +182940,7 @@
       ],
       [
        "Group",
-       "Group I; E 620–625: Glutamic acid — glutamates"
+       "E 620–625: Glutamic acid — glutamates; Group I"
       ],
       [
        "Register entry updated",
@@ -184717,7 +184717,7 @@
       ],
       [
        "Group",
-       "Group I; E 620–625: Glutamic acid — glutamates"
+       "E 620–625: Glutamic acid — glutamates; Group I"
       ],
       [
        "Register entry updated",
@@ -185586,7 +185586,7 @@
       ],
       [
        "Group",
-       "E 620–625: Glutamic acid — glutamates; Group I"
+       "Group I; E 620–625: Glutamic acid — glutamates"
       ],
       [
        "Register entry updated",
@@ -189058,7 +189058,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -192480,7 +192480,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -194164,7 +194164,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -195003,7 +195003,7 @@
       ],
       [
        "Group",
-       "Group I; E 626–635: Ribonucleotides"
+       "E 626–635: Ribonucleotides; Group I"
       ],
       [
        "Register entry updated",
@@ -220245,7 +220245,7 @@
       ],
       [
        "Group",
-       "Group I; Group IV: Polyols"
+       "Group IV: Polyols; Group I"
       ],
       [
        "Register entry updated",
