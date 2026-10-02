@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-02T10:07:17+00:00",
+ "generated_at": "2026-10-02T10:46:12+00:00",
  "data_version": "2026-10-02",
  "method_version": "2026-10-01.4",
  "eu_history": {
@@ -156,7 +156,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-02T10:05:21+00:00",
+   "retrieved_at": "2026-10-02T10:44:53+00:00",
    "content_changed_at": "2026-09-30T21:07:33+00:00",
    "version": "02008R1333-20260818",
    "state": "ok"
@@ -168,7 +168,7 @@
    "licence": "Open Government Licence v3.0",
    "licence_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
    "attribution": "Contains public sector information licensed under the Open Government Licence v3.0 (Food Standards Agency).",
-   "retrieved_at": "2026-10-02T10:05:22+00:00",
+   "retrieved_at": "2026-10-02T10:44:55+00:00",
    "content_changed_at": "2026-10-02T10:05:22+00:00",
    "version": null,
    "state": "ok"
@@ -180,7 +180,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.fda.gov/about-fda/about-website/website-policies",
    "attribution": "Source: U.S. Food and Drug Administration.",
-   "retrieved_at": "2026-10-02T10:05:26+00:00",
+   "retrieved_at": "2026-10-02T10:44:59+00:00",
    "content_changed_at": "2026-10-02T10:05:26+00:00",
    "version": null,
    "state": "ok"
@@ -192,7 +192,7 @@
    "licence": "Open Government Licence – Canada",
    "licence_url": "https://open.canada.ca/en/open-government-licence-canada",
    "attribution": "Contains information licensed under the Open Government Licence – Canada (Health Canada).",
-   "retrieved_at": "2026-10-02T10:06:03+00:00",
+   "retrieved_at": "2026-10-02T10:45:33+00:00",
    "content_changed_at": "2026-09-30T21:08:09+00:00",
    "version": null,
    "state": "ok"
@@ -204,7 +204,7 @@
    "licence": "Reuse authorised, source must be acknowledged (Commission Decision 2011/833/EU; EUR-Lex legal notice)",
    "licence_url": "https://eur-lex.europa.eu/content/legal-notice/legal-notice.html",
    "attribution": "© European Union, https://eur-lex.europa.eu/",
-   "retrieved_at": "2026-10-02T10:06:35+00:00",
+   "retrieved_at": "2026-10-02T10:45:39+00:00",
    "content_changed_at": "2026-09-30T21:08:14+00:00",
    "version": "02012R0231-20260818",
    "state": "ok"
@@ -216,7 +216,7 @@
    "licence": "U.S. Government work (not subject to copyright in the United States)",
    "licence_url": "https://www.federalregister.gov/reader-aids/policy/legal-status",
    "attribution": "Source: Federal Register (federalregister.gov).",
-   "retrieved_at": "2026-10-02T10:06:37+00:00",
+   "retrieved_at": "2026-10-02T10:45:40+00:00",
    "content_changed_at": "2026-09-30T20:36:24+00:00",
    "version": null,
    "state": "ok"
@@ -228,7 +228,7 @@
    "licence": "Creative Commons Attribution 4.0 (CC BY 4.0)",
    "licence_url": "https://www.foodstandards.gov.au/copyright",
    "attribution": "Food Standards Australia New Zealand",
-   "retrieved_at": "2026-10-02T10:06:38+00:00",
+   "retrieved_at": "2026-10-02T10:45:42+00:00",
    "content_changed_at": "2026-09-30T21:08:16+00:00",
    "version": null,
    "state": "ok"
