@@ -2,7 +2,7 @@
  "title": "FSA Regulated Products Register — food additive authorisations",
  "publisher": "Food Standards Agency (UK)",
  "licence": "Open Government Licence v3.0",
- "last_attempt": "2026-10-02T14:30:24+00:00",
+ "last_attempt": "2026-10-05T04:42:26+00:00",
  "files": {
   "authorisations.json": {
    "url": "https://data.food.gov.uk/regulated-products/id/food-additives/authorisation.json",
@@ -10,13 +10,13 @@
    "content_type": "application/json",
    "bytes": 679995,
    "stored_as": "authorisations.json.gz",
-   "sha256": "64eaed943bfe4f59e94da383a50ccb8b894beb8d0a9b14b86acd58a197e85433",
-   "fingerprint": "64eaed943bfe4f59e94da383a50ccb8b894beb8d0a9b14b86acd58a197e85433",
-   "fetched_at": "2026-10-02T14:30:25+00:00",
-   "content_changed_at": "2026-10-02T14:30:25+00:00",
+   "sha256": "f87f43ca51e5458383a05c78d4c8685668107e69d98447e3068037cdee3ec813",
+   "fingerprint": "f87f43ca51e5458383a05c78d4c8685668107e69d98447e3068037cdee3ec813",
+   "fetched_at": "2026-10-05T04:42:28+00:00",
+   "content_changed_at": "2026-10-05T04:42:28+00:00",
    "items": 333
   }
  },
- "last_success": "2026-10-02T14:30:25+00:00",
+ "last_success": "2026-10-05T04:42:28+00:00",
  "last_error": null
 }
