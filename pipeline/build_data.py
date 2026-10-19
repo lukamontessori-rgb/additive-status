@@ -21,7 +21,7 @@ from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
 
 # Bump when parsing or matching rules change. Status differences caused by a method
 # change are not reported as regulatory changes on the changes page.
-METHOD_VERSION = "2026-10-01.4"
+METHOD_VERSION = "2026-10-19.1"
 
 STATUS_RANK = {"authorised": 7, "phase_out": 6, "listed_noreg": 5, "prohibited": 4, "delisted": 3,
                "not_authorised": 2, "not_listed": 1, "unknown": 0}
@@ -39,19 +39,25 @@ def match_rank(m, ent_key: str):
     return (q, exact, STATUS_RANK.get(r["status"], 0))
 
 
+_ISE = re.compile(r"(?<=[a-z]{3})is(e|ed|es|ing|ation|ations|er|ers)$")   # oxidised -> oxidized
+_YSE = re.compile(r"(?<=[a-z]{3})ys(e|ed|es)$")                           # hydrolysed -> hydrolyzed
+
+
+def match_word(w: str) -> str:
+    """Fold one normalised word: British/American -ise/-ize and -yse/-yze spellings, flavour, plurals."""
+    w = _YSE.sub(r"yz\1", _ISE.sub(r"iz\1", w)).replace("flavour", "flavor")
+    if len(w) >= 5 and w.endswith("s") and not w.endswith("ss"):
+        w = w[:-1]
+    return w
+
+
 def match_key(name: str) -> str:
-    """norm_name plus simple plural folding, used for name matching only."""
-    words = []
-    for w in norm_name(name).split():
-        if len(w) >= 5 and w.endswith("s") and not w.endswith("ss"):
-            w = w[:-1]
-        words.append(w)
-    return " ".join(words)
+    """norm_name plus spelling and plural folding, used for name matching only."""
+    return " ".join(match_word(w) for w in norm_name(name).split())
 
 
 def match_variants(name: str) -> set[str]:
-    return {" ".join(w[:-1] if len(w) >= 5 and w.endswith("s") and not w.endswith("ss") else w
-                     for w in v.split()) for v in name_variants(name)}
+    return {" ".join(match_word(w) for w in v.split()) for v in name_variants(name)}
 
 
 FUNCTION_WORDS = [
@@ -228,7 +234,52 @@ class Build:
             for n in sp["colour_index"]:
                 if n not in ent["ci"]:
                     ent["ci"].append(n)
+        self.add_anz_only(ents)
         return ents
+
+    def add_anz_only(self, ents: dict) -> None:
+        """Additives that Australia and New Zealand permit (Schedule 15 or 16) under an INS number that no
+        other entry on the site has. Names come from Schedule 8. Codes in `anz_only_exclude` are left out:
+        mostly substances the EU defines as food ingredients or flavourings rather than food additives,
+        where "not on the EU list" would mislead."""
+        anz = self.parsed.get("anz_code")
+        cw = self.curated
+        if not anz:   # source down: keep the entries published last time, so their pages do not disappear
+            for k, a in self.prev_by_id.items():
+                if k.startswith("anz-"):
+                    ents[k] = {"id": k, "e": None, "sort": a.get("sort", "~~~" + k), "name": a["name"],
+                               "names": [a["name"]] + a.get("aka", [])[:4], "cas": [], "ci": [], "classes": [],
+                               "jur": {}, "anz_only": True, "ins": a.get("ins")}
+            return
+        covered = set(ents) | {base_key(k) for k in ents} | set((cw.get("anz_codes") or {}).values())
+        taken_names = set()
+        for key in ("us_only", "ca_only"):
+            for it in cw.get(key) or []:
+                it = {"name": it} if isinstance(it, str) else it
+                if it.get("ins"):
+                    covered.add(parse_anz.norm_code(it["ins"]))
+                taken_names |= {match_key(n) for n in [it["name"]] + it.get("aka", [])}
+        exclude = set(cw.get("anz_only_exclude") or [])
+        names_over = cw.get("anz_only_names") or {}
+        for code in sorted(set(anz["gmp"]) | set(anz["colours_gmp"]) | set(anz["colours_max"]) | set(anz["schedule15"])):
+            base = re.match(r"(e\d+[a-z]?)", code).group(1)
+            if code in covered or base in covered or code in exclude or base in exclude:
+                continue
+            raw = anz["names"].get(code) or anz["names"].get(base) or []
+            if not raw:
+                continue   # a number read from a table that has no Schedule 8 name: not an additive code
+            over = names_over.get(code)
+            parts = [p.strip() for n in ([over] if over else raw) for p in re.split(r"\s+or\s+", n) if p.strip()]
+            parts = [p[:1].upper() + p[1:] for p in parts if not p.endswith(" or")]
+            if not parts or match_key(parts[0]) in taken_names:
+                continue
+            ins = code[1:].replace("-", "(") + (")" if "-" in code else "")
+            p = e_parts("E " + ins)
+            aid = "anz-" + re.sub(r"[^a-z0-9]+", "-", norm_name(parts[0])).strip("-")[:60]
+            ents[aid] = {"id": aid, "e": None, "sort": "~~~" + (e_sort(*p) if p else aid), "name": parts[0],
+                         "names": parts + [n for n in raw if n not in parts], "cas": [], "ci": [],
+                         "classes": ["Colours"] if code in anz["colours_gmp"] or code in anz["colours_max"] else [],
+                         "jur": {}, "anz_only": True, "ins": ins}
 
     def build_index(self, ents: dict):
         by_name: dict[str, set[str]] = defaultdict(set)
@@ -393,7 +444,8 @@ class Build:
         listed = eu["listed"].get(key)
         if not listed:
             detail = "Checked by E-number against Annex II, Part B." if ent.get("e") else \
-                "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+                (f"Not in Annex II, Part B under its international number (E {ent['ins']}) or its names." if ent.get("ins") else
+                 "This substance has no E-number, and no entry on the EU list matches its names or identifiers.")
             return {"status": "not_authorised", "headline": "Not on the EU list of authorised food additives",
                     "refs": refs, "source": "eu_annex2", "match": "e_number" if ent.get("e") else "name",
                     "match_detail": detail}
@@ -488,6 +540,19 @@ class Build:
         ent_key = match_key(self._ent_names.get(key, ""))
         best = max(matches, key=lambda m: match_rank(m, ent_key))
         r = best[0]
+        food_colour = any(re.match(r"^7[34]\.\d{1,3}$", c) and not (c.startswith("73.") and int(c[3:]) in parse_us.FEED_ONLY_73)
+                          for m in matches for c in m[0]["cfr"])
+        if "Colours" in self._ent_classes.get(key, []) and not food_colour and r["status"] in ("authorised", "listed_noreg"):
+            # A colour may be used in US food only if FDA lists it as a colour additive (21 CFR 73 or 74);
+            # a GRAS, flavouring or other listing does not cover use as a colour.
+            return {"status": "not_authorised", "headline": "Not listed as a colour additive for food in the US",
+                    "facts": [["FDA name", r["display"]], ["FDA inventory status", r["headline"]]],
+                    "notes": [f"FDA's inventory lists {r['display']} ({r['headline'][0].lower() + r['headline'][1:]}), "
+                              "but not as a colour additive. Colour additives must be listed in 21 CFR 73 or 74 "
+                              "before they may be used to colour food."],
+                    "refs": refs + [{"label": "21 CFR Part 73 and Part 74 (eCFR)", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A"}],
+                    "source": "us_fda_substances", "match": best[1],
+                    "match_detail": f"Matched to the FDA inventory by {best[1]}; no colour additive listing (21 CFR 73 or 74) for food was found."}
         facts = [["FDA name", r["display"]]]
         cfr = sorted({c for m in matches for c in m[0]["cfr"]}, key=lambda s: tuple(int(x) for x in s.split(".")))
         def indirect(c):  # food-contact sections (see parse_us.classify)
@@ -590,8 +655,9 @@ class Build:
         if ent.get("e"):
             codes.append((self.curated.get("anz_codes") or {}).get(key, key))
         if ent.get("ins"):
-            code = "e" + ent["ins"].lower()
-            codes += [code] + ([code[:-1]] if code[-1].isalpha() else [])   # INS 924a -> 924a, then 924
+            code = parse_anz.norm_code(ent["ins"])                        # "905c(ii)" -> e905c-ii
+            m = re.match(r"(e\d+)([a-z]?)", code)
+            codes += [c for c in dict.fromkeys([code, m.group(0), m.group(1)]) if c]   # INS 924a -> 924a, then 924
         for code in codes:
             st, reasons = parse_anz.status_of(anz, code)
             if st == "authorised":
@@ -825,7 +891,7 @@ class Build:
                 us_m[sid].append((r, "FDA inventory entry"))
                 continue
             info = us_only_info.get(r["name"], {})
-            ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": r["display"],
+            ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": info.get("display") or r["display"],
                          "names": [r["display"]] + info.get("aka", []) + r["other_names"][:10], "cas": r["cas"],
                          "ci": r["colour_index"], "classes": [], "jur": {}, "us_only": True,
                          "ins": info.get("ins")}
@@ -964,14 +1030,16 @@ class Build:
         eu_hist_all = []
         for a in additives:
             evs = []
-            seq = [e["from"] for e in events.get(a["id"], [])[:1]] + [e["to"] for e in events.get(a["id"], [])]
+            # entries without an E-number may have had one in the past (octyl gallate was E 311 until 2018)
+            evkey = a["id"] if a.get("e") or not a.get("ins") else "e" + a["ins"].lower()
+            seq = [e["from"] for e in events.get(evkey, [])[:1]] + [e["to"] for e in events.get(evkey, [])]
             if len(seq) != len(set(seq)):
                 # A status that comes back (e.g. authorised -> not -> authorised) is more likely an
                 # artefact of reading differently formatted old texts than a real legal history.
                 # Show nothing rather than a history we cannot vouch for.
                 a["eu_history_unclear"] = True
                 continue
-            for e in events.get(a["id"], []):
+            for e in events.get(evkey, []):
                 d = e["version"]
                 item = {"date": f"{d[:4]}-{d[4:6]}-{d[6:]}", "change": change_text.get((e["from"], e["to"]), "Status changed"),
                         "url": f"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:{e['celex']}"}
@@ -1043,14 +1111,17 @@ class Build:
         quality = []
         n_ca = sum(ca_stats.values())
         if n_ca:
-            quality.append(f"Health Canada lists: {n_ca - ca_stats.get('unmatched', 0) - ca_stats.get('excluded', 0)} "
+            quality.append(f"Health Canada lists: {n_ca - ca_stats.get('unmatched', 0) - ca_stats.get('excluded by review', 0)} "
                            f"of {n_ca} listed substances linked to an additive on this site; the rest are mostly "
                            "enzymes, solvents and substances with no counterpart here.")
         linked_us = sum(1 for a in additives if a["jur"]["us"].get("status") not in ("not_listed", "unknown"))
         quality.append(f"FDA inventory: {linked_us} additives on this site are linked to at least one FDA inventory entry.")
         n_e = sum(1 for a in additives if a.get("e"))
+        by_origin = Counter(a["id"].split("-")[0] for a in additives if not a.get("e"))
         quality.append(f"{n_e} additives with an E-number (all entries on the EU and GB lists) and "
-                       f"{len(additives) - n_e} US substances without an E-number.")
+                       f"{len(additives) - n_e} without one: {by_origin.get('us', 0)} from the US lists, "
+                       f"{by_origin.get('ca', 0)} from the Canadian lists and {by_origin.get('anz', 0)} from the "
+                       "Australia New Zealand schedules.")
 
         write_json(INTERIM / "unmatched_us.json", [
             {k: r[k] for k in ("name", "cas", "cfr", "status", "effects")} for r in us_unmatched

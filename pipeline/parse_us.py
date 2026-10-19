@@ -90,8 +90,14 @@ FEED_ONLY_73 = {35, 37, 50, 185, 275, 295, 315, 352, 355}  # 73.1–73.999 and 7
 
 
 def classify(sections: list[tuple[int, int]], flags: set[str], fema: bool,
-             effects: list[str] | None = None) -> tuple[str, str]:
+             effects: list[str] | None = None, name: str = "") -> tuple[str, str]:
     """Return (status, headline) from 21 CFR sections and inventory flags."""
+    if (73, 85) in sections and "CARAMEL" not in name.upper():
+        # 21 CFR 73.85 (caramel) names the acids, alkalis and salts that may be used to make caramel.
+        # For those substances it is not a colour listing.
+        sections = [s for s in sections if s != (73, 85)]
+        if not sections and not flags and not fema:
+            return "not_listed", "Cited only as a reagent for making caramel colour (21 CFR 73.85)"
     parts = {p for p, _ in sections}
     if "PROHIBITED" in flags or "PROHIBITED WITH EXCEPTIONS" in flags or 189 in parts:
         if "PROHIBITED WITH EXCEPTIONS" in flags:
@@ -186,7 +192,7 @@ def parse_grid(grid: list[list[str]]) -> tuple[list[dict], list[str]]:
                     sections.append((p, s))
         fema = bool(cell(c_fema))
         effects_raw = split_list(row[c_effect]) if c_effect is not None and c_effect < len(row) else []
-        status, headline = classify(sections, flags, fema, effects_raw)
+        status, headline = classify(sections, flags, fema, effects_raw, name)
         other = []
         for o in split_list(row[c_other]) if c_other is not None and c_other < len(row) else []:
             if o and o.upper() != name.upper() and o not in other:

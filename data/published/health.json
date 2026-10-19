@@ -1,5 +1,5 @@
 {
- "at": "2026-10-19T04:55:16+00:00",
+ "at": "2026-10-19T14:55:00+00:00",
  "problems": [],
  "counts": {
   "eu_annex2": 339,
@@ -10,18 +10,18 @@
   "anz_code": 310
  },
  "us_match": {
-  "unmatched": 3690,
-  "name": 178,
+  "unmatched": 3645,
+  "name": 188,
   "excluded by review": 8,
   "CAS": 13,
-  "reviewed": 35,
-  "alternative": 33,
+  "reviewed": 68,
+  "alternative": 35,
   "Colour": 13
  },
  "ca_match": {
-  "name": 213,
-  "unmatched": 166,
-  "reviewed": 53,
-  "own entry": 22
+  "name": 230,
+  "reviewed": 71,
+  "unmatched": 126,
+  "own entry": 27
  }
 }
