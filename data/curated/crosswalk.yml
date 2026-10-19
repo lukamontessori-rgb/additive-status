@@ -90,7 +90,8 @@ us:
   "CARRAGEENAN AND SALTS OF CARRAGEENAN": e407
   "FURCELLERAN AND SALTS OF FURCELLERAN": e407
   "TURMERIC, EXTRACT (CURCUMA LONGA L.)": e100
-  "GRAPE SKIN EXTRACT": e163                                 # enocianina (21 CFR 73.170); E 163 anthocyanins
+  "GRAPE SKIN EXTRACT": e163
+  "INVERTASE FROM SACCHAROMYCES CEREVISIAE": e1103           # the source the EU specification names                                 # enocianina (21 CFR 73.170); E 163 anthocyanins
   # automatic matches that were wrong
   "2-METHOXY-4-PROPYLPHENOL": none
   "SODIUM (4-METHOXYBENZOYLOXY)ACETATE": none
@@ -256,6 +257,7 @@ us_fr_entities:
 
 # EU E-number -> INS code used in the Australia New Zealand Food Standards Code, where they differ
 anz_codes:
+  e306: e307b     # EU tocopherol-rich extract = INS 307b tocopherols concentrate, mixed
   e160b-i: e160b
   e160b-ii: e160b
   e553a: e553

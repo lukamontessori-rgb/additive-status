@@ -1,10 +1,10 @@
 {
  "us": {
-  "unmatched": 3645,
+  "unmatched": 3644,
   "name": 188,
   "excluded by review": 8,
   "CAS": 13,
-  "reviewed": 68,
+  "reviewed": 69,
   "alternative": 35,
   "Colour": 13
  },
@@ -19,5 +19,8 @@
  ],
  "us_only_not_found_or_matched": [
   "ORANGE B"
+ ],
+ "changelog": [
+  "method changed (2026-10-01.4 -> 2026-10-19.1); differences not recorded as changes"
  ]
 }

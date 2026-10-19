@@ -6561,17 +6561,6 @@
   ]
  },
  {
-  "name": "INVERTASE FROM SACCHAROMYCES CEREVISIAE",
-  "cas": [],
-  "cfr": [],
-  "status": "listed_noreg",
-  "effects": [
-   "Enzyme",
-   "Processing aid",
-   "Stabilizer or thickener"
-  ]
- },
- {
   "name": "INVERT SUGAR SYRUP",
   "cas": [],
   "cfr": [],
@@ -15415,7 +15404,7 @@
   "effects": []
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  ACETYLATED DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: ACETYLATED DISTARCH GLYCEROL",
   "cas": [
    "53123-84-5"
   ],
@@ -15438,7 +15427,7 @@
   "effects": []
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: DISTARCH GLYCEROL",
   "cas": [
    "58944-89-1"
   ],
@@ -15451,7 +15440,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  DISTARCH OXYPROPANOL",
+  "name": "STARCH, FOOD, MODIFIED: DISTARCH OXYPROPANOL",
   "cas": [],
   "cfr": [
    "175.105"
@@ -15462,7 +15451,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  OXIDIZED HYDROXYPROPYL STARCH",
+  "name": "STARCH, FOOD, MODIFIED: OXIDIZED HYDROXYPROPYL STARCH",
   "cas": [
    "68412-86-2"
   ],
@@ -15476,7 +15465,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  STARCH SODIUM SUCCINATE",
+  "name": "STARCH, FOOD, MODIFIED: STARCH SODIUM SUCCINATE",
   "cas": [
    "37231-92-8"
   ],
@@ -15490,7 +15479,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  SUCCINYL DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: SUCCINYL DISTARCH GLYCEROL",
   "cas": [],
   "cfr": [
    "175.105"
@@ -16953,7 +16942,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  HYDROXYPROPYL DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: HYDROXYPROPYL DISTARCH GLYCEROL",
   "cas": [
    "59419-60-2"
   ],

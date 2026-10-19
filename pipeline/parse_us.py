@@ -171,7 +171,7 @@ def parse_grid(grid: list[list[str]]) -> tuple[list[dict], list[str]]:
     for row in grid[h + 1:]:
         if c_name is None or len(row) <= c_name:
             continue
-        raw_name = clean(row[c_name])
+        raw_name = re.sub(r"\s{2,}", " ", clean(row[c_name]))
         if not raw_name:
             continue
         cell = lambda i: clean(row[i]) if i is not None and i < len(row) else ""  # noqa: E731

@@ -878,20 +878,34 @@ class Build:
         elif eu.get("status") in ("not_authorised", "delisted") and a.get("e"):
             h = eu.get("headline", "").rstrip(".")
             sents.append(f"In the EU: {h[0].lower() + h[1:]}." if h else "")
+        gb = a["jur"]["gb"]
+        if gb.get("status") != eu.get("status") and gb.get("headline") and "stale" not in gb:
+            sents.append("Great Britain authorises it." if gb.get("status") == "authorised"
+                         else f"In Great Britain: {gb['headline'][0].lower() + gb['headline'][1:]}.")
         for h in (a.get("eu_history") or [])[-1:]:
             d = date.fromisoformat(h["date"])
-            sents.append(f"EU history: {h['change'].lower()}, first shown in the consolidated text of {d.strftime('%-d %B %Y')}.")
+            sents.append(f"EU history: {h['change'][0].lower() + h['change'][1:]}, first shown in the consolidated text of {d.strftime('%-d %B %Y')}.")
         us = a["jur"]["us"]
         fda = next((f[1] for f in us.get("facts", []) if f[0] == "FDA name"), None)
         if us.get("status") in ("authorised", "phase_out", "delisted", "prohibited") and fda:
             sents.append(f"In the US it is listed as {fda}: {us['headline'][0].lower() + us['headline'][1:]}.")
         elif us.get("status") == "not_authorised":
-            sents.append(f"In the US: {us['headline'][0].lower() + us['headline'][1:]}.")
+            h = re.sub(r" in the US$", "", us["headline"])
+            sents.append(f"In the US: {h[0].lower() + h[1:]}.")
         ca = a["jur"]["ca"]
         if ca.get("status") == "authorised":
             listed = next((f[1] for f in ca.get("facts", []) if f[0] == "Listed as"), None)
             sents.append(f"Canada permits it{(' as ' + listed) if listed and listed.lower() != a['name'].lower() else ''} "
                          f"({ca['headline'][0].lower() + ca['headline'][1:]}).")
+        anz = a["jur"]["anz"]
+        if anz.get("status") == "authorised":
+            listed = next((f[1] for f in anz.get("facts", []) if f[0] == "Listed as"), None)
+            how = re.sub(r"^Permitted\s+", "", anz.get("headline") or "")
+            how = re.sub(r"\(Schedule 15(, by name)?\)", "(Schedule 15 of the Food Standards Code)", how)
+            sents.append(f"Australia and New Zealand permit it{(' (listed as ' + listed + ')') if listed and listed.lower() != a['name'].lower() else ''} "
+                         f"{how}.")
+        elif "processing aid" in (anz.get("headline") or ""):
+            sents.append("In Australia and New Zealand it is not a permitted food additive, but it is permitted as a processing aid.")
         return [x for x in sents if x]
 
     # ------------------------------------------------------------ run
