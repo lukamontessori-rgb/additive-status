@@ -718,8 +718,6 @@ class Builder:
 
     def build_category_pages(self) -> None:
         cats = self.cats
-        if not cats:
-            return
         by_code = {c["code"]: c for c in cats}
         tops = [c for c in cats if c["depth"] == 1 and c["code"] != "0"]
         vmax = max([c["n_tree"] for c in tops] + [1])

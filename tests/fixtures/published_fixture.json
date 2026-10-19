@@ -1,21 +1,267 @@
 {
  "generated_at": "2026-01-05T04:20:00+00:00",
  "data_version": "2026-01-05",
- "quality": ["TEST FIXTURE — not real data"],
+ "quality": [
+  "TEST FIXTURE — not real data"
+ ],
  "sources": {
-  "eu_annex2": {"title": "Test source EU", "publisher": "Test", "url": "https://example.org/eu", "licence": "Test", "licence_url": "", "attribution": "Test", "retrieved_at": "2026-01-05T04:00:00+00:00", "content_changed_at": "2026-01-01T04:00:00+00:00", "state": "ok"}
+  "eu_annex2": {
+   "title": "Test source EU",
+   "publisher": "Test",
+   "url": "https://example.org/eu",
+   "licence": "Test",
+   "licence_url": "",
+   "attribution": "Test",
+   "retrieved_at": "2026-01-05T04:00:00+00:00",
+   "content_changed_at": "2026-01-01T04:00:00+00:00",
+   "state": "ok"
+  }
  },
  "additives": [
-  {"id": "e901x", "e": "E 901x", "sort": "0901x", "name": "Fixture substance one", "aka": ["Test Red 1", "Fixture red"], "cas": ["000-00-1"], "classes": ["Colours"],
-   "jur": {"eu": {"status": "not_authorised", "headline": "Not on the list", "refs": [{"label": "EU source", "url": "https://example.org/eu"}], "source": "eu_annex2", "match_detail": "Matched on E-number"},
-           "gb": {"status": "authorised", "headline": "Authorised", "facts": [["Phase", "Authorised"]], "notes": ["Note A"]},
-           "us": {"status": "authorised", "headline": "Colour additive"},
-           "ca": {"status": "authorised", "headline": "List 3"}}},
-  {"id": "e902x", "e": "E 902x", "sort": "0902x", "name": "Fixture substance two", "aka": [], "cas": [], "classes": ["Colours"],
-   "jur": {"eu": {"status": "authorised"}, "gb": {"status": "authorised"}, "us": {"status": "not_listed"}, "ca": {"status": "not_authorised"}}},
-  {"id": "e903x", "e": "E 903x", "sort": "0903x", "name": "Fixture substance three", "aka": ["Fixture sweet"], "cas": [], "classes": ["Sweeteners"],
-   "jur": {"eu": {"status": "authorised"}, "gb": {"status": "authorised"}, "us": {"status": "phase_out"}, "ca": {"status": "unknown"}}},
-  {"id": "fixture-us-only", "e": null, "sort": "zzz", "name": "Fixture US-only substance", "aka": [], "cas": ["000-00-4"], "classes": ["Sweeteners"],
-   "jur": {"eu": {"status": "not_authorised"}, "gb": {"status": "not_authorised"}, "us": {"status": "prohibited"}, "ca": {"status": "not_authorised"}}}
- ]
+  {
+   "id": "e901x",
+   "e": "E 901x",
+   "sort": "0901x",
+   "name": "Fixture substance one",
+   "aka": [
+    "Test Red 1",
+    "Fixture red"
+   ],
+   "cas": [
+    "000-00-1"
+   ],
+   "classes": [
+    "Colours"
+   ],
+   "jur": {
+    "eu": {
+     "status": "not_authorised",
+     "headline": "Not on the list",
+     "refs": [
+      {
+       "label": "EU source",
+       "url": "https://example.org/eu"
+      }
+     ],
+     "source": "eu_annex2",
+     "match_detail": "Matched on E-number"
+    },
+    "gb": {
+     "status": "authorised",
+     "headline": "Authorised",
+     "facts": [
+      [
+       "Phase",
+       "Authorised"
+      ]
+     ],
+     "notes": [
+      "Note A"
+     ]
+    },
+    "us": {
+     "status": "authorised",
+     "headline": "Colour additive"
+    },
+    "ca": {
+     "status": "authorised",
+     "headline": "List 3"
+    }
+   },
+   "identity": {
+    "description": "Dark red powder",
+    "formula": [
+     "C18H14N2Na2O8S2"
+    ],
+    "mw": "496,42",
+    "lambda_max": 504,
+    "limits": [
+     {
+      "el": "Lead",
+      "text": "2 mg/kg",
+      "mgkg": 2.0,
+      "full": "Not more than 2 mg/kg"
+     }
+    ],
+    "purity": [
+     [
+      "Lead",
+      "Not more than 2 mg/kg"
+     ]
+    ],
+    "identification": [
+     [
+      "Spectrometry",
+      "Maximum in water at ca. 504 nm"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "e902x",
+   "e": "E 902x",
+   "sort": "0902x",
+   "name": "Fixture substance two",
+   "aka": [],
+   "cas": [],
+   "classes": [
+    "Colours"
+   ],
+   "jur": {
+    "eu": {
+     "status": "authorised"
+    },
+    "gb": {
+     "status": "authorised"
+    },
+    "us": {
+     "status": "not_listed"
+    },
+    "ca": {
+     "status": "not_authorised"
+    }
+   },
+   "eu_uses": [
+    {
+     "cat": "01.1",
+     "cat_name": "Unflavoured milk",
+     "level": "100",
+     "restr": "only UHT",
+     "notes": [],
+     "group": null,
+     "entry": ""
+    },
+    {
+     "cat": "14",
+     "cat_name": "Beverages",
+     "level": "quantum satis",
+     "restr": "",
+     "notes": [],
+     "group": "II",
+     "entry": ""
+    }
+   ],
+   "eu_groups": [
+    {
+     "g": "II",
+     "title": "Food colours authorised at quantum satis"
+    }
+   ],
+   "eu_warning": {
+    "text": "may have an adverse effect on activity and attention in children.",
+    "exceptions": [
+     "beverages"
+    ]
+   }
+  },
+  {
+   "id": "e903x",
+   "e": "E 903x",
+   "sort": "0903x",
+   "name": "Fixture substance three",
+   "aka": [
+    "Fixture sweet"
+   ],
+   "cas": [],
+   "classes": [
+    "Sweeteners"
+   ],
+   "jur": {
+    "eu": {
+     "status": "authorised"
+    },
+    "gb": {
+     "status": "authorised"
+    },
+    "us": {
+     "status": "phase_out"
+    },
+    "ca": {
+     "status": "unknown"
+    }
+   }
+  },
+  {
+   "id": "fixture-us-only",
+   "e": null,
+   "sort": "zzz",
+   "name": "Fixture US-only substance",
+   "aka": [],
+   "cas": [
+    "000-00-4"
+   ],
+   "classes": [
+    "Sweeteners"
+   ],
+   "jur": {
+    "eu": {
+     "status": "not_authorised"
+    },
+    "gb": {
+     "status": "not_authorised"
+    },
+    "us": {
+     "status": "prohibited"
+    },
+    "ca": {
+     "status": "not_authorised"
+    }
+   }
+  }
+ ],
+ "eu_categories": {
+  "0": "Food additives permitted in all categories of foods",
+  "01": "Dairy products and analogues",
+  "01.1": "Unflavoured pasteurised and sterilised (including UHT) milk",
+  "14": "Beverages"
+ },
+ "eu_legal": {
+  "definition": "A food additive is any substance not normally consumed as a food in itself",
+  "not_additives": [
+   "chewing gum bases",
+   "inulin"
+  ],
+  "processing_aid": "A processing aid is any substance which: is not consumed as a food by itself",
+  "conditions": {
+   "intro": "A food additive may be included only if",
+   "items": [
+    "it is safe",
+    "there is a need",
+    "it does not mislead"
+   ]
+  },
+  "group_titles": {
+   "I": "",
+   "II": "Food colours authorised at quantum satis"
+  },
+  "functional_classes": [
+   {
+    "no": 2,
+    "name": "colours",
+    "note": "",
+    "definition": "Substances which add or restore colour in a food"
+   }
+  ],
+  "traditional_foods": [
+   {
+    "states": [
+     "Germany"
+    ],
+    "food": "Traditional German beer",
+    "banned": "All except propellant gases"
+   }
+  ],
+  "warning": {
+   "colours": [
+    {
+     "key": "e902x",
+     "name": "Fixture two"
+    }
+   ],
+   "text": "may have an adverse effect on activity and attention in children.",
+   "exceptions": [
+    "beverages"
+   ]
+  }
+ }
 }

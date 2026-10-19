@@ -160,3 +160,40 @@ def test_anz_codes_and_processing_aids():
     assert parse_anz.processing_aid(p, ["Argon"]) == "argon"
     assert parse_anz.processing_aid(p, ["Hydrogen"]) is None          # not "Hydrogen peroxide"
     assert parse_anz.processing_aid(p, ["POTASSIUM BROMATE"]).startswith("Potassium bromate")
+
+
+def test_caramel_reagents_are_not_colours():
+    # 21 CFR 73.85 names the reagents used to make caramel; for them it is not a colour listing
+    st, head = parse_us.classify([(73, 85), (182, 3798)], set(), False, ["Preservative"], "SODIUM SULFITE")
+    assert st == "authorised" and "182" in head and "olour" not in head
+    assert parse_us.classify([(73, 85)], set(), False, [], "POTASSIUM SULFITE")[0] == "not_listed"
+    assert "73.85" in parse_us.classify([(73, 85), (182, 1235)], set(), False, ["Color or coloring adjunct"], "CARAMEL")[1]
+
+
+def test_match_key_folds_spelling():
+    from pipeline.build_data import match_key
+    assert match_key("Oxidised starch") == match_key("OXIDIZED STARCH")
+    assert match_key("Hydrolysed lecithins") == match_key("hydrolyzed lecithin")
+    assert match_key("Flavour enhancer") == match_key("flavor enhancers")
+
+
+def test_spec_limits():
+    from pipeline.build_data import spec_limits
+    out = spec_limits([["Lead", "Not more than 2 mg/kg"], ["Arsenic", "Not more than 0,5 mg/kg"],
+                       ["Aluminium oxide and/or silicon dioxide", "Total not more than 2,0 %"], ["Loss on drying", "Not more than 1 %"]])
+    assert [(x["el"], x["mgkg"]) for x in out] == [("Lead", 2.0), ("Arsenic", 0.5)]
+
+
+def test_eu_legal_texts():
+    from pipeline.parse_eu import parse_legal
+    body = """<html><head><meta charset="utf-8"></head><body><p>Article 3</p><p>(a) ‘food additive’ shall mean any substance not normally consumed as a food in itself;
+      The following are not considered to be food additives: (i) chewing gum bases; (ii) inulin; (b) ‘processing aid’ shall mean
+      any substance which: (i) is not consumed as a food by itself; (c) other</p>
+      <p>ANNEX I</p><p>1.</p><p>‘sweeteners’ are substances used to impart a sweet taste to foods;</p>
+      <p>ANNEX V</p><table><tr><th>Foods</th><th>Information</th></tr>
+      <tr><td>Tartrazine (E 102) (*1)</td><td>‘name or E number of the colour(s)’: may have an adverse effect on activity and attention in children.</td></tr></table>
+      </body></html>""".encode()
+    L = parse_legal(body)
+    assert L["not_additives"] == ["chewing gum bases", "inulin"]
+    assert L["functional_classes"][0]["name"] == "sweeteners"
+    assert L["warning"]["colours"] == [{"key": "e102", "name": "Tartrazine"}]

@@ -14,6 +14,7 @@
 </a>
 {% endif %}
 
+{% if not tops %}<p class="empty">The EU food categories could not be read from the current data. They will be back after the next successful update.</p>{% endif %}
 <p class="table-filter"><label for="food-filter">Find a food</label> <input id="food-filter" type="search" data-list-filter="food-tops" placeholder="e.g. chocolate, cheese, soft drinks" autocomplete="off"></p>
 <ul class="food-grid" id="food-tops">
   {% for c in tops %}

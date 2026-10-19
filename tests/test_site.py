@@ -13,7 +13,20 @@ def test_build_and_check(tmp_path):
     assert (out / "index.html").exists()
     assert (out / "additive" / "e901x" / "index.html").exists()
     assert (out / "compare" / "allowed-in-gb-not-eu" / "index.html").exists()
+    for page in ("places", "place/eu", "place/anz", "map", "eu-food", "eu-food/01-1", "eu-food/14", "glossary"):
+        assert (out / page / "index.html").exists(), page
+    html = (out / "additive" / "e902x" / "index.html").read_text(encoding="utf-8")
+    assert "Warning label in the EU" in html and "/eu-food/01-1/" in html
+    assert "504 nm" in (out / "additive" / "e901x" / "index.html").read_text(encoding="utf-8")
     assert check.main(str(out)) == 0
+
+
+def test_food_category_inverts_uses(tmp_path):
+    b = Builder(FIX, tmp_path / "dist")
+    b.build()
+    cats = {c["code"]: c for c in b.cats}
+    assert [a["id"] for a, _ in cats["01.1"]["direct"]] == ["e902x"]
+    assert cats["14"]["groups"][0]["g"] == "II" and cats["01"]["n_tree"] == 1
 
 
 def test_summary_sentence_is_factual():
