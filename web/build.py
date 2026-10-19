@@ -443,7 +443,7 @@ class Builder:
             url=url, abs_url=abs_url, SITE_NAME=SITE_NAME, TAGLINE=TAGLINE, PLACES=PLACES,
             PLACES_SHORT=PLACES_SHORT, JUR=JURISDICTIONS, JUR_ORDER=JUR_ORDER, JUR_CODE=JUR_CODE,
             JUR_THE=JUR_THE, STATUSES=STATUSES, TONE_ICON=TONE_ICON, CLASS_ICON=CLASS_ICON,
-            CLASS_SYMBOL=CLASS_SYMBOL, icon=icon, LEGAL_UPDATED="2 October 2026", OPERATOR=load_operator(),
+            CLASS_SYMBOL=CLASS_SYMBOL, icon=icon, LEGAL_UPDATED="19 October 2026", OPERATOR=load_operator(),
             fmt_date=fmt_date, REPO_URL=REPO_URL if REPO_URL and REPO_URL != "https://github.com/" else "",
             ld_json=ld_json, ld_breadcrumbs=ld_breadcrumbs, asset=lambda n: self.asset[n],
             data_version=self.data.get("data_version"),
@@ -921,18 +921,18 @@ class Builder:
         dl = self.out / "downloads"
         dl.mkdir(parents=True, exist_ok=True)
         (dl / "additives.json").write_text(
-            json.dumps(self.data_for_download(), ensure_ascii=False, indent=1), encoding="utf-8")
+            json.dumps(self.data_for_download(), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         buf = io.StringIO()
         w = csv.writer(buf)
         w.writerow(["id", "e_number", "name", "other_names", "cas", "classes"] +
                    [f"status_{j}" for j in JUR_ORDER] + [f"detail_{j}" for j in JUR_ORDER] +
-                   ["page_url"])
+                   ["page_url", "ins_number"])
         for a in self.additives:
             w.writerow([a["id"], a.get("e") or "", a["name"], "; ".join(a.get("aka", [])),
                         "; ".join(a.get("cas", [])), "; ".join(a.get("classes", []))] +
                        [status_of(a, j) for j in JUR_ORDER] +
                        [a["jur"].get(j, {}).get("headline", "") for j in JUR_ORDER] +
-                       [abs_url(f"/additive/{a['id']}/")])
+                       [abs_url(f"/additive/{a['id']}/"), a.get("ins") or ""])
         (dl / "additives.csv").write_text(buf.getvalue(), encoding="utf-8")
         sizes = {n: (dl / n).stat().st_size for n in ("additives.json", "additives.csv")}
         self.page("/data/", "data.html", priority=0.5, page_title="Download the food additive status data",
@@ -941,7 +941,8 @@ class Builder:
                               "with sources and licences.")
 
     def data_for_download(self) -> dict:
-        keep = ("id", "e", "ins", "name", "aka", "cas", "classes", "jur", "updated")
+        keep = ("id", "e", "ins", "name", "aka", "cas", "classes", "functions", "jur", "overview", "identity", "eu_groups",
+                "eu_warning", "eu_uses", "eu_uses_total", "ca_uses", "eu_history", "updated")
         return {
             "generated_at": self.data.get("generated_at"),
             "data_version": self.data.get("data_version"),
@@ -950,6 +951,8 @@ class Builder:
             "jurisdictions": {j: JURISDICTIONS[j]["name"] for j in JUR_ORDER},
             "sources": self.data.get("sources", {}),
             "statuses": {k: {"label": v[0], "meaning": v[3]} for k, v in STATUSES.items()},
+            "eu_food_categories": self.data.get("eu_categories") or {},
+            "eu_legal_texts": self.data.get("eu_legal") or {},
             "additives": [{k: a[k] for k in keep if k in a} for a in self.additives],
         }
 

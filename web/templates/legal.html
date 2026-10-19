@@ -61,7 +61,7 @@
 <ul>
   <li><strong>Bricolage Grotesque</strong> (headings): Copyright 2022 The Bricolage Grotesque Project Authors. Licensed under the <a href="{{ asset('fonts/BricolageGrotesque-OFL.txt') }}">SIL Open Font License 1.1</a>.</li>
   <li><strong>Instrument Sans</strong> (text): Copyright 2022 The Instrument Sans Project Authors. Licensed under the <a href="{{ asset('fonts/InstrumentSans-OFL.txt') }}">SIL Open Font License 1.1</a>.</li>
-  <li>Both fonts are served from this site, not from a font service. The icons and graphics were drawn for this site. The site uses no photos or stock images.</li>
+  <li>Both fonts are served from this site, not from a font service. The icons and graphics, including the globe, the E-number map and the dye drawings, were drawn for this site. The globe shows no map data: its markers are placed by the approximate coordinates of each capital. The site uses no photos or stock images.</li>
 </ul>
 
 <h2 id="ai">How the site is made</h2>
@@ -70,7 +70,7 @@
 <h2 id="honesty">Honest content</h2>
 <ul class="check-list">
   <li><strong>No reviews or testimonials.</strong> The site publishes no reviews, ratings, endorsements or testimonials, real or invented.</li>
-  <li><strong>Claims come from the data.</strong> Every status links to its official source, and every number and "Did you know?" fact is calculated from the published data on each build. Where the data is unclear, the site says so.</li>
+  <li><strong>Claims come from the data.</strong> Every status links to its official source, and every number and "Did you know?" fact is calculated from the published data on each build. The one hand-written exception is the short description of where each list applies (for example that the EU list also applies in Iceland, Liechtenstein and Norway), which names its legal basis. Where the data is unclear, the site says so.</li>
   <li><strong>No dark patterns.</strong> Nothing pops up when you arrive, and there are no pre-ticked boxes, countdowns or hidden costs. <em>Privacy choices</em> in the footer offers "remember" and "don't remember" as equal choices.</li>
   <li><strong>Free.</strong> No fees, purchases, subscriptions or hidden charges.</li>
 </ul>
@@ -79,6 +79,6 @@
 <p>{{ SITE_NAME }} is an independent project. It is not affiliated with, or endorsed by, the European Union, the UK Food Standards Agency, the U.S. Food and Drug Administration, Health Canada, Food Standards Australia New Zealand or any company, and it has no official status in any country.</p>
 
 <h2 id="law">Governing law and supervisory authority</h2>
-<p>{% if OPERATOR.country %}These notices and the <a href="{{ url('/terms/') }}">terms of use</a> are governed by the law of {{ OPERATOR.country }}, without taking away any mandatory consumer rights you have in the country where you live. {% endif %}For data protection questions the competent authority for the operator is the Information Commissioner of the Republic of Slovenia (<a href="https://www.ip-rs.si/en/" rel="noopener">Informacijski pooblaščenec</a>); you can also complain to the authority in your own country. See the <a href="{{ url('/privacy/') }}">privacy policy</a>.</p>
+<p>{% if OPERATOR.country %}These notices and the <a href="{{ url('/terms/') }}">terms of use</a> are governed by the law of {{ OPERATOR.country }}, without taking away any mandatory consumer rights you have in the country where you live. {% endif %}For data protection questions the competent authority for the operator is {% if OPERATOR.country == "Slovenia" %}the Information Commissioner of the Republic of Slovenia (<a href="https://www.ip-rs.si/en/" rel="noopener">Informacijski pooblaščenec</a>){% else %}the data protection authority of the operator's country{% endif %}; you can also complain to the authority in your own country. See the <a href="{{ url('/privacy/') }}">privacy policy</a>.</p>
 </article>
 {% endblock %}

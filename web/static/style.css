@@ -1269,7 +1269,7 @@ a.pstat:hover { transform: translateY(-3px); border-color: var(--line-strong); c
 .fc-subs { border-top: 1px dashed var(--line); padding: 8px 20px 10px; font-size: .9rem; }
 .fc-subs ul { list-style: none; padding: 0; margin: 6px 0 0; } .fc-subs li { margin: 0; padding: 4px 0; }
 .food-head { position: relative; }
-.fh-code { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(3rem, 9vw, 6rem); line-height: .9; letter-spacing: -.05em; color: var(--line-strong); }
+.fh-code { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(3rem, 9vw, 6rem); line-height: .9; letter-spacing: -.05em; color: var(--unk-solid); }
 .mo .fh-code { animation: load-up 1s var(--ease) backwards; }
 details.grp { margin-bottom: 10px; }
 
@@ -1439,3 +1439,4 @@ html:not(.mo) .facts-sec .fact.on::after { display: none; }
 .venn.in text { opacity: 1; }
 .venn .v-n { font-family: var(--display); font-weight: 700; font-size: 30px; }
 .venn .v-l { font-size: 13px; font-weight: 650; fill: var(--ink-2); }
+.sources th, .sources td { padding: 10px 10px; } .sources th { min-width: 180px; } .sources td { min-width: 96px; }

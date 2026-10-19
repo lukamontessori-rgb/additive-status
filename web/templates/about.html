@@ -4,10 +4,10 @@
 {{ breadcrumbs([("About", None)]) }}
 <article class="prose">
 <h1>About {{ SITE_NAME }}</h1>
-<p class="lede">{{ SITE_NAME }} puts the official food additive lists of five places side by side — the European Union, Great Britain, the United States, Canada and Australia/New Zealand — so you can see in one place whether an additive is allowed, and check every answer against its source.</p>
+<p class="lede">{{ SITE_NAME }} puts the official food additive lists of five places side by side — the European Union, Great Britain, the United States, Canada and Australia/New Zealand, which together set the rules for {{ N_COUNTRIES }} countries — so you can see in one place whether an additive is allowed, and check every answer against its source.</p>
 
 <nav class="toc" aria-label="On this page">
-  <a href="#why">Why it exists</a><a href="#principles">Principles</a><a href="#how">How it works</a><a href="#statuses">Statuses</a><a href="#systems">Five legal systems</a><a href="#sources">Sources</a><a href="#matching">Matching</a><a href="#updates">Updates</a><a href="#limits">Limits</a><a href="#contact">Corrections</a>
+  <a href="#why">Why it exists</a><a href="#principles">Principles</a><a href="#how">How it works</a><a href="#statuses">Statuses</a><a href="#systems">Five legal systems</a><a href="#where">Where the lists apply</a><a href="#sources">Sources</a><a href="#what">What is read from them</a><a href="#matching">Matching</a><a href="#updates">Updates</a><a href="#limits">Limits</a><a href="#contact">Corrections</a>
 </nav>
 
 <h2 id="why">Why it exists</h2>
@@ -21,7 +21,7 @@
 
 <h2 id="principles">Principles</h2>
 <ul class="check-list">
-  <li><strong>Official sources only.</strong> Every status comes from a government or intergovernmental publication, downloaded automatically. Nothing is copied from blogs, apps or campaign lists.</li>
+  <li><strong>Official sources only.</strong> Every status comes from a government or intergovernmental publication, downloaded automatically. Nothing is copied from blogs, apps or campaign lists. The only hand-written parts are a reviewed table of name matches and a short description of where each list applies; both are published with the code.</li>
   <li><strong>Show the source.</strong> Every status links to the text it comes from, and says how the match was made.</li>
   <li><strong>No guessing.</strong> If a substance cannot be matched to a source, the site says <em>No data</em>. Uncertain cases are labelled as uncertain, not rounded up or down.</li>
   <li><strong>Legal facts, not safety verdicts.</strong> A status says what a list allows. It does not say whether a substance is safe or harmful.</li>
@@ -51,8 +51,11 @@
 <p>Because the systems differ, the same word can mean different things. An additive missing from the EU list may not be used at all in the EU, but a substance missing from the FDA inventory may still be used legally in the US. Australia and New Zealand also allow some substances as processing aids rather than food additives; the site reports these separately and does not count them as permitted additives.</p>
 <p>Current totals: {% for j in JUR_ORDER %}{{ JUR[j].short }} allows {{ counts[j] }}{% if not loop.last %}, {% endif %}{% endfor %} of the {{ total }} additives tracked here.</p>
 
+<h2 id="where">Where the lists apply</h2>
+<p>The EU list applies directly in all 27 member states. Through the EEA Agreement it also applies in Iceland, Liechtenstein and Norway, each amendment once the EEA Joint Committee has incorporated it, and under the Windsor Framework Northern Ireland follows it too. Great Britain (England, Scotland, Wales) has its own list, the US list applies nationwide (federal law; states can add rules), and the Food Standards Code applies in both Australia and New Zealand. That makes {{ N_COUNTRIES }} countries in all. These descriptions of legal scope are written by hand and do not change week to week; see <a href="{{ url('/places/') }}">where each list applies</a>.</p>
+
 <h2 id="sources">Sources</h2>
-<p>Every status on this site comes from one of these official sources. The data pipeline downloads them automatically; nothing is typed in by hand except a small, reviewed table of name matches that is published with the code.</p>
+<p>Every status on this site comes from one of these official sources. The data pipeline downloads them automatically; nothing is typed in by hand except a reviewed table of name matches (with the short list of substances that get their own page) and the description of where each list applies, both published with the code.</p>
 <div class="tbl-wrap">
 <table class="tbl sources stack-tbl">
   <thead><tr><th scope="col">Source</th><th scope="col">Licence</th><th scope="col">Last downloaded</th><th scope="col">Last change detected here</th></tr></thead>
@@ -70,16 +73,28 @@
 </div>
 <p class="small">Attribution and licence terms for each source are on the <a href="{{ url('/legal/') }}#licences">legal page</a>.</p>
 
+<h2 id="what">What is read from the sources</h2>
+<p>Besides the statuses, the site reads these facts from the same official texts, every week:</p>
+<ul>
+  <li><strong>EU specifications</strong> (Regulation (EU) No 231/2012): definition, appearance, chemical formula, molecular weight, assay, solubility, identification tests (including the wavelength at which a colour absorbs most light), purity criteria such as lead, arsenic and mercury limits, and microbiological criteria.</li>
+  <li><strong>EU conditions of use</strong> (Annex II, Parts C, D and E): which additives may be used in each of the {{ EU_FOOD_TOPS|length }} main food groups and their subcategories, at what maximum level, and which additives belong to Groups I to IV. They are shown on each additive page and turned round on the <a href="{{ url('/eu-food/') }}">EU food category pages</a>.</li>
+  <li><strong>The EU regulation's own explanations</strong>: the definition of a food additive and what is not one (Article 3), the conditions for getting on the list (Article 6), the 27 functional classes (Annex I), traditional foods where member states may keep bans (Annex IV) and the six colours that need a warning on the label (Annex V).</li>
+  <li><strong>Great Britain</strong>: for each authorisation, the nations where it applies, its date in the register, transitional notes and links to the exact versions of the assimilated regulations on legislation.gov.uk.</li>
+  <li><strong>United States</strong>: the FDA name, the 21 CFR sections cited, technical effects and FEMA flavouring numbers. <strong>Canada</strong>: the lists, foods, purposes and maximum levels. <strong>Australia and New Zealand</strong>: the Schedule 8 name and INS number, and whether a substance is permitted through Schedule 15, Schedule 16 or only as a processing aid (Schedule 18).</li>
+</ul>
+
 <h2 id="matching">How additives are matched across sources</h2>
 <p>Each source names additives differently. The EU and UK use E-numbers, Australia and New Zealand use INS numbers, the FDA uses chemical names, CAS and Colour Index numbers, and Health Canada uses names only. Records are joined in this order:</p>
 <ol>
   <li><strong>E-number or INS number</strong> (EU list, GB register, Food Standards Code schedules).</li>
   <li><strong>Colour Index number</strong> for colours (from the EU specifications, Regulation (EU) No 231/2012, and the FDA inventory's alternative names).</li>
   <li><strong>CAS registry number</strong>, where the EU specifications give one.</li>
-  <li><strong>Name after normalisation</strong> (case, punctuation, plural forms, British and American spelling, "FD&amp;C" spellings), using the official names and the synonyms in the EU specifications.</li>
+  <li><strong>Name after normalisation</strong> (case, punctuation, plural forms, British and American spelling such as colour/color, sulphate/sulfate and oxidised/oxidized, "FD&amp;C" spellings), using the official names and the synonyms in the EU specifications.</li>
   <li><strong>A small reviewed match table</strong> for names that cannot be matched automatically, for example where the INS code in Australia/New Zealand groups several EU sub-numbers.</li>
 </ol>
 <p>US revocations that are newer than FDA's inventory are taken from final orders in the <a href="https://www.federalregister.gov/" rel="noopener">Federal Register</a> — for example, the revocation of FD&amp;C Red No. 3 for food, effective 15 January 2027. The EU history is built by comparing the consolidated versions of the EU list published since June 2013.</p>
+<p>Three rules keep the US column honest. A colour counts as allowed in the US only if FDA lists it as a colour additive (21 CFR 73 or 74); a GRAS or flavouring listing does not cover use as a colour. The caramel colour rule (21 CFR 73.85) is a colour listing only for caramel itself, not for the acids and salts it names as reagents. And a substance found only in food-contact rules is shown as <em>Not on the list</em>, never as allowed.</p>
+<p>Additives with no E-number get their own page when a list names them under their own number or name: substances that FDA prohibits or has revoked, a reviewed set of US and Canadian additives, and every additive that Australia and New Zealand permit under an INS number that no other entry has. Substances that EU law does not count as food additives at all (for example dextrins, bleached starch and ammonium chloride, Article 3) or that the EU treats as flavourings are left out, so that "not on the EU list" is never misleading.</p>
 <p>If a record cannot be matched, the site shows <em>No data</em> instead of guessing. On each additive page, a note under each status says how the match was made.</p>
 {% if quality %}
 <p>Current match rates:</p>
@@ -99,9 +114,10 @@
   <li><strong>Not legal advice.</strong> Statuses are simplified summaries. Conditions of use (which foods, what maximum levels, purity criteria, labelling duties) are shown only in part. Always check the official source.</li>
   <li><strong>US state laws</strong> (for example state laws on food dyes) are not included: there is no structured official source for them. The US column shows federal status only.</li>
   <li><strong>GRAS substances</strong> used in the US without notification to the FDA are not in the FDA inventory and cannot be shown.</li>
-  <li><strong>Safety values</strong> such as the acceptable daily intake (ADI) are not shown.</li>
+  <li><strong>Safety values</strong> such as the acceptable daily intake (ADI) are not shown. The purity limits on additive pages come from the specifications: they are limits for the additive itself, not safety values for food.</li>
   <li><strong>Flavourings, enzymes, processing aids and nutrients</strong> are covered only where they appear in the additive lists used here.</li>
-  <li><strong>Other countries.</strong> Japan, China and India publish additive lists too, but not under terms that clearly allow this site to reuse and republish them automatically. They are left out rather than covered badly.</li>
+  <li><strong>Other countries.</strong> Japan, China, India and others publish additive lists too, but not under terms that clearly allow this site to reuse and republish them automatically. They are left out rather than covered badly.</li>
+  <li><strong>National exceptions.</strong> In the EEA countries the EU list applies once each amendment is incorporated into the EEA Agreement; the site does not track those delays. National bans on additives in traditional foods (Annex IV) are listed on the <a href="{{ url('/place/eu/') }}#trad-h">EU page</a> but not applied to the statuses.</li>
   <li><strong>Northern Ireland</strong> follows EU food additive rules; see the EU column. New Zealand's food law adopts the joint Food Standards Code, so Australia and New Zealand share a column.</li>
 </ul>
 
