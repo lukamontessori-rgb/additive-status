@@ -56,8 +56,22 @@ def parse_all() -> dict:
         rec = records.setdefault(key, {
             "key": key, "e": e_display(*p), "name": name, "groups": [], "phases": [],
             "nations": [], "terms": [], "last_modified": None, "notes": [], "url": it.get("@id"),
-            "phase_notes": [],
+            "phase_notes": [], "term_links": [], "reg_dates": [], "transition": [],
         })
+        for t in it.get("termsOfAuthorisation") or []:
+            if isinstance(t, dict):
+                link = (t.get("downloadURL") or {}).get("@id") if isinstance(t.get("downloadURL"), dict) else None
+                lbl = first(t)
+                if link and lbl and [lbl, link] not in rec["term_links"]:
+                    rec["term_links"].append([lbl, link])
+        for jd in it.get("jurisdictionDetail") or []:
+            d = jd.get("dateOfRegulation") if isinstance(jd, dict) else None
+            if isinstance(d, str) and d[:10] not in rec["reg_dates"]:
+                rec["reg_dates"].append(d[:10])
+        for tp in it.get("transitionalProvision") or []:
+            n = tp.get("transitionNotes") if isinstance(tp, dict) else None
+            if isinstance(n, str) and n.strip() and n.strip() not in rec["transition"]:
+                rec["transition"].append(n.strip())
         for ph in it.get("phase") or []:
             if isinstance(ph, dict):
                 for n in ph.get("phaseNotes", []):

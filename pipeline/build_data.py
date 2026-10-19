@@ -88,6 +88,26 @@ def canonical_function(raw: str) -> str | None:
     return None
 
 
+LIMIT_ELEMENTS = ("Lead", "Arsenic", "Mercury", "Cadmium", "Aluminium", "Antimony", "Nickel", "Selenium", "Chromium", "Zinc", "Copper", "Barium")
+
+
+def spec_limits(purity: list) -> list[dict]:
+    """Element limits from a specification's purity criteria, e.g. ('Lead', 'Not more than 2 mg/kg') -> 2.0 mg/kg."""
+    out = []
+    for label, value in purity:
+        name = label.strip().rstrip(":")
+        el = name.split(" ")[0]
+        if el not in LIMIT_ELEMENTS or not re.fullmatch(rf"{el}(?: \((?:as|total|expressed as)[^)]*\))?", name, re.I):
+            continue
+        m = re.search(r"not more than\s+(\d+(?:[.,]\d+)?)\s*(mg/kg|µg/kg|%)", value, re.I)
+        if not m:
+            continue
+        v = float(m.group(1).replace(",", "."))
+        mg = v / 1000 if m.group(2) == "µg/kg" else v * 10000 if m.group(2) == "%" else v
+        out.append({"el": name.split(" ")[0], "text": f"{m.group(1)} {m.group(2)}", "mgkg": round(mg, 4), "full": value[:200]})
+    return out[:8]
+
+
 def key_label(k: str) -> str:
     m = re.match(r"e(\d+)([a-z]?)(?:-([ivx]+))?$", k)
     return e_display(int(m.group(1)), m.group(2) or "", m.group(3) or "") if m else k
@@ -505,7 +525,14 @@ class Build:
             facts.append(["Register entry updated", r["last_modified"][:10]])
         if r.get("url"):
             refs.insert(0, {"label": "FSA register entry", "url": r["url"].replace("http://", "https://")})
-        notes = r["notes"][:5] + r.get("phase_notes", [])
+        for lbl, link in r.get("term_links", [])[:4]:
+            if link.startswith("https://www.legislation.gov.uk/"):
+                ver = re.search(r"/(\d{4}-\d{2}-\d{2})$", link)
+                refs.append({"label": lbl.replace("No. ", "No ") + (f" (legislation.gov.uk, version of {ver.group(1)})" if ver else " (legislation.gov.uk)"),
+                             "url": link})
+        if r.get("reg_dates"):
+            facts.append(["Date in the register", ", ".join(sorted(r["reg_dates"]))])
+        notes = r["notes"][:5] + r.get("phase_notes", []) + r.get("transition", [])
         headline = "Authorised in Great Britain" if st == "authorised" else (
             "; ".join(r.get("phase_notes", [])) or ", ".join(r["phases"]))
         terms = " ".join(r.get("terms", []))
@@ -567,6 +594,9 @@ class Build:
             facts.append(["21 CFR (animal feed uses)" if feed_only else "21 CFR (food uses)", ", ".join(food_cfr[:8])])
             for c in food_cfr[:3]:
                 refs.append({"label": f"21 CFR {c} (eCFR)", "url": f"https://www.ecfr.gov/current/title-21/section-{c}"})
+        fema = sorted({m[0]["fema"] for m in matches if m[0].get("fema")})
+        if fema:
+            facts.append(["FEMA number (flavouring)", ", ".join(fema[:3])])
         effects = sorted({e for m in matches for e in m[0]["effects"]})
         if effects:
             facts.append(["Technical effects (FDA inventory)", ", ".join(effects[:6])])
@@ -730,7 +760,15 @@ class Build:
             ident = {"definition": main.get("definition", ""), "description": main.get("description", ""),
                      "formula": main.get("formula", [])[:4], "einecs": main.get("einecs", [])[:4],
                      "colour_index": main.get("colour_index", [])[:2], "synonyms": main.get("synonyms", [])[:6],
-                     "spec_title": main["title"].capitalize() if main["title"].isupper() else main["title"]}
+                     "spec_title": main["title"].capitalize() if main["title"].isupper() else main["title"],
+                     "mw": main.get("mw", ""), "assay": main.get("assay", ""), "solubility": main.get("solubility", ""),
+                     "identification": main.get("identification", [])[:12], "purity": main.get("purity", [])[:24],
+                     "micro": main.get("micro", [])[:8]}
+            ident["limits"] = spec_limits(main.get("purity", []))
+            nm = next((re.search(r"(\d{3})\s*nm", v) for k, v in main.get("identification", [])
+                       if k.lower().startswith("spectrometry") and re.search(r"\d{3}\s*nm", v)), None)
+            if nm and 380 <= int(nm.group(1)) <= 780:
+                ident["lambda_max"] = int(nm.group(1))
             if len(mine) > 1 or key not in specs:
                 ident["parts"] = [{"key": sp["key"], "label": key_label(sp["key"]),
                                    "title": sp["title"].capitalize() if sp["title"].isupper() else sp["title"],
@@ -738,6 +776,13 @@ class Build:
             out["identity"] = {k: v for k, v in ident.items() if v}
         eu = self.parsed.get("eu_annex2")
         if eu:
+            legal = eu.get("legal") or {}
+            groups = [g for g in ("I", "II", "III", "IV") if key in eu["groups"].get(g, []) or base_key(key) in eu["groups"].get(g, [])]
+            if groups:
+                out["eu_groups"] = [{"g": g, "title": (legal.get("group_titles") or {}).get(g, "")} for g in groups]
+            warn = legal.get("warning") or {}
+            if any(c["key"] == base_key(key) for c in warn.get("colours", [])):
+                out["eu_warning"] = {"text": warn["text"], "exceptions": warn.get("exceptions", [])}
             rows = eu.get("use_rows", {}).get(key) or []
             m = re.match(r"(e\d+[a-z]?)-", key)
             if not rows and m:
@@ -1130,8 +1175,10 @@ class Build:
             {"name": r["name"], "lists": [L["no"] for L in r["lists"]]} for r in ca_unmatched])
         write_json(INTERIM / "match_log.json", {"us": dict(us_stats), "ca": dict(ca_stats), **self.log})
 
+        eu_legal = (self.parsed.get("eu_annex2") or {}).get("legal") or self.prev.get("eu_legal") or {}
+        eu_categories = dict((self.parsed.get("eu_annex2") or {}).get("categories") or self.prev.get("eu_categories") or {})
         published = {"generated_at": now_iso(), "data_version": today, "method_version": METHOD_VERSION,
-                     "eu_history": eu_history_meta,
+                     "eu_history": eu_history_meta, "eu_legal": eu_legal, "eu_categories": eu_categories,
                      "eu_history_events": sorted(eu_hist_all, key=lambda x: x["date"], reverse=True),
                      "sources": src_out,
                      "counts": self.counts() or self.prev.get("counts", {}), "quality": quality,
