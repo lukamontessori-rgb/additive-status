@@ -1,16 +1,16 @@
 {
- "at": "2026-10-12T04:40:59+00:00",
+ "at": "2026-10-19T04:55:16+00:00",
  "problems": [],
  "counts": {
   "eu_annex2": 339,
-  "us_fda_substances": 3971,
+  "us_fda_substances": 3970,
   "ca_lists": 454,
   "uk_fsa": 333,
   "eu_specs": 386,
   "anz_code": 310
  },
  "us_match": {
-  "unmatched": 3691,
+  "unmatched": 3690,
   "name": 178,
   "excluded by review": 8,
   "CAS": 13,

@@ -1,6 +1,6 @@
 {
  "us": {
-  "unmatched": 3691,
+  "unmatched": 3690,
   "name": 178,
   "excluded by review": 8,
   "CAS": 13,
@@ -15,7 +15,9 @@
   "own entry": 22
  },
  "revocations_applied": [
-  "FD&C RED NO. 3: 2025-00830 (2027-01-15)",
-  "ORANGE B: 2026-14910 (2026-09-08)"
+  "FD&C RED NO. 3: 2025-00830 (2027-01-15)"
+ ],
+ "us_only_not_found_or_matched": [
+  "ORANGE B"
  ]
 }
