@@ -361,10 +361,31 @@
       count.textContent = (pos + 1) + " / " + facts.length;
       if (dir && M()) M().cardIn(f, dir);
     }
-    $("[data-fact-next]", box).addEventListener("click", () => { pos = (pos + 1) % facts.length; show(1); });
-    $("[data-fact-prev]", box).addEventListener("click", () => { pos = (pos - 1 + facts.length) % facts.length; show(-1); });
-    $("[data-fact-shuffle]", box).addEventListener("click", () => { order = shuffle(order); pos = 0; show(1); });
-    show();
+    // facts move on by themselves while animations are on, the section is on screen and nobody is pointing at
+    // it or using its buttons; "Pause animations" stops it (WCAG 2.2.2)
+    const FT = 8000;
+    let timer = 0, hold = false, seen = false;
+    box.style.setProperty("--ft", FT + "ms");
+    function arm() {
+      clearTimeout(timer);
+      box.classList.toggle("auto", motionOn());
+      if (motionOn()) timer = setTimeout(tick, FT);
+    }
+    function tick() {
+      if (!motionOn()) { box.classList.remove("auto"); return; }
+      if (hold || !seen || document.hidden) { timer = setTimeout(tick, 1200); return; }
+      pos = (pos + 1) % facts.length; show(1); arm();
+    }
+    const holdOn = () => { hold = true; box.classList.add("hold"); };
+    const holdOff = () => { hold = false; box.classList.remove("hold"); };
+    box.addEventListener("pointerenter", holdOn); box.addEventListener("pointerleave", () => { holdOff(); arm(); show(); });
+    box.addEventListener("focusin", holdOn); box.addEventListener("focusout", holdOff);
+    if ("IntersectionObserver" in window) new IntersectionObserver((es) => { seen = es[0].isIntersecting; }).observe(box); else seen = true;
+    $$("[data-motion-toggle]").forEach((b) => b.addEventListener("click", () => setTimeout(arm, 30)));
+    $("[data-fact-next]", box).addEventListener("click", () => { pos = (pos + 1) % facts.length; show(1); arm(); });
+    $("[data-fact-prev]", box).addEventListener("click", () => { pos = (pos - 1 + facts.length) % facts.length; show(-1); arm(); });
+    $("[data-fact-shuffle]", box).addEventListener("click", () => { order = shuffle(order); pos = 0; show(1); arm(); });
+    show(); arm();
   }
 
   // ------------------------------------------------------------ hero "chromatography" lanes (decorative)

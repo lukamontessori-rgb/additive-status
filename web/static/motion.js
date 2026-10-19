@@ -374,6 +374,24 @@
         if (!rq) rq = requestAnimationFrame(() => { rq = 0; hero.style.setProperty("--px", qx.toFixed(3)); hero.style.setProperty("--py", qy.toFixed(3)); });
       });
       hero.addEventListener("pointerleave", () => { hero.style.setProperty("--px", 0); hero.style.setProperty("--py", 0); });
+      // a trail of dye drops follows the mouse across the hero and floats away
+      const dyes = ["--dye-r", "--dye-o", "--dye-y", "--dye-g", "--dye-b", "--dye-v"];
+      let lastDrop = 0, nDrop = 0, live = 0;
+      hero.addEventListener("pointermove", (e) => {
+        if (!on() || e.pointerType !== "mouse" || live > 28) return;
+        const t = performance.now();
+        if (t - lastDrop < 42) return;
+        lastDrop = t;
+        const r = hero.getBoundingClientRect(), d = document.createElement("span");
+        d.className = "dye-trail"; d.setAttribute("aria-hidden", "true");
+        d.style.left = (e.clientX - r.left).toFixed(0) + "px"; d.style.top = (e.clientY - r.top).toFixed(0) + "px";
+        d.style.background = `var(${dyes[nDrop++ % dyes.length]})`;
+        hero.appendChild(d); live++;
+        const a = d.animate([{ transform: "scale(.35)", opacity: 0.8 },
+          { transform: `translate(${((Math.random() - 0.5) * 50).toFixed(0)}px, ${(-34 - Math.random() * 46).toFixed(0)}px) scale(${(1 + Math.random() * 1.3).toFixed(2)})`, opacity: 0 }],
+          { duration: 950 + Math.random() * 600, easing: EASE });
+        a.onfinish = a.oncancel = () => { d.remove(); live--; };
+      });
     }
     // the search box cycles through example searches while it is empty and not focused
     const input = $("#q-home");

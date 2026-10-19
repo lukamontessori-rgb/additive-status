@@ -127,6 +127,7 @@
     btns.forEach((b) => b.addEventListener("click", () => set(b.getAttribute("data-map-place"), true)));
     const p = new URLSearchParams(location.search).get("place");
     if (p && btns.some((b) => b.getAttribute("data-map-place") === p)) set(p, false);
+    if (motionOn()) { box.classList.add("wave"); setTimeout(() => box.classList.remove("wave"), 1800); }
   }
 
   // ------------------------------------------------------------ home: the small map that fills itself in

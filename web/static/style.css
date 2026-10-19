@@ -1394,3 +1394,39 @@ html:not(.mo) .dye-blob i:nth-child(3) { display: none; }
 :root[data-theme="dark"] .food-picks a { background: hsl(var(--h) 45% 20%); border-color: hsl(var(--h) 40% 32%); color: var(--ink); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .food-picks a { background: hsl(var(--h) 45% 20%); border-color: hsl(var(--h) 40% 32%); color: var(--ink); } }
 @media (max-width: 860px) { .food-picks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.defs-box { margin: 0 0 1.4rem; padding: 18px 22px; border-radius: 18px; background: var(--paper); color: var(--paper-ink); border: 1px solid var(--line); max-width: 820px; }
+.defs-box p { margin: 0 0 .6em; } .defs-box p:last-child { margin: 0; }
+.defs-box .muted { color: color-mix(in srgb, var(--paper-ink) 65%, transparent); }
+
+/* ------------------------------------------------------------ more motion: hero numbers and floating badges, trails, headings, cards */
+.hero-nums { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 16px 0 0; font-size: .92rem; color: var(--ink-2); }
+.hero-nums strong { font-family: var(--display); font-weight: 650; font-size: 1.35rem; color: var(--ink); margin-right: 5px; letter-spacing: -.02em; }
+.hero-nums strong .odo { vertical-align: -.1em; }
+.hero-float { position: absolute; inset: -40px 0 0; z-index: -1; pointer-events: none; overflow: hidden; display: none; }
+.mo .hero-float { display: block; }
+.hero-float span { position: absolute; left: var(--x); bottom: -40px; padding: 4px 10px; border-radius: 999px; border: 1.5px solid var(--line-strong); color: var(--muted); background: var(--bg);
+  font-family: var(--display); font-weight: 600; font-size: calc(.78rem * var(--s, 1)); opacity: 0; animation: float-up var(--d, 16s) linear infinite; animation-delay: var(--w, 0s); white-space: nowrap; }
+@keyframes float-up { 0% { transform: translateY(0) rotate(-6deg); opacity: 0; } 12% { opacity: .5; } 50% { transform: translateY(-48vh) translateX(18px) rotate(5deg); } 80% { opacity: .35; } 100% { transform: translateY(-95vh) translateX(-10px) rotate(-4deg); opacity: 0; } }
+.hero-float span { background: transparent; }
+@media (max-width: 900px) { .hero-float { display: none !important; } }
+.dye-trail { position: absolute; z-index: -1; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; pointer-events: none; mix-blend-mode: multiply; }
+:root[data-theme="dark"] .dye-trail { mix-blend-mode: screen; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .dye-trail { mix-blend-mode: screen; } }
+main h2.split-h { position: relative; }
+main h2.split-h::after { content: ""; position: absolute; left: 0; bottom: -6px; width: 2.4em; height: 5px; border-radius: 4px; background: var(--mark); transform: scaleX(0); transform-origin: 0 50%; transition: transform .9s var(--spring) .35s; }
+main h2.split-h.in::after { transform: scaleX(1); }
+html:not(.mo) main h2.split-h::after { display: none; }
+@keyframes dot-pop { 0% { transform: scale(1); } 40% { transform: scale(1.25) translateY(-3px); } 100% { transform: scale(1); } }
+.mo .acard:hover .d { animation: dot-pop .45s var(--spring); }
+.mo .acard:hover .d:nth-child(2) { animation-delay: .05s; } .mo .acard:hover .d:nth-child(3) { animation-delay: .1s; }
+.mo .acard:hover .d:nth-child(4) { animation-delay: .15s; } .mo .acard:hover .d:nth-child(5) { animation-delay: .2s; }
+.facts-sec.auto .fact.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--ink); opacity: .7; transform-origin: 0 50%; animation: fact-timer var(--ft, 8s) linear forwards; }
+.facts-sec.auto.hold .fact.on::after { animation-play-state: paused; }
+@keyframes fact-timer { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+html:not(.mo) .facts-sec .fact.on::after { display: none; }
+.lab-caption { position: relative; background: var(--bg); border-radius: 8px; }
+@media (max-width: 640px) {
+  .spec-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .spec-card { padding: 12px; } .sc-v { font-size: 1rem; }
+  .emap-bar { position: static; }
+}

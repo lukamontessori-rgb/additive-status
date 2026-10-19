@@ -6,6 +6,12 @@
   <h1 class="with-elem">{{ elem(c.name, 'lg') }} {{ c.name }}</h1>
   <p class="lede">{{ c.count }} additives in this group. {{ c.differ }} of them are allowed in some of the five places but not in others. The group comes from the functions listed in the official sources; one additive can belong to several groups.</p>
 </div>
+{% if c.defs %}
+<div class="defs-box">
+  {% for d in c.defs %}<p><strong>{{ d.name[0]|upper }}{{ d.name[1:] }}</strong> are, in EU law: {{ d.definition[0]|lower }}{{ d.definition[1:] }}{% if d.note %} ({{ d.note }}){% endif %}.</p>{% endfor %}
+  <p class="muted small">Annex I of Regulation (EC) No 1333/2008. Other places define their classes in their own words.</p>
+</div>
+{% endif %}
 <ul class="count-strip" aria-label="Allowed in each place">
   {% for j in JUR_ORDER %}<li style="--f: {{ '%.3f'|format(c.counts[j] / c.count if c.count else 0) }}"><span class="jbadge">{{ JUR_CODE[j] }}</span> <strong>{{ c.counts[j] }}</strong> <span class="muted">of {{ c.count }} allowed</span><i class="cs-bar" aria-hidden="true"></i></li>{% endfor %}
 </ul>

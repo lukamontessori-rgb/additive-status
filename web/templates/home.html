@@ -8,16 +8,18 @@
 {% block main %}
 {% if intro %}{% include "_intro.html" %}{% endif %}
 <section class="hero" id="start" data-hero>
+  <div class="hero-float" aria-hidden="true">{% for m in (marquee.chips + marquee.big)[:14] %}{% if m.e %}<span style="--x: {{ 54 + (loop.index0 * 23) % 42 }}%; --d: {{ 13 + (loop.index0 * 7) % 11 }}s; --w: {{ -1 * ((loop.index0 * 5) % 17) }}s; --s: {{ 0.75 + ((loop.index0 * 3) % 5) / 10 }}">{{ m.e }}</span>{% endif %}{% endfor %}</div>
   <div class="hero-text" data-depth="-0.18">
     <p class="kicker load-in" style="--li:0"><span class="pulse" aria-hidden="true"></span><span>Rechecked every Monday from the official lists</span></p>
     <h1 class="hero-title">{{ split("Is this food additive allowed?", 1) }}</h1>
     <p class="lede load-in" style="--li:5">Type an E-number or a name to see its status in the <strong>EU</strong>, the <strong>UK</strong>, the <strong>US</strong>, <strong>Canada</strong> and <strong>Australia/New Zealand</strong>, side by side, with the official source behind every answer.</p>
     <div class="load-in" style="--li:6">{{ search_box('q-home', big=True, placeholder='Try E171, Red 40 or aspartame') }}</div>
-    <div class="try load-in" style="--li:7">
+    <p class="hero-nums load-in" style="--li:7"><span><strong data-count="{{ total }}">{{ total }}</strong> additives</span><span><strong data-count="5">5</strong> rulebooks</span><span><strong data-count="{{ N_COUNTRIES }}">{{ N_COUNTRIES }}</strong> countries</span><span><strong data-count="{{ EU_FOOD_TOPS|length }}">{{ EU_FOOD_TOPS|length }}</strong> EU food groups</span></p>
+    <div class="try load-in" style="--li:8">
       <span class="muted">Try</span>
       {% for a in examples[:5] %}<a class="pill" href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e or a.name }}{% if a.e %} <span class="muted">{{ a.name.split(',')[0].split('/')[0] }}</span>{% endif %}</a>{% endfor %}
     </div>
-    <div class="hero-actions load-in" style="--li:8">
+    <div class="hero-actions load-in" style="--li:9">
       <a class="btn btn-soft" href="{{ url('/additives/') }}" data-random>{{ icon('dice') }} Surprise me</a>
       <a class="btn btn-soft" href="{{ url('/scan/') }}">{{ icon('tag') }} Check a label</a>
       <a class="btn btn-soft" href="{{ url('/quiz/') }}">{{ icon('spark') }} Play the quiz</a>
