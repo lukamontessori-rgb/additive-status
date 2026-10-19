@@ -681,6 +681,23 @@
       if (!items.length) c.appendChild(el("p", { class: "muted small" }, "None."));
       return c;
     }
+    // two circles that slide together: allowed only in A, in both, only in B (the same numbers are in the text below)
+    function venn(A, B, na, nboth, nb) {
+      const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("viewBox", "0 0 420 190"); svg.setAttribute("class", "venn"); svg.setAttribute("aria-hidden", "true");
+      const total = Math.max(1, na + nboth + nb), r = (n) => 46 + 40 * Math.sqrt((n + nboth) / total);
+      const parts = [["circle", { class: "v-a", cx: 160, cy: 95, r: r(na) }], ["circle", { class: "v-b", cx: 260, cy: 95, r: r(nb) }],
+        ["text", { class: "v-n", x: 112, y: 104 }, na], ["text", { class: "v-n v-mid", x: 210, y: 104 }, nboth], ["text", { class: "v-n", x: 308, y: 104 }, nb],
+        ["text", { class: "v-l", x: 112, y: 128 }, "only " + A.c], ["text", { class: "v-l v-mid", x: 210, y: 128 }, "both"], ["text", { class: "v-l", x: 308, y: 128 }, "only " + B.c]];
+      parts.forEach(([tag, attrs, text]) => {
+        const e = document.createElementNS(NS, tag);
+        Object.keys(attrs).forEach((k) => e.setAttribute(k, attrs[k]));
+        if (text != null) e.textContent = String(text);
+        svg.appendChild(e);
+      });
+      if (motionOn()) requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.add("in"))); else svg.classList.add("in");
+      return svg;
+    }
     function render() {
       loadIndex().then((idx) => {
         const a = keys.indexOf(selA.value), b = keys.indexOf(selB.value);
@@ -705,6 +722,7 @@
         p.appendChild(el("strong", null, String(onlyB.length)));
         p.appendChild(document.createTextNode(" only in " + B.t + ". "));
         p.appendChild(el("span", { class: "muted" }, unsure + " cannot be compared because one side is “Not on the list” or has no data."));
+        summaryEl.appendChild(venn(A, B, onlyA.length, both.length, onlyB.length));
         summaryEl.appendChild(p);
         cols.appendChild(column("Allowed in " + A.c + ", not in " + B.c, onlyA));
         cols.appendChild(column("Allowed in " + B.c + ", not in " + A.c, onlyB));

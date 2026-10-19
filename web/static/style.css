@@ -1430,3 +1430,12 @@ html:not(.mo) .facts-sec .fact.on::after { display: none; }
   .spec-card { padding: 12px; } .sc-v { font-size: 1rem; }
   .emap-bar { position: static; }
 }
+.venn { display: block; width: 100%; max-width: 460px; height: auto; margin: 4px auto 10px; overflow: visible; }
+.venn circle { stroke: var(--ink); stroke-width: 2; transition: transform 1.1s var(--spring), opacity .6s; }
+.venn .v-a { fill: color-mix(in srgb, var(--jc-eu) 22%, transparent); transform: translateX(-60px); opacity: 0; }
+.venn .v-b { fill: color-mix(in srgb, var(--jc-us) 22%, transparent); transform: translateX(60px); opacity: 0; }
+.venn.in circle { transform: none; opacity: 1; }
+.venn text { text-anchor: middle; fill: var(--ink); opacity: 0; transition: opacity .6s .5s; }
+.venn.in text { opacity: 1; }
+.venn .v-n { font-family: var(--display); font-weight: 700; font-size: 30px; }
+.venn .v-l { font-size: 13px; font-weight: 650; fill: var(--ink-2); }
