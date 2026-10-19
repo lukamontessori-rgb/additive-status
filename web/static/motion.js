@@ -116,7 +116,8 @@
   // ------------------------------------------------------------ reveals (entrances when things scroll into view)
   const STAGGER = [".card-grid", ".type-list", ".legal-cards", ".dl-grid", ".pair-grid", ".count-strip", ".who-grid",
     ".pipeline", ".check-list", ".gloss", ".toc", ".defs", ".lic", ".legend-strip", ".foot-grid", ".try", ".a-tags",
-    ".prose > ul:not(.check-list)", ".prose > ol", ".sb-legend", ".heat-key", ".quiz-rules"];
+    ".prose > ul:not(.check-list)", ".prose > ol", ".sb-legend", ".heat-key", ".quiz-rules", ".place-cards", ".type-bars",
+    ".food-grid", ".country-chips", ".cond-list", ".warn-swatches", ".place-stats", ".spec-grid", ".limit-bars", ".pill-list"];
   const SOLO = [".panel", ".note", ".cta-quiz", ".tbl-wrap:not(.heat-wrap)", ".overview", ".answer", "details.uses", ".jur-details",
     ".prose > p", ".prose > dl", ".prose > .tbl-wrap", ".cmp-tool", ".empty", ".statement", ".foot-legal", ".checked"];
   const rio = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => {
@@ -176,7 +177,7 @@
       if (vis.get(h)) return;
       if (h.classList.contains("foot-mark") || splitWords(h)) watch(h, "split", false);
     });
-    $$(".sbars, .heat, .vcols, .timeline").forEach((el) => { if (rio) { el.__rv = "chart"; rio.observe(el); } else el.classList.add("in"); });
+    $$(".sbars, .heat, .vcols, .timeline, .meter, .spectrum, .minimap").forEach((el) => { if (rio) { el.__rv = "chart"; rio.observe(el); } else el.classList.add("in"); });
     $$("[data-count]").forEach((n) => { if (!n.closest(".reveal, [data-stagger], [data-solo]") && rio) { n.__rv = "count"; rio.observe(n); } });
   }
 
@@ -373,6 +374,24 @@
         if (!rq) rq = requestAnimationFrame(() => { rq = 0; hero.style.setProperty("--px", qx.toFixed(3)); hero.style.setProperty("--py", qy.toFixed(3)); });
       });
       hero.addEventListener("pointerleave", () => { hero.style.setProperty("--px", 0); hero.style.setProperty("--py", 0); });
+      // a trail of dye drops follows the mouse across the hero and floats away
+      const dyes = ["--dye-r", "--dye-o", "--dye-y", "--dye-g", "--dye-b", "--dye-v"];
+      let lastDrop = 0, nDrop = 0, live = 0;
+      hero.addEventListener("pointermove", (e) => {
+        if (!on() || e.pointerType !== "mouse" || live > 28) return;
+        const t = performance.now();
+        if (t - lastDrop < 42) return;
+        lastDrop = t;
+        const r = hero.getBoundingClientRect(), d = document.createElement("span");
+        d.className = "dye-trail"; d.setAttribute("aria-hidden", "true");
+        d.style.left = (e.clientX - r.left).toFixed(0) + "px"; d.style.top = (e.clientY - r.top).toFixed(0) + "px";
+        d.style.background = `var(${dyes[nDrop++ % dyes.length]})`;
+        hero.appendChild(d); live++;
+        const a = d.animate([{ transform: "scale(.35)", opacity: 0.8 },
+          { transform: `translate(${((Math.random() - 0.5) * 50).toFixed(0)}px, ${(-34 - Math.random() * 46).toFixed(0)}px) scale(${(1 + Math.random() * 1.3).toFixed(2)})`, opacity: 0 }],
+          { duration: 950 + Math.random() * 600, easing: EASE });
+        a.onfinish = a.oncancel = () => { d.remove(); live--; };
+      });
     }
     // the search box cycles through example searches while it is empty and not focused
     const input = $("#q-home");
@@ -897,7 +916,7 @@
     setupIntro(); setupHero(); setupStory(); setupPointer(); setupTransitions();
     const idle = window.requestIdleCallback || ((f) => setTimeout(f, 120));
     idle(() => { setupBand(); setupScrub(); setupSideways(); setupStack(); setupTimelines(); kick(); }, { timeout: 600 });
-    listeners.push(() => $$(".reveal, [data-stagger], [data-solo], .split-h, .sbars, .heat, .vcols, .timeline").forEach((el) => el.classList.add("in")));
+    listeners.push(() => $$(".reveal, [data-stagger], [data-solo], .split-h, .sbars, .heat, .vcols, .timeline, .meter, .spectrum, .minimap").forEach((el) => el.classList.add("in")));
     let rq = 0;
     const later = () => { cancelAnimationFrame(rq); rq = requestAnimationFrame(remeasure); };
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);

@@ -2,7 +2,9 @@
 
 A free website that shows, for each food additive, its official status in the
 **European Union**, **Great Britain**, the **United States** (federal), **Canada** and
-**Australia/New Zealand** side by side, with links to the official sources.
+**Australia/New Zealand** side by side, with links to the official sources. Together these five
+lists set the additive rules for 35 countries (the EU list also applies in Iceland, Liechtenstein
+and Norway through the EEA Agreement, and in Northern Ireland).
 
 Live site: https://lukamontessori-rgb.github.io/additive-status/
 
@@ -10,10 +12,18 @@ No ads, no accounts, no cookies, no tracking, no third-party requests.
 
 ## What is on the site
 
-* A page for every additive (405 at the time of writing): status in each place, the official
-  references, how the match was made, EU conditions of use, Canadian permitted foods, identity
-  data from the EU specifications and the EU history since 2013.
-* A searchable, filterable table; compare pages for every pair of places; a differences heatmap.
+* A page for every additive (455 at the time of writing): status in each place, the official
+  references, how the match was made, EU conditions of use and groups, Canadian permitted foods,
+  identity and purity data from the EU specifications (formula, molecular weight, absorption peak,
+  element limits), the EU label warning where it applies, and the EU history since 2013.
+* A searchable, filterable table; compare pages for every pair of places (with a Venn diagram); a
+  differences heatmap.
+* **Places** (`/places/`, `/place/<eu|gb|us|ca|anz>/`): where each list applies, on a turning globe,
+  counts by type, what only that place allows, and for the EU the Article 6 conditions, the Annex IV
+  traditional foods and the Annex V colour warning.
+* **EU food categories** (`/eu-food/`): all 153 categories of Annex II, each with the additives it may
+  contain, maximum levels and restrictions.
+* **The E-number map** (`/map/`): every numbered additive as a tile, recoloured per place.
 * A **label checker** (paste an ingredients list; runs entirely in the browser).
 * A **quiz** ("Where is it allowed?").
 * Weekly change tracking, a glossary, and CSV/JSON downloads.
@@ -46,7 +56,10 @@ official sources ──► pipeline/fetch.py ──► data/raw/          (weekl
 | Lists of Permitted Food Additives (15 lists) | Health Canada | Open Government Licence – Canada |
 | Food Standards Code compilation (Standard 1.3.1, Schedules 8, 15, 16, 18) | Food Standards Australia New Zealand | CC BY 4.0 |
 
-The only hand-made data is `data/curated/crosswalk.yml`, a small reviewed table of name matches.
+The only hand-made data is `data/curated/crosswalk.yml` (a reviewed table of name matches, the
+substances without an E-number that get their own page, and the codes left out of the automatic
+Australia/New Zealand entries) and the short description of where each list applies (`COVERAGE` in
+`web/build.py`).
 See the site's *About* and *Legal* pages for status definitions, matching rules, limits and licences.
 
 The site's legal notice and licences, disclaimer, privacy policy, terms of use, cookies-and-storage page,
@@ -58,7 +71,7 @@ under the SIL Open Font License 1.1; the licence texts are next to the font file
 
 The look is paper and ink: a white page, black line drawings, and colour only for statuses and for the dyes themselves.
 The home page opens with a scroll-driven drawing (`web/templates/_intro.html`): a jar of sweets whose six colours are
-stamped for the five places, using the real statuses. All animation lives in `web/static/motion.js` (no libraries). It is decoration only: pages read the same without
+stamped for the five places, using the real statuses. Animation lives in `web/static/motion.js`; the globe and the E-number map are in `web/static/explore.js` (no libraries). It is decoration only: pages read the same without
 it, it stops for visitors who ask their system for reduced motion, and the menu has a *Pause animations* button.
 
 ## Local use

@@ -413,9 +413,82 @@ def parse_html(body: bytes, today: date | None = None) -> dict:
     }
 
 
+ROMAN = r"(?:i|ii|iii|iv|v|vi|vii|viii|ix|x|xi|xii)"
+
+
+def parse_legal(body: bytes) -> dict:
+    """The parts of the Regulation that explain the list: the definition of a food additive and what is
+    not one (Article 3), the general conditions for inclusion (Article 6), the functional classes
+    (Annex I), traditional foods where Member States may keep bans (Annex IV) and the colours that
+    need a warning on the label (Annex V)."""
+    doc = lhtml.fromstring(body)
+    full = MARK_RE.sub("", re.sub(r"\s+", " ", doc.text_content()))
+    full = re.sub(r"\s*[◄►▼]\s*", " ", full)
+    out: dict = {}
+    m = re.search(r"\(a\) ‘food additive’ shall mean (.+?); The following are not considered to be food additives: (.+?) \(b\) ‘processing aid’ shall mean (.+?); \(c\)", full)
+    if m:
+        out["definition"] = "A food additive is " + m.group(1).strip()
+        items = re.split(rf"\s*\({ROMAN}\)\s+", " " + m.group(2))
+        out["not_additives"] = [re.sub(r"[;.]\s*$", "", x).strip() for x in items if x.strip()]
+        pa = re.sub(r"\s*\((?:i|ii|iii|iv)\)\s*", " ", m.group(3)).strip()
+        out["processing_aid"] = "A processing aid is " + pa
+    # Article 6: conditions (paragraph 1) and the purposes an additive must serve (paragraph 2)
+    m = re.search(r"Article 6 General conditions for inclusion and use of food additives in (?:Community|Union) lists "
+                  r"1\. (.+?) 2\. (.+?) 3\.", full)
+    if m:
+        for key, text in (("conditions", m.group(1)), ("purposes", m.group(2))):
+            parts = re.split(r"\s*\(([a-f])\)\s+", text)
+            items = [re.sub(r"[;.]?\s*(?:and|or)?\s*$", "", parts[i + 1]).strip() for i in range(1, len(parts) - 1, 2)]
+            if items:
+                out[key] = {"intro": parts[0].strip().rstrip(":"), "items": items}
+    out["group_titles"] = {g: (t or "").strip() for g, t in
+                           re.findall(r"\(\d\) Group (IV|III|II|I)\b(?:: (.+?))? E-number", full)}
+    annex, classes, trad, warn = None, [], [], {"colours": [], "text": "", "exceptions": []}
+    pending_no = None
+    for kind, item in _linear(doc):
+        if kind == "p":
+            t = MARK_RE.sub("", item).strip()
+            am = re.fullmatch(r"ANNEX\s+(I|II|III|IV|V)", t, re.I)
+            if am:
+                annex = am.group(1).upper()
+                continue
+            if annex == "I":
+                if re.fullmatch(r"\d{1,2}\.", t):
+                    pending_no = int(t[:-1])
+                    continue
+                cm = re.match(r"^‘([^’]+)’\s*(\([^)]*\))?\s*(?:are|is)\s+(.+?)[;.]?$", t)
+                if cm and pending_no:
+                    classes.append({"no": pending_no, "name": cm.group(1), "note": (cm.group(2) or "").strip("()"),
+                                    "definition": cm.group(3)[0].upper() + cm.group(3)[1:]})
+                    pending_no = None
+            continue
+        if annex == "IV":
+            for row in table_to_grid(item)[1:]:
+                if len(row) >= 3 and row[0].strip():
+                    trad.append({"states": [s.strip() for s in row[0].split("\n") if s.strip()],
+                                 "food": row[1].strip(), "banned": row[2].strip()})
+        elif annex == "V":
+            for row in table_to_grid(item)[1:]:
+                if len(row) < 2:
+                    continue
+                em = re.search(r"\(E\s*(\d{3})\)", row[0])
+                if em:
+                    warn["colours"].append({"key": "e" + em.group(1), "name": re.sub(r"\s*\(.*$", "", row[0]).strip()})
+                    warn["text"] = re.sub(r"^‘name or E number of the colour\(s\)’:\s*", "", MARK_RE.sub("", row[1])).strip()
+                elif "exception" in row[0].lower() and not warn["exceptions"]:
+                    for x in re.findall(r"\([ab]\)\s*([^\n◄]+)", row[0]):
+                        warn["exceptions"].append(re.sub(r"[;.]?\s*(and)?\s*$", "", x).strip())
+    out["functional_classes"] = classes
+    out["traditional_foods"] = trad
+    out["warning"] = warn
+    return out
+
+
 def parse_all(today: date | None = None) -> dict:
     meta = read_json(RAW / "eu_annex2" / "meta.json", {}) or {}
-    out = parse_html(read_raw("eu_annex2", "annex2.html"), today)
+    body = read_raw("eu_annex2", "annex2.html")
+    out = parse_html(body, today)
+    out["legal"] = parse_legal(body)
     out["meta"] = meta
     out["celex"] = (meta.get("files", {}).get("annex2.html", {}) or {}).get("celex")
     return out

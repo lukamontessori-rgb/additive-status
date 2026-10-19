@@ -30,7 +30,9 @@
   <li><code>id</code>, <code>e_number</code>, <code>name</code>, <code>other_names</code>, <code>cas</code>, <code>classes</code>, <code>page_url</code></li>
   <li><code>status_eu</code>, <code>status_gb</code>, <code>status_us</code>, <code>status_ca</code>, <code>status_anz</code> — one of {% for k in STATUSES %}<code>{{ k }}</code>{% if not loop.last %}, {% endif %}{% endfor %} (<a href="{{ url('/about/') }}#statuses">meanings</a>)</li>
   <li><code>detail_*</code> — a one-line explanation of each status</li>
+  <li><code>ins_number</code> — the international (INS) number, for additives that have no E-number</li>
 </ul>
+<p>The JSON file also holds, for each additive, the facts from the EU specification (<code>identity</code>), the EU conditions of use (<code>eu_uses</code>), EU groups and label warning, the Canadian conditions (<code>ca_uses</code>) and the EU history, plus the EU food category names and the explanatory texts of the EU regulation.</p>
 <h2>Licence and attribution</h2>
 <p>The compiled data carries the terms of its sources. You may reuse it if you keep these attributions and say that the data was changed (extracted and summarised):</p>
 <ul>

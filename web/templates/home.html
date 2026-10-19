@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import chip, dots, additive_card, search_box, heatmap, enum, elem, split %}
+{% from "_macros.html" import chip, dots, additive_card, search_box, heatmap, enum, elem, split, globe, jkey, meter %}
 {% block head %}
 <script type="application/ld+json">{{ ld_json({"@context": "https://schema.org", "@type": "WebSite", "name": SITE_NAME, "url": abs_url('/'),
   "description": TAGLINE,
@@ -8,16 +8,18 @@
 {% block main %}
 {% if intro %}{% include "_intro.html" %}{% endif %}
 <section class="hero" id="start" data-hero>
+  <div class="hero-float" aria-hidden="true">{% for m in (marquee.chips + marquee.big)[:14] %}{% if m.e %}<span style="--x: {{ 54 + (loop.index0 * 23) % 42 }}%; --d: {{ 13 + (loop.index0 * 7) % 11 }}s; --w: {{ -1 * ((loop.index0 * 5) % 17) }}s; --s: {{ 0.75 + ((loop.index0 * 3) % 5) / 10 }}">{{ m.e }}</span>{% endif %}{% endfor %}</div>
   <div class="hero-text" data-depth="-0.18">
     <p class="kicker load-in" style="--li:0"><span class="pulse" aria-hidden="true"></span><span>Rechecked every Monday from the official lists</span></p>
     <h1 class="hero-title">{{ split("Is this food additive allowed?", 1) }}</h1>
     <p class="lede load-in" style="--li:5">Type an E-number or a name to see its status in the <strong>EU</strong>, the <strong>UK</strong>, the <strong>US</strong>, <strong>Canada</strong> and <strong>Australia/New Zealand</strong>, side by side, with the official source behind every answer.</p>
     <div class="load-in" style="--li:6">{{ search_box('q-home', big=True, placeholder='Try E171, Red 40 or aspartame') }}</div>
-    <div class="try load-in" style="--li:7">
+    <p class="hero-nums load-in" style="--li:7"><span><strong data-count="{{ total }}">{{ total }}</strong> additives</span><span><strong data-count="5">5</strong> rulebooks</span><span><strong data-count="{{ N_COUNTRIES }}">{{ N_COUNTRIES }}</strong> countries</span><span><strong data-count="{{ EU_FOOD_TOPS|length }}">{{ EU_FOOD_TOPS|length }}</strong> EU food groups</span></p>
+    <div class="try load-in" style="--li:8">
       <span class="muted">Try</span>
       {% for a in examples[:5] %}<a class="pill" href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e or a.name }}{% if a.e %} <span class="muted">{{ a.name.split(',')[0].split('/')[0] }}</span>{% endif %}</a>{% endfor %}
     </div>
-    <div class="hero-actions load-in" style="--li:8">
+    <div class="hero-actions load-in" style="--li:9">
       <a class="btn btn-soft" href="{{ url('/additives/') }}" data-random>{{ icon('dice') }} Surprise me</a>
       <a class="btn btn-soft" href="{{ url('/scan/') }}">{{ icon('tag') }} Check a label</a>
       <a class="btn btn-soft" href="{{ url('/quiz/') }}">{{ icon('spark') }} Play the quiz</a>
@@ -156,6 +158,45 @@
   {{ heatmap() }}
 </section>
 
+<section class="world home-world reveal" aria-labelledby="hw-h">
+  <div class="world-grid">
+    {{ globe() }}
+    <div>
+      <h2 id="hw-h">Five rulebooks, {{ N_COUNTRIES }} countries</h2>
+      <p class="muted">The EU list also applies in Iceland, Liechtenstein, Norway and Northern Ireland. Together, the five lists here set the additive rules for {{ N_COUNTRIES }} countries.</p>
+      <ul class="place-mini">
+        {% for p in places %}<li><a href="{{ url(p.path) }}" data-globe-focus="{{ p.j }}">{{ jkey(p.j) }}<b>{{ JUR_CODE[p.j] }}</b><span>{{ JUR[p.j].name }}</span><em><strong data-count="{{ p.counts.yes }}">{{ p.counts.yes }}</strong> allowed</em></a></li>{% endfor %}
+      </ul>
+      <a class="btn btn-soft" href="{{ url('/places/') }}">{{ icon('arrow') }} See where each list applies</a>
+    </div>
+  </div>
+</section>
+
+{% if mini %}
+<section class="minimap-sec reveal" aria-labelledby="mm-h">
+  <div class="sec-head">
+    <h2 id="mm-h">Every additive, by number</h2>
+    <a class="btn btn-ghost btn-sm" href="{{ url('/map/') }}">Open the E-number map</a>
+  </div>
+  <p class="muted">{{ mini|length }} numbered additives, from E 100 to E 1521. <span class="mm-key"><i class="mk-a"></i>allowed in all five</span> <span class="mm-key"><i class="mk-d"></i>allowed in one, not in another</span> <span class="mm-key"><i class="mk-u"></i>unclear somewhere</span> <span class="mm-key"><i class="mk-n"></i>allowed nowhere</span></p>
+  <a class="minimap" href="{{ url('/map/') }}" data-minimap aria-label="Open the E-number map">{% for t in mini %}<i class="mm-{{ t.s }}" style="--i:{{ loop.index0 }}" title="{{ t.code }}"></i>{% endfor %}</a>
+</section>
+{% endif %}
+
+{% if food_picks %}
+<section class="foods-sec reveal" aria-labelledby="fd-h">
+  <div class="sec-head">
+    <h2 id="fd-h">What can go in your food?</h2>
+    <a class="btn btn-ghost btn-sm" href="{{ url('/eu-food/') }}">All {{ EU_FOOD_TOPS|length }} food groups</a>
+  </div>
+  <p class="muted">EU law lists, food by food, which additives may be used and how much. A few everyday examples:</p>
+  <ul class="food-picks">
+    {% for c, lbl in food_picks %}<li style="--h: {{ (loop.index0 * 53 + 20) % 360 }}"><a href="{{ url(c.path) }}"><span class="fp-n" data-count="{{ c.n_tree }}">{{ c.n_tree }}</span><span class="fp-l">{{ lbl }}</span><span class="fp-c">EU category {{ c.code }}</span></a></li>{% endfor %}
+  </ul>
+  <p class="muted small">Number of additives the EU lists for the category and its subcategories, by name or through a group.</p>
+</section>
+{% endif %}
+
 <section class="statement" aria-label="What a status means">
   <p class="statement-text" data-scrub>A different status is a legal fact, not a safety verdict. Regulators assess different evidence, at different times, under different laws.</p>
 </section>
@@ -231,3 +272,4 @@
   </div>
 </section>
 {% endblock %}
+{% block scripts %}<script src="{{ asset('explore.js') }}" defer></script>{% endblock %}

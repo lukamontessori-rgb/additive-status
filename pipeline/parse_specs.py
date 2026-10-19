@@ -22,6 +22,7 @@ def parse_html(body: bytes) -> dict:
     doc = lhtml.fromstring(body)
     entries: dict[str, dict] = {}
     cur = None
+    section = None
     for kind, item in _linear(doc):
         if kind == "p":
             t = MARK_RE.sub("", item).strip()
@@ -32,17 +33,39 @@ def parse_html(body: bytes) -> dict:
                 cur = entries.setdefault(key, {"key": key, "title": title, "synonyms": [], "cas": [],
                                                "einecs": [], "colour_index": [], "chem_names": [],
                                                "definition": "", "description": "", "formula": [],
-                                               "functional_class": ""})
+                                               "functional_class": "", "mw": "", "assay": "", "solubility": "",
+                                               "identification": [], "purity": [], "micro": []})
+                section = None
             continue
         if cur is None:
             continue
         for row in table_to_grid(item):
             if len(row) < 2:
                 continue
-            label = MARK_RE.sub("", row[0]).strip().lower()
+            raw_label = re.sub(r"\s+", " ", MARK_RE.sub("", row[0])).strip(" :")
+            label = raw_label.lower()
             value = MARK_RE.sub("", row[1]).strip()
+            if label in ("identification", "purity", "microbiological criteria") and value.lower() in (label, ""):
+                section = {"identification": "identification", "purity": "purity"}.get(label, "micro")
+                continue
             if not value or value.lower() == label:
                 continue
+            if section and raw_label and not label.startswith(("▼", "►")):
+                v = re.sub(r"\s+", " ", value)[:300]
+                rows = cur[section]
+                if rows and rows[-1][0] == raw_label[:90]:          # a spanned label: one row, several values
+                    if v not in rows[-1][1]:
+                        rows[-1][1] = (rows[-1][1] + "; " + v)[:500]
+                elif len(rows) < 30:
+                    rows.append([raw_label[:90], v])
+            if label == "molecular weight" and not cur["mw"]:
+                cur["mw"] = re.sub(r"\s+", " ", value)[:120]
+            elif label.startswith("molecular weight and cas") and not cur["mw"]:
+                cur["mw"] = re.sub(r"\s+", " ", re.sub(r"\bCAS.*$", "", value, flags=re.S))[:120].strip(" ;,")
+            elif label == "assay" and not cur["assay"]:
+                cur["assay"] = re.sub(r"\s+", " ", value)[:400]
+            elif label == "solubility" and not cur["solubility"]:
+                cur["solubility"] = re.sub(r"\s+", " ", value)[:300]
             if label.startswith("synonym"):
                 for s in re.split(r";|\n", value):
                     s = s.strip(" .,")

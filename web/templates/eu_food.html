@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, dots, enum %}
+{% block main %}
+{{ breadcrumbs(crumbs) }}
+<div class="page-head food-head">
+  <p class="fh-code" aria-hidden="true">{{ c.code }}</p>
+  <h1>{{ c.name }}</h1>
+  <p class="lede">EU food category {{ c.code }}. {% if c.n %}{{ c.n }} additive{{ '' if c.n == 1 else 's' }} {{ 'is' if c.n == 1 else 'are' }} listed for it{% if c.groups %}, {{ c.direct|map(attribute='0')|map(attribute='id')|unique|list|length }} by name and the rest through {{ 'a group' if c.groups|length == 1 else 'groups' }}{% endif %}.{% else %}No additive is listed directly for this category{% if c.children %}; see its subcategories below{% endif %}.{% endif %}</p>
+</div>
+
+{% if c.children %}
+<section aria-labelledby="sub-h">
+  <h2 id="sub-h">Subcategories</h2>
+  <ul class="pill-list">{% for k in c.children %}<li><a class="pill" href="{{ url(k.path) }}"><span class="code">{{ k.code }}</span> {{ k.name[:80] }}{% if k.name|length > 80 %}…{% endif %} <span class="muted">{{ k.n_tree }}</span></a></li>{% endfor %}</ul>
+</section>
+{% endif %}
+
+{% if c.groups %}
+<section aria-labelledby="grp-h">
+  <h2 id="grp-h">Groups of additives allowed here</h2>
+  {% for g in c.groups %}
+  <details class="uses grp"{% if loop.first and c.groups|length == 1 %} open{% endif %}>
+    <summary>Group {{ g.g }}{% if group_titles.get(g.g) %}: {{ group_titles[g.g] }}{% endif %} <span class="muted small">· {{ g.members|length }} additives{% if g.level and g.level[0].isdigit() %} · maximum {{ g.level }} mg/kg or mg/l{% elif g.level %} · {{ g.level }}{% endif %}</span></summary>
+    {% if g.restr %}<p class="small">{{ g.restr }}</p>{% endif %}
+    <ul class="pill-list">{% for a in g.members|sort(attribute='sort') %}<li><a class="pill" href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ a.e }} <span class="muted">{{ a.name.split(',')[0][:40] }}</span></a></li>{% endfor %}</ul>
+  </details>
+  {% endfor %}
+  <p class="muted small">A group lets every member be used in the category under one rule. <a href="{{ url('/glossary/') }}#eu-groups">What Groups I to IV are</a>.</p>
+</section>
+{% endif %}
+
+{% if c.direct %}
+<section aria-labelledby="dir-h">
+  <h2 id="dir-h">Additives listed by name</h2>
+  {% if c.direct|length > 8 %}<p class="table-filter"><label for="ff">Filter</label> <input id="ff" type="search" data-table-filter="food-uses" placeholder="e.g. E 200, sorbic, only" autocomplete="off"></p>{% endif %}
+  <div class="tbl-wrap">
+  <table class="tbl uses-table" id="food-uses">
+    <thead><tr><th scope="col">Additive</th><th scope="col">Maximum level (mg/kg or mg/l)</th><th scope="col">Restrictions and notes</th><th scope="col">Elsewhere</th></tr></thead>
+    <tbody>
+    {% for a, u in c.direct|sort(attribute='0.sort') %}
+    <tr>
+      <th scope="row" data-label="Additive"><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{{ enum(a) }} <span class="nm">{{ a.name }}</span></a>{% if u.entry %}<br><span class="muted small">listed as {{ u.entry }}</span>{% endif %}</th>
+      <td data-label="Maximum level">{{ u.level or '—' }}</td>
+      <td data-label="Restrictions and notes">{{ u.restr }}{% for n in u.notes %}<br><span class="muted small">{{ n }}</span>{% endfor %}</td>
+      <td data-label="Elsewhere">{{ dots(a) }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endif %}
+
+<div class="note">
+  {% if all0 and c.code != '0' %}<p>Additives listed under <a href="{{ url(all0.path) }}">category 0</a> ({{ all0.n }} additives) may also be used in this food, unless the regulation says otherwise.</p>{% endif %}
+  <p>From Annex II, Part E of Regulation (EC) No 1333/2008 (consolidated version {{ sources.eu_annex2.version if sources.eu_annex2 else '' }}). "Quantum satis" means no maximum level is set. Only uses that apply today are shown. Other EU rules (for example on foods for infants, wine or labelling) can apply as well. <a href="{{ sources.eu_annex2.url if sources.eu_annex2 else '#' }}" rel="noopener">Read the official text</a>.</p>
+</div>
+{% if trail or c.parent is none %}
+<p class="other-places">{% if trail %}<a class="pill" href="{{ url(trail[-1].path) }}">↑ {{ trail[-1].code }} {{ trail[-1].name[:60] }}</a>{% endif %}<a class="pill" href="{{ url('/eu-food/') }}">All food categories</a></p>
+{% endif %}
+{% endblock %}

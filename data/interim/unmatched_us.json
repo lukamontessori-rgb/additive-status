@@ -715,15 +715,6 @@
   "effects": []
  },
  {
-  "name": "AMMONIUM ACETATE",
-  "cas": [
-   "631-61-8"
-  ],
-  "cfr": [],
-  "status": "listed_noreg",
-  "effects": []
- },
- {
   "name": "AMMONIUM CASEINATE",
   "cas": [
    "9005-42-9"
@@ -797,7 +788,7 @@
   "cfr": [
    "73.85"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Color or coloring adjunct"
   ]
@@ -1138,28 +1129,6 @@
   "status": "authorised",
   "effects": [
    "Flavoring agent or adjuvant"
-  ]
- },
- {
-  "name": "ARABINOGALACTAN",
-  "cas": [
-   "9036-66-2"
-  ],
-  "cfr": [
-   "172.230",
-   "172.610"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Emulsifier or emulsifier salt",
-   "Flavoring agent or adjuvant",
-   "Formulation aid",
-   "Humectant",
-   "Nutrient supplement",
-   "Processing aid",
-   "Stabilizer or thickener",
-   "Synergist",
-   "Texturizer"
   ]
  },
  {
@@ -2059,23 +2028,6 @@
   ]
  },
  {
-  "name": "CALCIUM LIGNOSULFONATE",
-  "cas": [
-   "8061-52-7"
-  ],
-  "cfr": [
-   "172.715",
-   "175.105",
-   "176.170",
-   "176.180",
-   "176.210"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Surface-active agent"
-  ]
- },
- {
   "name": "CALCIUM MYRISTATE",
   "cas": [
    "15284-51-2"
@@ -2083,37 +2035,6 @@
   "cfr": [
    "172.863",
    "178.2010"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Lubricant or release agent"
-  ]
- },
- {
-  "name": "CALCIUM OLEATE",
-  "cas": [
-   "142-17-6"
-  ],
-  "cfr": [
-   "172.863",
-   "175.300",
-   "181.29"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "CALCIUM PALMITATE",
-  "cas": [
-   "542-42-7"
-  ],
-  "cfr": [
-   "172.863",
-   "175.300"
   ],
   "status": "authorised",
   "effects": [
@@ -4004,25 +3925,6 @@
   ]
  },
  {
-  "name": "L-CYSTEINE MONOHYDROCHLORIDE",
-  "cas": [
-   "52-89-1"
-  ],
-  "cfr": [
-   "172.320",
-   "184.1272"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Dough strengthener",
-   "Flavor enhancer",
-   "Flavoring agent or adjuvant",
-   "Flour treating agent",
-   "Leavening agent",
-   "Nutrient supplement"
-  ]
- },
- {
   "name": "DL-CYSTINE",
   "cas": [
    "923-32-0"
@@ -4521,17 +4423,6 @@
   "status": "authorised",
   "effects": [
    "Antimicrobial agent"
-  ]
- },
- {
-  "name": "DODECYL GALLATE",
-  "cas": [
-   "1166-52-5"
-  ],
-  "cfr": [],
-  "status": "listed_noreg",
-  "effects": [
-   "Antioxidant"
   ]
  },
  {
@@ -5573,20 +5464,6 @@
   ]
  },
  {
-  "name": "FURCELLERAN AND SALTS OF FURCELLERAN",
-  "cas": [],
-  "cfr": [
-   "172.660",
-   "176.170"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Emulsifier or emulsifier salt",
-   "Stabilizer or thickener",
-   "Texturizer"
-  ]
- },
- {
   "name": "FURCELLERAN, CALCIUM SALT OF",
   "cas": [
    "88845-49-2"
@@ -6095,77 +5972,6 @@
   ]
  },
  {
-  "name": "GLYCERYL LACTOOLEATE",
-  "cas": [
-   "30283-16-0"
-  ],
-  "cfr": [
-   "172.852"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Emulsifier or emulsifier salt",
-   "Formulation aid"
-  ]
- },
- {
-  "name": "GLYCERYL LACTOPALMITATE",
-  "cas": [
-   "1338-09-6"
-  ],
-  "cfr": [
-   "172.852"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Emulsifier or emulsifier salt",
-   "Formulation aid"
-  ]
- },
- {
-  "name": "GLYCERYL MONOOLEATE",
-  "cas": [
-   "25496-72-4"
-  ],
-  "cfr": [
-   "175.300",
-   "175.320",
-   "181.27",
-   "184.1323"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Drying agent",
-   "Emulsifier or emulsifier salt",
-   "Flavoring agent or adjuvant",
-   "Humectant"
-  ]
- },
- {
-  "name": "GLYCERYL MONOSTEARATE",
-  "cas": [
-   "31566-31-1"
-  ],
-  "cfr": [
-   "175.210",
-   "175.300",
-   "176.170",
-   "176.200",
-   "177.1200",
-   "184.1324"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Emulsifier or emulsifier salt",
-   "Firming agent",
-   "Flavor enhancer",
-   "Lubricant or release agent",
-   "Masticatory substance",
-   "Texturizer"
-  ]
- },
- {
   "name": "GLYCERYL PALMITOSTEARATE",
   "cas": [
    "8067-32-1"
@@ -6292,21 +6098,6 @@
   ],
   "status": "authorised",
   "effects": []
- },
- {
-  "name": "GRAPE SKIN EXTRACT",
-  "cas": [
-   "11029-12-2"
-  ],
-  "cfr": [
-   "73.170"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Color or coloring adjunct",
-   "Flavor enhancer",
-   "Flavoring agent or adjuvant"
-  ]
  },
  {
   "name": "GROUND LIMESTONE",
@@ -6767,17 +6558,6 @@
   "status": "authorised",
   "effects": [
    "Enzyme"
-  ]
- },
- {
-  "name": "INVERTASE FROM SACCHAROMYCES CEREVISIAE",
-  "cas": [],
-  "cfr": [],
-  "status": "listed_noreg",
-  "effects": [
-   "Enzyme",
-   "Processing aid",
-   "Stabilizer or thickener"
   ]
  },
  {
@@ -7949,38 +7729,6 @@
   ]
  },
  {
-  "name": "MAGNESIUM OLEATE",
-  "cas": [
-   "1555-53-9"
-  ],
-  "cfr": [
-   "172.863",
-   "175.300"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Lubricant or release agent"
-  ]
- },
- {
-  "name": "MAGNESIUM PALMITATE",
-  "cas": [
-   "2601-98-1"
-  ],
-  "cfr": [
-   "172.863",
-   "175.300"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Lubricant or release agent"
-  ]
- },
- {
   "name": "MALT",
   "cas": [],
   "cfr": [
@@ -8943,24 +8691,6 @@
   ]
  },
  {
-  "name": "MONOGLYCERIDE CITRATE",
-  "cas": [
-   "36291-32-4"
-  ],
-  "cfr": [
-   "172.832",
-   "176.170",
-   "176.180"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Antioxidant",
-   "Emulsifier or emulsifier salt",
-   "Sequestrant",
-   "Synergist"
-  ]
- },
- {
   "name": "MONOISOPROPYL CITRATE",
   "cas": [
    "1321-57-9"
@@ -9368,19 +9098,6 @@
   ]
  },
  {
-  "name": "OCTAFLUOROCYCLOBUTANE",
-  "cas": [
-   "115-25-3"
-  ],
-  "cfr": [
-   "173.360"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Propellant"
-  ]
- },
- {
   "name": "1-OCTANOL",
   "cas": [
    "111-87-5"
@@ -9452,17 +9169,6 @@
   "effects": [
    "Flavoring agent or adjuvant",
    "Solvent or vehicle"
-  ]
- },
- {
-  "name": "OCTYL GALLATE",
-  "cas": [
-   "1034-01-1"
-  ],
-  "cfr": [],
-  "status": "listed_noreg",
-  "effects": [
-   "Antioxidant"
   ]
  },
  {
@@ -10284,35 +9990,6 @@
   ]
  },
  {
-  "name": "PETROLATUM",
-  "cas": [
-   "8009-03-8"
-  ],
-  "cfr": [
-   "172.880",
-   "173.340",
-   "175.105",
-   "175.125",
-   "175.300",
-   "176.170",
-   "176.180",
-   "176.200",
-   "176.210",
-   "177.1200",
-   "177.2600",
-   "177.2800",
-   "178.3570",
-   "178.3700"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Lubricant or release agent",
-   "Masticatory substance",
-   "Solvent or vehicle",
-   "Surface-active agent"
-  ]
- },
- {
   "name": "PETROLEUM HYDROCARBONS, ODORLESS, LIGHT",
   "cas": [],
   "cfr": [
@@ -10694,28 +10371,6 @@
   "effects": [
    "Malting or fermenting aid",
    "Sequestrant",
-   "Surface-finishing agent"
-  ]
- },
- {
-  "name": "POLYETHYLENE, OXIDIZED",
-  "cas": [
-   "68441-17-8"
-  ],
-  "cfr": [
-   "172.260",
-   "175.105",
-   "175.125",
-   "176.170",
-   "176.180",
-   "176.200",
-   "176.210",
-   "177.1200",
-   "177.1620",
-   "177.2800"
-  ],
-  "status": "authorised",
-  "effects": [
    "Surface-finishing agent"
   ]
  },
@@ -11113,39 +10768,6 @@
   ]
  },
  {
-  "name": "POTASSIUM OLEATE",
-  "cas": [
-   "143-18-0"
-  ],
-  "cfr": [
-   "172.863",
-   "175.300",
-   "181.29"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Antimicrobial agent",
-   "Emulsifier or emulsifier salt",
-   "Formulation aid",
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "POTASSIUM PALMITATE",
-  "cas": [
-   "2624-31-9"
-  ],
-  "cfr": [
-   "172.863"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Formulation aid"
-  ]
- },
- {
   "name": "POTASSIUM PECTINATE",
   "cas": [
    "65028-59-3"
@@ -11193,38 +10815,6 @@
   "effects": [
    "Surface-active agent"
   ]
- },
- {
-  "name": "POTASSIUM STEARATE",
-  "cas": [
-   "593-29-3"
-  ],
-  "cfr": [
-   "172.615",
-   "172.863",
-   "173.340",
-   "175.300",
-   "179.45",
-   "181.29"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Antimicrobial agent",
-   "Formulation aid",
-   "Lubricant or release agent",
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "POTASSIUM SULFITE",
-  "cas": [
-   "10117-38-1"
-  ],
-  "cfr": [
-   "73.85"
-  ],
-  "status": "authorised",
-  "effects": []
  },
  {
   "name": "PRICKLY ASH BARK EXTRACT (XANTHOXYLUM SPP.)",
@@ -12231,24 +11821,6 @@
   ]
  },
  {
-  "name": "SALTS OF FATTY ACIDS",
-  "cas": [
-   "8046-71-7"
-  ],
-  "cfr": [
-   "74.302",
-   "172.725",
-   "172.863",
-   "175.105"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Formulation aid"
-  ]
- },
- {
   "name": "SANDARAC (TETRACLINIS ARTICULATA (VAHL.) MAST.)",
   "cas": [
    "9000-57-1"
@@ -12795,29 +12367,6 @@
   ]
  },
  {
-  "name": "SODIUM STEARATE",
-  "cas": [
-   "822-16-2"
-  ],
-  "cfr": [
-   "172.615",
-   "172.863",
-   "175.300",
-   "177.2600",
-   "179.45",
-   "181.29"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Formulation aid",
-   "Masticatory substance",
-   "Propellant",
-   "Stabilizer or thickener"
-  ]
- },
- {
   "name": "SODIUM STEARYL FUMARATE",
   "cas": [
    "4070-80-8"
@@ -13067,30 +12616,6 @@
   "effects": []
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  DISTARCH PHOSPHATE (FROM PHOSPHORUS OXYCHLORIDE)",
-  "cas": [],
-  "cfr": [
-   "172.892",
-   "175.105"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "STARCH, FOOD, MODIFIED:  DISTARCH PHOSPHATE (FROM SODIUM TRIMETAPHOSPHATE)",
-  "cas": [],
-  "cfr": [
-   "172.892",
-   "175.105"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Stabilizer or thickener"
-  ]
- },
- {
   "name": "STARCH, FOOD, MODIFIED:GLUCOAMYLASE MODIFIED STARCH",
   "cas": [],
   "cfr": [
@@ -13109,20 +12634,6 @@
   ],
   "status": "authorised",
   "effects": []
- },
- {
-  "name": "STARCH, FOOD, MODIFIED:  OXIDIZED STARCHES",
-  "cas": [
-   "65996-62-5"
-  ],
-  "cfr": [
-   "172.892",
-   "175.105"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Stabilizer or thickener"
-  ]
  },
  {
   "name": "STARCH, FOOD, MODIFIED: PULLULANASE MODIFIED STARCH",
@@ -13404,7 +12915,7 @@
   "cfr": [
    "73.85"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": []
  },
  {
@@ -14078,20 +13589,6 @@
   ]
  },
  {
-  "name": "TURMERIC, EXTRACT (CURCUMA LONGA L.)",
-  "cas": [
-   "84775-52-0"
-  ],
-  "cfr": [
-   "182.20"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Color or coloring adjunct",
-   "Flavoring agent or adjuvant"
-  ]
- },
- {
   "name": "TURPENTINE",
   "cas": [
    "8052-14-0"
@@ -14705,19 +14202,6 @@
   "effects": []
  },
  {
-  "name": "CARRAGEENAN AND SALTS OF CARRAGEENAN",
-  "cas": [],
-  "cfr": [
-   "172.626",
-   "176.170"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Emulsifier or emulsifier salt",
-   "Stabilizer or thickener"
-  ]
- },
- {
   "name": "FRUIT JUICE",
   "cas": [],
   "cfr": [
@@ -14727,36 +14211,6 @@
   "effects": [
    "Color or coloring adjunct",
    "Nutrient supplement"
-  ]
- },
- {
-  "name": "SACCHARIN, CALCIUM SALT",
-  "cas": [
-   "6381-91-5"
-  ],
-  "cfr": [
-   "180.37"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Non-nutritive sweetener"
-  ]
- },
- {
-  "name": "SACCHARIN, SODIUM SALT",
-  "cas": [
-   "128-44-9"
-  ],
-  "cfr": [
-   "180.37"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Antimicrobial agent",
-   "Flavor enhancer",
-   "Flavoring agent or adjuvant",
-   "Non-nutritive sweetener",
-   "Solvent or vehicle"
   ]
  },
  {
@@ -15089,7 +14543,7 @@
   "cfr": [
    "73.85"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Firming agent",
    "Flavor enhancer",
@@ -15108,7 +14562,7 @@
   "cfr": [
    "73.85"
   ],
-  "status": "authorised",
+  "status": "not_listed",
   "effects": [
    "Leavening agent",
    "Malting or fermenting aid",
@@ -15950,7 +15404,7 @@
   "effects": []
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  ACETYLATED DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: ACETYLATED DISTARCH GLYCEROL",
   "cas": [
    "53123-84-5"
   ],
@@ -15973,7 +15427,7 @@
   "effects": []
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: DISTARCH GLYCEROL",
   "cas": [
    "58944-89-1"
   ],
@@ -15986,7 +15440,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  DISTARCH OXYPROPANOL",
+  "name": "STARCH, FOOD, MODIFIED: DISTARCH OXYPROPANOL",
   "cas": [],
   "cfr": [
    "175.105"
@@ -15997,7 +15451,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  OXIDIZED HYDROXYPROPYL STARCH",
+  "name": "STARCH, FOOD, MODIFIED: OXIDIZED HYDROXYPROPYL STARCH",
   "cas": [
    "68412-86-2"
   ],
@@ -16011,49 +15465,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  STARCH ALUMINUM OCTENYL SUCCINATE",
-  "cas": [
-   "9087-61-0"
-  ],
-  "cfr": [
-   "172.892",
-   "175.105"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "STARCH, FOOD, MODIFIED:  STARCH PHOSPHATE",
-  "cas": [
-   "11120-02-8"
-  ],
-  "cfr": [
-   "172.892",
-   "175.105"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "STARCH, FOOD, MODIFIED:  STARCH SODIUM OCTENYL SUCCINATE",
-  "cas": [
-   "66829-29-6"
-  ],
-  "cfr": [
-   "172.892",
-   "175.105"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "STARCH, FOOD, MODIFIED:  STARCH SODIUM SUCCINATE",
+  "name": "STARCH, FOOD, MODIFIED: STARCH SODIUM SUCCINATE",
   "cas": [
    "37231-92-8"
   ],
@@ -16067,7 +15479,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  SUCCINYL DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: SUCCINYL DISTARCH GLYCEROL",
   "cas": [],
   "cfr": [
    "175.105"
@@ -16275,20 +15687,6 @@
   ],
   "status": "authorised",
   "effects": []
- },
- {
-  "name": "COPPER SULFATE",
-  "cas": [
-   "7758-98-7"
-  ],
-  "cfr": [
-   "184.1261"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Nutrient supplement",
-   "Processing aid"
-  ]
  },
  {
   "name": "NICKEL",
@@ -16568,41 +15966,6 @@
   ]
  },
  {
-  "name": "SODIUM OLEATE",
-  "cas": [
-   "143-19-1"
-  ],
-  "cfr": [
-   "172.863",
-   "175.300",
-   "186.1770"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Formulation aid",
-   "Stabilizer or thickener"
-  ]
- },
- {
-  "name": "SODIUM PALMITATE",
-  "cas": [
-   "408-35-5"
-  ],
-  "cfr": [
-   "172.863",
-   "186.1771"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Formulation aid",
-   "Lubricant or release agent",
-   "Stabilizer or thickener"
-  ]
- },
- {
   "name": "STEARYL CITRATE",
   "cas": [
    "1337-33-3"
@@ -16646,20 +16009,6 @@
    "Stabilizer or thickener",
    "Surface-finishing agent",
    "Texturizer"
-  ]
- },
- {
-  "name": "PECTIN, AMIDATED",
-  "cas": [
-   "56645-02-4"
-  ],
-  "cfr": [
-   "184.1588"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Emulsifier or emulsifier salt",
-   "Stabilizer or thickener"
   ]
  },
  {
@@ -17213,48 +16562,6 @@
   ]
  },
  {
-  "name": "MAGNESIUM STEARATE",
-  "cas": [
-   "557-04-0"
-  ],
-  "cfr": [
-   "172.863",
-   "173.340",
-   "175.300",
-   "179.45",
-   "181.29",
-   "184.1440"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Drying agent",
-   "Formulation aid",
-   "Humectant"
-  ]
- },
- {
-  "name": "MAGNESIUM SULFATE",
-  "cas": [
-   "10034-99-8"
-  ],
-  "cfr": [
-   "184.1443"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Formulation aid",
-   "Lubricant or release agent",
-   "Malting or fermenting aid",
-   "Nutrient supplement",
-   "Ph control agent",
-   "Processing aid",
-   "Stabilizer or thickener"
-  ]
- },
- {
   "name": "MAGNESIUM PHOSPHATE, DIBASIC",
   "cas": [
    "7782-75-4"
@@ -17364,33 +16671,6 @@
   ]
  },
  {
-  "name": "CALCIUM STEARATE",
-  "cas": [
-   "1592-23-0"
-  ],
-  "cfr": [
-   "172.863",
-   "173.340",
-   "175.300",
-   "177.2410",
-   "177.2600",
-   "178.1010",
-   "178.2010",
-   "179.45",
-   "181.29",
-   "184.1229"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent",
-   "Emulsifier or emulsifier salt",
-   "Flavoring agent or adjuvant",
-   "Formulation aid",
-   "Lubricant or release agent",
-   "Stabilizer or thickener"
-  ]
- },
- {
   "name": "SODIUM THIOSULFATE",
   "cas": [
    "10102-17-7"
@@ -17418,24 +16698,6 @@
   "status": "authorised",
   "effects": [
    "Nutrient supplement"
-  ]
- },
- {
-  "name": "TANNIC ACID",
-  "cas": [
-   "1401-55-4"
-  ],
-  "cfr": [
-   "173.310",
-   "184.1097"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Color or coloring adjunct",
-   "Flavor enhancer",
-   "Flavoring agent or adjuvant",
-   "Ph control agent",
-   "Processing aid"
   ]
  },
  {
@@ -17666,21 +16928,6 @@
   ]
  },
  {
-  "name": "IRON AMMONIUM CITRATE",
-  "cas": [
-   "1185-57-5"
-  ],
-  "cfr": [
-   "172.430",
-   "182.20",
-   "184.1296"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Anticaking agent or free-flow agent"
-  ]
- },
- {
   "name": "VITAMIN A PALMITATE",
   "cas": [
    "79-81-2"
@@ -17695,7 +16942,7 @@
   ]
  },
  {
-  "name": "STARCH, FOOD, MODIFIED:  HYDROXYPROPYL DISTARCH GLYCEROL",
+  "name": "STARCH, FOOD, MODIFIED: HYDROXYPROPYL DISTARCH GLYCEROL",
   "cas": [
    "59419-60-2"
   ],

@@ -9,6 +9,7 @@ import csv
 import hashlib
 import io
 import json
+import math
 import re
 import shutil
 from collections import Counter, defaultdict
@@ -127,6 +128,95 @@ CLASS_SYMBOL = {
     "Carriers and solvents": ("Cs", 210), "Firming agents": ("Fi", 140), "Modified starches": ("St", 45),
     "Glazing agents": ("Gl", 270), "Enzymes": ("En", 120),
 }
+
+
+# Where each list applies. This is legal scope written by hand (it does not change week to week), so it
+# is kept short and every entry names its legal basis. Coordinates (capital or seat of government,
+# degrees) only place the markers on the decorative globe.
+COVERAGE = {
+    "eu": {
+        "basis": "Regulation (EC) No 1333/2008 applies directly in every EU member state. Through the EEA Agreement "
+                 "it also applies in Iceland, Liechtenstein and Norway, each amendment once the EEA Joint Committee has "
+                 "incorporated it. Under the Windsor Framework, Northern Ireland follows the EU rules on food additives.",
+        "places": [
+            ("Austria", 48.21, 16.37), ("Belgium", 50.85, 4.35), ("Bulgaria", 42.70, 23.32), ("Croatia", 45.81, 15.98),
+            ("Cyprus", 35.17, 33.36), ("Czechia", 50.08, 14.44), ("Denmark", 55.68, 12.57), ("Estonia", 59.44, 24.75),
+            ("Finland", 60.17, 24.94), ("France", 48.86, 2.35), ("Germany", 52.52, 13.40), ("Greece", 37.98, 23.73),
+            ("Hungary", 47.50, 19.04), ("Ireland", 53.35, -6.26), ("Italy", 41.90, 12.50), ("Latvia", 56.95, 24.11),
+            ("Lithuania", 54.69, 25.28), ("Luxembourg", 49.61, 6.13), ("Malta", 35.90, 14.51), ("Netherlands", 52.37, 4.90),
+            ("Poland", 52.23, 21.01), ("Portugal", 38.72, -9.14), ("Romania", 44.43, 26.10), ("Slovakia", 48.15, 17.11),
+            ("Slovenia", 46.06, 14.51), ("Spain", 40.42, -3.70), ("Sweden", 59.33, 18.07),
+        ],
+        "extra": [("Iceland", 64.15, -21.94, "EEA"), ("Liechtenstein", 47.14, 9.52, "EEA"), ("Norway", 59.91, 10.75, "EEA"),
+                  ("Northern Ireland", 54.60, -5.93, "Windsor Framework")],
+    },
+    "gb": {
+        "basis": "Great Britain keeps the EU rules as they stood at the end of 2020 (now 'assimilated law'), changed since "
+                 "by its own decisions. The Food Standards Agency's register of authorisations lists, for each additive, "
+                 "the nations of Great Britain (England, Scotland, Wales) where it applies.",
+        "places": [("England", 51.51, -0.13), ("Scotland", 55.95, -3.19), ("Wales", 51.48, -3.18)],
+        "extra": [],
+    },
+    "us": {
+        "basis": "The Federal Food, Drug, and Cosmetic Act and FDA regulations (Title 21 of the Code of Federal Regulations) "
+                 "apply across the United States. States can add their own rules, which this site does not cover.",
+        "places": [("United States", 38.91, -77.04)],
+        "extra": [],
+    },
+    "ca": {
+        "basis": "The Food and Drugs Act and the Food and Drug Regulations apply across Canada; the Lists of Permitted Food "
+                 "Additives are incorporated by reference into the Marketing Authorizations for food additives.",
+        "places": [("Canada", 45.42, -75.70)],
+        "extra": [],
+    },
+    "anz": {
+        "basis": "The Australia New Zealand Food Standards Code is developed by Food Standards Australia New Zealand and "
+                 "adopted into the food laws of the Australian states and territories and of New Zealand.",
+        "places": [("Australia", -35.28, 149.13), ("New Zealand", -41.29, 174.78)],
+        "extra": [],
+    },
+}
+
+# Site class -> EU functional classes (Annex I of Regulation (EC) No 1333/2008) whose official definition fits it
+CLASS_DEFS = {
+    "Colours": ["colours"], "Sweeteners": ["sweeteners"], "Preservatives": ["preservatives"],
+    "Antioxidants": ["antioxidants"], "Acidity regulators": ["acidity regulators", "acids"],
+    "Emulsifiers, stabilisers, thickeners and gelling agents": ["emulsifiers", "stabilisers", "thickeners", "gelling agents"],
+    "Flour treatment agents": ["flour treatment agents"], "Sequestrants": ["sequestrants"],
+    "Anticaking agents": ["anti-caking agents"], "Carriers and solvents": ["carriers"], "Firming agents": ["firming agents"],
+    "Modified starches": ["modified starches"], "Glazing agents": ["glazing agents"],
+}
+
+# Colour words in the EU specifications ("Dark red powder", "Appearance of the aqueous solution: Yellow") -> swatch
+COLOUR_WORDS = [("orange-red", "#e8452c"), ("red", "#d7263d"), ("orange", "#f28c28"), ("yellow", "#f2c200"),
+                ("green", "#3a9d4f"), ("blue", "#1f6fe0"), ("violet", "#7b3fbf"), ("purple", "#7b3fbf"),
+                ("pink", "#e0479e"), ("brown", "#7a4b26"), ("black", "#26272b"), ("white", "#f4f3ee"),
+                ("silver", "#bfc3c8"), ("gold", "#d4a62a"), ("grey", "#9a9a94"), ("gray", "#9a9a94")]
+
+
+def swatch_colour(a: dict) -> str | None:
+    """A display colour for a colour additive, from the colour words in its EU specification. Decorative."""
+    if "Colours" not in a.get("classes", []):
+        return None
+    idn = a.get("identity") or {}
+    texts = [v for k, v in idn.get("identification", []) if "appearance" in k.lower()] + [idn.get("description", "")]
+    for t in texts:
+        low = (t or "").lower()
+        hits = [(low.find(w), c) for w, c in COLOUR_WORDS if re.search(rf"\b{w}\b", low)]
+        if hits:
+            return min(hits)[1]
+    return None
+
+
+def formula_html(f: str) -> Markup:
+    """C18H14N2Na2O8S2 -> C<sub>18</sub>H<sub>14</sub>…; leaves anything unusual as plain text."""
+    if not re.fullmatch(r"[A-Za-z0-9().·\-\s+]+", f or ""):
+        return Markup.escape(f)
+    return Markup(re.sub(r"(?<=[A-Za-z)])(\d+)", r"<sub>\1</sub>", str(Markup.escape(f))))
+
+
+def cat_slug(code: str) -> str:
+    return code.replace(".", "-")
 
 
 def site_base() -> tuple[str, str]:
@@ -337,8 +427,11 @@ class Builder:
             autoescape=select_autoescape(["html", "xml"]),
             trim_blocks=True, lstrip_blocks=True,
         )
+        # "Publications Office of the European Union / European Commission" -> "Publications Office of the European Union"
+        self.env.filters["extract_pub"] = lambda sid, srcs: re.split(r" / | \(", (srcs.get(sid) or {}).get("publisher", ""))[0].strip()
         self.additives = sorted(self.data["additives"], key=lambda a: a.get("sort", a["id"]))
         self.by_id = {a["id"]: a for a in self.additives}
+        self.swatch = {a["id"]: c for a in self.additives if (c := swatch_colour(a))}
         for i, a in enumerate(self.additives):
             a["summary"] = summary_sentence(a)
             a["differs"] = differs(a)
@@ -350,7 +443,7 @@ class Builder:
             url=url, abs_url=abs_url, SITE_NAME=SITE_NAME, TAGLINE=TAGLINE, PLACES=PLACES,
             PLACES_SHORT=PLACES_SHORT, JUR=JURISDICTIONS, JUR_ORDER=JUR_ORDER, JUR_CODE=JUR_CODE,
             JUR_THE=JUR_THE, STATUSES=STATUSES, TONE_ICON=TONE_ICON, CLASS_ICON=CLASS_ICON,
-            CLASS_SYMBOL=CLASS_SYMBOL, icon=icon, LEGAL_UPDATED="2 October 2026", OPERATOR=load_operator(),
+            CLASS_SYMBOL=CLASS_SYMBOL, icon=icon, LEGAL_UPDATED="19 October 2026", OPERATOR=load_operator(),
             fmt_date=fmt_date, REPO_URL=REPO_URL if REPO_URL and REPO_URL != "https://github.com/" else "",
             ld_json=ld_json, ld_breadcrumbs=ld_breadcrumbs, asset=lambda n: self.asset[n],
             data_version=self.data.get("data_version"),
@@ -359,7 +452,8 @@ class Builder:
             quality=self.data.get("quality", []),
             EU_HISTORY=self.data.get("eu_history") or {},
             CLASSES=[], status_of=status_of, tone=tone, total=len(self.additives),
-            site_config=self.site_config(),
+            site_config=self.site_config(), SWATCH=self.swatch, formula_html=formula_html, cat_slug=cat_slug,
+            log_pct=lambda v, lo=0.1, hi=1000.0: max(3.0, min(100.0, 100 * (math.log10(max(v, lo)) - math.log10(lo)) / (math.log10(hi) - math.log10(lo)))),
         )
 
     def site_config(self) -> dict:
@@ -422,6 +516,12 @@ class Builder:
         # (imported macro modules are cached with a copy of the globals).
         self.env.globals["MATRIX"] = self.matrix(self.compare_sets())
         self.env.globals["CLASSES"] = self.class_groups()
+        self.places = [self.place_info(j) for j in JUR_ORDER]
+        self.cats = self.categories()
+        self.env.globals.update(
+            PLACE_INFO={p["j"]: p for p in self.places}, N_COUNTRIES=sum(p["n_countries"] for p in self.places),
+            EU_FOOD_TOPS=[c for c in self.cats if c["depth"] == 1 and c["code"] != "0"], MAP_BANDS=self.map_bands(),
+            GLOBE=self.globe_points(), EU_LEGAL=self.data.get("eu_legal") or {})
         compare = self.build_compare_pages()
         classes = self.build_class_pages()
         self.build_additive_pages(compare)
@@ -430,6 +530,9 @@ class Builder:
         self.build_tools()
         self.build_about_pages()
         self.build_data_page()
+        self.build_place_pages()
+        self.build_category_pages()
+        self.build_map_page()
         self.build_home(compare, classes)
         self.page("/404.html", "404.html", page_title="Page not found", sitemap=False, noindex=True)
         self.build_sitemap_robots()
@@ -506,8 +609,10 @@ class Builder:
                 continue
             path = f"/class/{slug(c)}/"
             counts = {j: sum(1 for a in items if allowed(status_of(a, j))) for j in JUR_ORDER}
+            fc = {x["name"]: x for x in (self.data.get("eu_legal") or {}).get("functional_classes", [])}
+            defs = [fc[n] for n in CLASS_DEFS.get(c, []) if n in fc]
             classes.append({"name": c, "path": path, "items": items, "count": len(items),
-                            "icon": CLASS_ICON.get(c, "🧪"), "counts": counts,
+                            "icon": CLASS_ICON.get(c, "🧪"), "counts": counts, "defs": defs,
                             "differ": sum(1 for a in items if a["differs"])})
         return classes
 
@@ -520,6 +625,159 @@ class Builder:
                       description=f"Legal status of {c['count']} food additives in the group '{c['name']}', "
                                   f"compared across {PLACES}.")
         return classes
+
+    # ------------------------------------------------------------ places
+    PLACE_SOURCES = {"eu": ["eu_annex2", "eu_specs"], "gb": ["uk_fsa"], "us": ["us_fda_substances", "us_fr_revocations"],
+                     "ca": ["ca_lists"], "anz": ["anz_code"]}
+
+    def globe_points(self) -> list[list]:
+        """[name, lat, lon, jurisdiction, note] for the decorative globe."""
+        pts = []
+        for j in JUR_ORDER:
+            pts += [[n, lat, lon, j, ""] for n, lat, lon in COVERAGE[j]["places"]]
+            pts += [[n, lat, lon, j, why] for n, lat, lon, why in COVERAGE[j]["extra"]]
+        return pts
+
+    def place_info(self, j: str) -> dict:
+        others = [k for k in JUR_ORDER if k != j]
+        here = [a for a in self.additives if allowed(status_of(a, j))]
+        sts = [status_of(a, j) for a in self.additives]
+        counts = {"yes": len(here), "no": sum(1 for s in sts if not_allowed(s))}
+        counts["unk"] = len(self.additives) - counts["yes"] - counts["no"]
+        by_status = Counter(sts)
+        classes = []
+        for c in self.env.globals["CLASSES"]:
+            n = sum(1 for a in c["items"] if allowed(status_of(a, j)))
+            classes.append({"c": c, "n": n, "f": n / c["count"] if c["count"] else 0})
+        cov = COVERAGE[j]
+        return {
+            "j": j, "path": f"/place/{j}/", "counts": counts, "by_status": by_status,
+            "only": [a for a in here if not any(allowed(status_of(a, k)) for k in others)],
+            "missing": [a for a in self.additives if not_allowed(status_of(a, j)) and all(allowed(status_of(a, k)) for k in others)],
+            "phase": [a for a in self.additives if status_of(a, j) == "phase_out"],
+            "classes": classes, "sources": [s for s in self.PLACE_SOURCES[j] if s in self.data.get("sources", {})],
+            "countries": [p[0] for p in cov["places"]], "extra": cov["extra"], "basis": cov["basis"],
+            # sovereign countries: the 27 member states plus the 3 EEA states; Great Britain counts as the UK
+            "n_countries": {"eu": len(cov["places"]) + len([e for e in cov["extra"] if e[3] == "EEA"]), "gb": 1}.get(j, len(cov["places"])),
+        }
+
+    def build_place_pages(self) -> None:
+        places = self.places
+        for p in places:
+            j = p["j"]
+            self.page(p["path"], "place.html", priority=0.8, p=p, globe=self.globe_points(),
+                      eu_legal=self.data.get("eu_legal") or {},
+                      page_title=f"Food additives in {JUR_THE[j]}: the rules, the list and what is different",
+                      description=f"How {JURISDICTIONS[j]['name']} regulates food additives: where the list applies, "
+                                  f"{p['counts']['yes']} of the {len(self.additives)} additives tracked here allowed, "
+                                  f"{len(p['only'])} allowed only there, by type, with the official sources.")
+        n_countries = self.env.globals["N_COUNTRIES"]
+        self.page("/places/", "places.html", priority=0.8, places=places, globe=self.globe_points(),
+                  page_title="Where the five food additive rulebooks apply",
+                  description=f"The EU, UK, US, Canadian and Australia/New Zealand additive lists cover {n_countries} countries. "
+                              "See where each list applies, how each system works and how many additives each allows.")
+
+    # ------------------------------------------------------------ EU food categories
+    def categories(self) -> list[dict]:
+        names = self.data.get("eu_categories") or {}
+        rows = defaultdict(list)
+        for a in self.additives:
+            for u in a.get("eu_uses", []):
+                rows[u["cat"]].append((a, u))
+        cats = []
+        for code, name in names.items():
+            parts = code.split(".")
+            parent = ".".join(parts[:-1]) if len(parts) > 1 else None
+            direct, groups = [], {}
+            for a, u in rows.get(code, []):
+                if u.get("group"):
+                    g = groups.setdefault((u["group"], u["level"], u["restr"]), {"g": u["group"], "level": u["level"],
+                                                                               "restr": u["restr"], "members": []})
+                    if a not in g["members"]:
+                        g["members"].append(a)
+                else:
+                    direct.append((a, u))
+            ids = {a["id"] for a, _ in direct} | {a["id"] for g in groups.values() for a in g["members"]}
+            cats.append({"code": code, "name": re.sub(r"\s+", " ", name).strip(), "parent": parent, "depth": len(parts),
+                         "path": f"/eu-food/{cat_slug(code)}/", "direct": direct,
+                         "groups": sorted(groups.values(), key=lambda g: ["I", "II", "III", "IV"].index(g["g"]) if g["g"] in ("I", "II", "III", "IV") else 9),
+                         "n": len(ids), "ids": ids})
+        by_code = {c["code"]: c for c in cats}
+        for c in cats:
+            c["children"] = [k for k in cats if k["parent"] == c["code"]]
+            c["top"] = by_code.get(c["code"].split(".")[0])
+        for c in cats:
+            # all additives listed in this category or anywhere below it
+            stack, ids = [c], set()
+            while stack:
+                x = stack.pop()
+                ids |= x["ids"]
+                stack += x["children"]
+            c["n_tree"] = len(ids)
+        return cats
+
+    def build_category_pages(self) -> None:
+        cats = self.cats
+        by_code = {c["code"]: c for c in cats}
+        tops = [c for c in cats if c["depth"] == 1 and c["code"] != "0"]
+        vmax = max([c["n_tree"] for c in tops] + [1])
+        legal = self.data.get("eu_legal") or {}
+        for c in cats:
+            trail, x = [], c
+            while x["parent"] and x["parent"] in by_code:
+                x = by_code[x["parent"]]
+                trail.insert(0, x)
+            label = f"{c['code']} {c['name']}"
+            short = lambda x: x["code"] + " " + (x["name"] if len(x["name"]) <= 34 else x["name"][:32].rsplit(" ", 1)[0] + "…")  # noqa: E731
+            crumbs = [("EU food categories", "/eu-food/")] + [(short(t), t["path"]) for t in trail] + [(short(c), None)]
+            self.page(c["path"], "eu_food.html", priority=0.5, c=c, trail=trail, all0=by_code.get("0"), crumbs=crumbs,
+                      group_titles=legal.get("group_titles") or {},
+                      page_title=f"Additives allowed in {c['name'][:90]} in the EU (food category {c['code']})",
+                      description=f"The {c['n']} food additives that EU law (Annex II of Regulation (EC) No 1333/2008) lists "
+                                  f"for food category {label[:120]}, with maximum levels and restrictions.")
+        self.page("/eu-food/", "eu_food_index.html", priority=0.7, tops=tops, vmax=vmax, all0=by_code.get("0"),
+                  n_cats=len(cats),
+                  page_title="What additives can go in each kind of food? EU food categories",
+                  description=f"Browse the {len(cats)} food categories of the EU additives regulation and see which additives "
+                              "each one may contain, at what maximum level and under which restrictions.")
+
+    # ------------------------------------------------------------ the E-number map
+    def map_tiles(self) -> list[dict]:
+        from pipeline.names import e_parts, e_sort
+        tiles = []
+        for a in self.additives:
+            code = a.get("e") or (("E " + a["ins"]) if a.get("ins") else None)
+            p = e_parts(code) if code else None
+            if not p:
+                continue
+            num = p[0]
+            sts = [status_of(a, j) for j in JUR_ORDER]
+            tiles.append({"a": a, "num": num, "band": num // 100 * 100, "key": e_sort(*p),
+                          "code": (a["e"].replace("E ", "") if a.get("e") else a["ins"]),
+                          "ins_only": not a.get("e"), "t": [tone(s) for s in sts],
+                          "short": re.split(r",|/| or ", a["name"])[0].strip()})
+        return tiles
+
+    def map_bands(self) -> list[dict]:
+        bands = defaultdict(list)
+        for t in sorted(self.map_tiles(), key=lambda t: t["key"]):
+            bands[t["band"]].append(t)
+        out = []
+        for b in sorted(bands):
+            items = bands[b]
+            cls = Counter(c for t in items for c in t["a"].get("classes", [])[:1])
+            top = cls.most_common(2)
+            out.append({"band": b, "items": items, "label": f"{b}–{b + 99}",
+                        "mostly": [(c, n) for c, n in top if n >= 2], "n": len(items)})
+        return out
+
+    def build_map_page(self) -> None:
+        bands = self.env.globals["MAP_BANDS"]
+        n = sum(b["n"] for b in bands)
+        self.page("/map/", "map.html", priority=0.8, bands=bands, n=n,
+                  page_title="The E-number map: every additive by number, coloured by where it is allowed",
+                  description=f"All {n} numbered food additives on one map, from E 100 to E 1521. Pick a place and watch "
+                              "the map change: allowed, being phased out, not allowed or not on the list.")
 
     def related(self, a: dict) -> list[dict]:
         cls = set(a.get("classes", []))
@@ -607,7 +865,7 @@ class Builder:
                   page_title="Accessibility statement",
                   description="How Additive Status aims to meet WCAG 2.2 AA: keyboard use, contrast, reduced motion, "
                               "screen readers, charts with tables, known limitations and how to report a problem.")
-        terms = sorted(GLOSSARY, key=lambda t: t[0].lower())
+        terms = sorted(GLOSSARY + self.legal_terms(), key=lambda t: t[0].lower())
         glossary_ld = [{"@type": "DefinedTerm", "name": t, "description": d, "url": abs_url("/glossary/") + "#" + k}
                        for t, k, d in terms]
         self.page("/glossary/", "glossary.html", priority=0.5, terms=terms, glossary_ld=glossary_ld,
@@ -615,22 +873,66 @@ class Builder:
                   description="Plain-English meanings of the terms used on food additive lists: E-number, INS number, "
                               "CAS number, GRAS, GMP, quantum satis, positive list, processing aid and more.")
 
+    def legal_terms(self) -> list[tuple[str, str, str]]:
+        """Glossary entries quoted or summarised from the EU regulation itself (published data), plus terms
+        for the parts of the site that use it."""
+        L = self.data.get("eu_legal") or {}
+        out = [
+            ("Assay", "assay", "The test that measures how much of the substance itself an additive contains, for example "
+             "“not less than 85 % total colouring matters”. Part of each EU specification."),
+            ("Purity criteria", "purity", "Limits in an additive's specification for impurities such as lead, arsenic or mercury, "
+             "or for water or ash. They apply to the additive itself, not to the food it is used in."),
+            ("Absorption maximum", "absorption", "The wavelength of light, in nanometres (nm), that a colour absorbs most strongly. "
+             "EU specifications use it to identify colours. What you see is the light that is not absorbed."),
+            ("EEA (European Economic Area)", "eea", "The EU member states plus Iceland, Liechtenstein and Norway. The EEA Agreement "
+             "extends EU food law, including the additives regulation, to the three non-EU members."),
+            ("Windsor Framework", "windsor", "The 2023 arrangement between the EU and the UK under which Northern Ireland continues "
+             "to follow EU rules on goods, including the rules on food additives."),
+            ("Food category (EU)", "food-category", "One of the numbered groups of foods in Part D of Annex II, for example 14.1.4 "
+             "Flavoured drinks. Part E lists, category by category, which additives may be used and how much."),
+            ("INS-only entry", "ins-only", "An additive on this site with no E-number: it is not on the EU or GB lists and is known by "
+             "its international (INS) number or its name from the US, Canadian or Australia/New Zealand lists."),
+        ]
+        if L.get("definition"):
+            out.append(("Food additive (EU legal definition)", "eu-definition",
+                        L["definition"].replace("A food additive is ", "In Regulation (EC) No 1333/2008, a food additive is ") + "."))
+        if L.get("not_additives"):
+            out.append(("Not a food additive in the EU", "eu-not-additives",
+                        "The regulation lists what does not count as a food additive: " + "; ".join(L["not_additives"]) + "."))
+        if L.get("processing_aid"):
+            out.append(("Processing aid (EU legal definition)", "eu-processing-aid", L["processing_aid"] + "."))
+        gt = L.get("group_titles") or {}
+        if gt:
+            parts = [f"Group {g}" + (f": {t[0].lower() + t[1:]}" if t else ": a list of additives, each with the level at which it may be used (mostly quantum satis)")
+                     for g, t in sorted(gt.items(), key=lambda kv: ["I", "II", "III", "IV"].index(kv[0]))]
+            out.append(("Groups I to IV (EU)", "eu-groups", "Part C of Annex II defines groups of additives so that a food "
+                        "category can permit a whole group at once. " + "; ".join(parts) + "."))
+        w = L.get("warning") or {}
+        if w.get("colours"):
+            out.append(("Colour warning label (EU)", "eu-warning", "Foods containing any of six colours ("
+                        + ", ".join(f"{c['name']} (E {c['key'][1:]})" for c in w["colours"])
+                        + f") must carry the words “name or E-number of the colour: {w['text']}” (Annex V)."))
+        for c in L.get("functional_classes", []):
+            out.append((c["name"][0].upper() + c["name"][1:] + " (EU functional class)", "class-" + slug(c["name"]),
+                        c["definition"] + (f" ({c['note']})" if c.get("note") else "") + "."))
+        return out
+
     def build_data_page(self) -> None:
         dl = self.out / "downloads"
         dl.mkdir(parents=True, exist_ok=True)
         (dl / "additives.json").write_text(
-            json.dumps(self.data_for_download(), ensure_ascii=False, indent=1), encoding="utf-8")
+            json.dumps(self.data_for_download(), ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         buf = io.StringIO()
         w = csv.writer(buf)
         w.writerow(["id", "e_number", "name", "other_names", "cas", "classes"] +
                    [f"status_{j}" for j in JUR_ORDER] + [f"detail_{j}" for j in JUR_ORDER] +
-                   ["page_url"])
+                   ["page_url", "ins_number"])
         for a in self.additives:
             w.writerow([a["id"], a.get("e") or "", a["name"], "; ".join(a.get("aka", [])),
                         "; ".join(a.get("cas", [])), "; ".join(a.get("classes", []))] +
                        [status_of(a, j) for j in JUR_ORDER] +
                        [a["jur"].get(j, {}).get("headline", "") for j in JUR_ORDER] +
-                       [abs_url(f"/additive/{a['id']}/")])
+                       [abs_url(f"/additive/{a['id']}/"), a.get("ins") or ""])
         (dl / "additives.csv").write_text(buf.getvalue(), encoding="utf-8")
         sizes = {n: (dl / n).stat().st_size for n in ("additives.json", "additives.csv")}
         self.page("/data/", "data.html", priority=0.5, page_title="Download the food additive status data",
@@ -639,7 +941,8 @@ class Builder:
                               "with sources and licences.")
 
     def data_for_download(self) -> dict:
-        keep = ("id", "e", "ins", "name", "aka", "cas", "classes", "jur", "updated")
+        keep = ("id", "e", "ins", "name", "aka", "cas", "classes", "functions", "jur", "overview", "identity", "eu_groups",
+                "eu_warning", "eu_uses", "eu_uses_total", "ca_uses", "eu_history", "updated")
         return {
             "generated_at": self.data.get("generated_at"),
             "data_version": self.data.get("data_version"),
@@ -648,6 +951,8 @@ class Builder:
             "jurisdictions": {j: JURISDICTIONS[j]["name"] for j in JUR_ORDER},
             "sources": self.data.get("sources", {}),
             "statuses": {k: {"label": v[0], "meaning": v[3]} for k, v in STATUSES.items()},
+            "eu_food_categories": self.data.get("eu_categories") or {},
+            "eu_legal_texts": self.data.get("eu_legal") or {},
             "additives": [{k: a[k] for k in keep if k in a} for a in self.additives],
         }
 
@@ -718,6 +1023,41 @@ class Builder:
                 return f"{n} additive was" if n == 1 else f"{n} additives were"
             add(f"Across {hist['versions']} consolidated versions of the EU list since {hist['first'][:4]}, "
                 f"{n_was(added)} added and {n_was(removed)} removed.", href=url("/changes/#eu-history"), kind="history")
+        # 5. New official texts and the new pages
+        n_c = self.env.globals.get("N_COUNTRIES")
+        if n_c:
+            add(f"The five lists on this site set the food additive rules for {n_c} countries: the EU list also applies in "
+                "Iceland, Liechtenstein and Norway, and in Northern Ireland.", href=url("/places/"), kind="count")
+        for p in getattr(self, "places", []):
+            if p["only"]:
+                n = len(p["only"])
+                add((f"Only one additive tracked here is allowed in {JUR_THE[p['j']]} and in none of the other four places: "
+                     f"{label(p['only'][0])}." if n == 1 else
+                     f"{n} of the additives tracked here are allowed in {JUR_THE[p['j']]} and in none of the other four places, "
+                     f"for example {label(p['only'][0])}."), href=url(p["path"]), kind="count")
+        for a in self.additives:
+            h = (a.get("eu_history") or [])[-1:]
+            if h and h[0]["change"].startswith("Removed") and not a.get("e"):
+                yes = [j for j in JUR_ORDER if allowed(status_of(a, j))]
+                if yes:
+                    d = date.fromisoformat(h[0]["date"])
+                    add(f"{a['name']} (INS {a['ins']}) was removed from the EU list (first shown in the consolidated text of "
+                        f"{d.strftime('%-d %B %Y')}), but {join_words([JUR_THE[j] for j in yes])} still allow{'s' if len(yes) == 1 else ''} it.",
+                        a, kind="history")
+        L = self.data.get("eu_legal") or {}
+        if (L.get("warning") or {}).get("colours"):
+            add(f"In the EU, foods with any of {len(L['warning']['colours'])} colours, such as tartrazine (E 102), must carry a "
+                f"warning: “{L['warning']['text']}”", href=url("/place/eu/") + "#warn-h", kind="fact")
+        if L.get("traditional_foods"):
+            t = L["traditional_foods"][0]
+            add(f"EU law lets {join_words(t['states'])} keep banning additives in {t['food'][0].lower() + t['food'][1:]} "
+                f"({t['banned'].lower()}). {len(L['traditional_foods'])} traditional foods have such an exception.",
+                href=url("/place/eu/") + "#trad-h", kind="fact")
+        cats = [c for c in getattr(self, "cats", []) if c["code"] != "0" and c["depth"] > 1]
+        if cats:
+            top = max(cats, key=lambda c: c["n"])
+            add(f"Of the {len(self.cats)} EU food categories, {top['code']} {top['name'].split('(')[0].strip()} lists the most additives: {top['n']}.",
+                href=url(top["path"]), kind="count")
         # 6. Class facts
         by_class = defaultdict(list)
         for a in self.additives:
@@ -759,12 +1099,23 @@ class Builder:
                         "y": [height[tone(x)] for x in sts], "dye": dyes.get(a["id"], "#8fa8ff"),
                         "l": [STATUSES[x][1] for x in sts], "t": [tone(x) for x in sts]})
         story = self.story(total, breakdown, everywhere, diff_count)
+        by_code = {c["code"]: c for c in self.cats}
+        picks = [("14.1.4", "Soft drinks"), ("05.3", "Chewing gum"), ("05.2", "Sweets"), ("06.3", "Breakfast cereals"),
+                 ("08.3", "Meat products"), ("01.7", "Cheese"), ("07.2", "Cakes and pastries"), ("03", "Ice cream")]
+        food_picks = [(by_code[k], lbl) for k, lbl in picks if k in by_code]
+        mini = []
+        for b in self.env.globals["MAP_BANDS"]:
+            for t in b["items"]:
+                a = t["a"]
+                sts = [status_of(a, j) for j in JUR_ORDER]
+                mini.append({"id": a["id"], "code": t["code"], "s": "a" if all(allowed(x) for x in sts) else "d" if a["differs"]
+                             else "n" if all(not_allowed(x) for x in sts) else "u"})
         marquee = self.marquee(examples)
         intro = self.intro()
         self.page("/", "home.html", priority=1.0,
                   page_title=f"{SITE_NAME}: is this food additive allowed in the EU, UK, US, Canada or Australia?",
                   home=True, compare=compare, classes=classes, counts=counts, chart=chart, breakdown=breakdown, lab=lab,
-                  story=story, marquee=marquee, intro=intro,
+                  story=story, marquee=marquee, intro=intro, food_picks=food_picks, mini=mini, places=self.places,
                   diff_count=diff_count, everywhere=everywhere, facts=self.facts(counts, compare),
                   examples=examples, recent=recent, eu_recent=eu_recent, by_id=self.by_id,
                   description="Search any E-number or additive name and see its official status in the EU, UK (GB), "

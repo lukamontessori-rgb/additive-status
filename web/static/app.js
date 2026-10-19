@@ -361,10 +361,31 @@
       count.textContent = (pos + 1) + " / " + facts.length;
       if (dir && M()) M().cardIn(f, dir);
     }
-    $("[data-fact-next]", box).addEventListener("click", () => { pos = (pos + 1) % facts.length; show(1); });
-    $("[data-fact-prev]", box).addEventListener("click", () => { pos = (pos - 1 + facts.length) % facts.length; show(-1); });
-    $("[data-fact-shuffle]", box).addEventListener("click", () => { order = shuffle(order); pos = 0; show(1); });
-    show();
+    // facts move on by themselves while animations are on, the section is on screen and nobody is pointing at
+    // it or using its buttons; "Pause animations" stops it (WCAG 2.2.2)
+    const FT = 8000;
+    let timer = 0, hold = false, seen = false;
+    box.style.setProperty("--ft", FT + "ms");
+    function arm() {
+      clearTimeout(timer);
+      box.classList.toggle("auto", motionOn());
+      if (motionOn()) timer = setTimeout(tick, FT);
+    }
+    function tick() {
+      if (!motionOn()) { box.classList.remove("auto"); return; }
+      if (hold || !seen || document.hidden) { timer = setTimeout(tick, 1200); return; }
+      pos = (pos + 1) % facts.length; show(1); arm();
+    }
+    const holdOn = () => { hold = true; box.classList.add("hold"); };
+    const holdOff = () => { hold = false; box.classList.remove("hold"); };
+    box.addEventListener("pointerenter", holdOn); box.addEventListener("pointerleave", () => { holdOff(); arm(); show(); });
+    box.addEventListener("focusin", holdOn); box.addEventListener("focusout", holdOff);
+    if ("IntersectionObserver" in window) new IntersectionObserver((es) => { seen = es[0].isIntersecting; }).observe(box); else seen = true;
+    $$("[data-motion-toggle]").forEach((b) => b.addEventListener("click", () => setTimeout(arm, 30)));
+    $("[data-fact-next]", box).addEventListener("click", () => { pos = (pos + 1) % facts.length; show(1); arm(); });
+    $("[data-fact-prev]", box).addEventListener("click", () => { pos = (pos - 1 + facts.length) % facts.length; show(-1); arm(); });
+    $("[data-fact-shuffle]", box).addEventListener("click", () => { order = shuffle(order); pos = 0; show(1); arm(); });
+    show(); arm();
   }
 
   // ------------------------------------------------------------ hero "chromatography" lanes (decorative)
@@ -660,6 +681,23 @@
       if (!items.length) c.appendChild(el("p", { class: "muted small" }, "None."));
       return c;
     }
+    // two circles that slide together: allowed only in A, in both, only in B (the same numbers are in the text below)
+    function venn(A, B, na, nboth, nb) {
+      const NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("viewBox", "0 0 420 190"); svg.setAttribute("class", "venn"); svg.setAttribute("aria-hidden", "true");
+      const total = Math.max(1, na + nboth + nb), r = (n) => 46 + 40 * Math.sqrt((n + nboth) / total);
+      const parts = [["circle", { class: "v-a", cx: 160, cy: 95, r: r(na) }], ["circle", { class: "v-b", cx: 260, cy: 95, r: r(nb) }],
+        ["text", { class: "v-n", x: 112, y: 104 }, na], ["text", { class: "v-n v-mid", x: 210, y: 104 }, nboth], ["text", { class: "v-n", x: 308, y: 104 }, nb],
+        ["text", { class: "v-l", x: 112, y: 128 }, "only " + A.c], ["text", { class: "v-l v-mid", x: 210, y: 128 }, "both"], ["text", { class: "v-l", x: 308, y: 128 }, "only " + B.c]];
+      parts.forEach(([tag, attrs, text]) => {
+        const e = document.createElementNS(NS, tag);
+        Object.keys(attrs).forEach((k) => e.setAttribute(k, attrs[k]));
+        if (text != null) e.textContent = String(text);
+        svg.appendChild(e);
+      });
+      if (motionOn()) requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.add("in"))); else svg.classList.add("in");
+      return svg;
+    }
     function render() {
       loadIndex().then((idx) => {
         const a = keys.indexOf(selA.value), b = keys.indexOf(selB.value);
@@ -684,6 +722,7 @@
         p.appendChild(el("strong", null, String(onlyB.length)));
         p.appendChild(document.createTextNode(" only in " + B.t + ". "));
         p.appendChild(el("span", { class: "muted" }, unsure + " cannot be compared because one side is “Not on the list” or has no data."));
+        summaryEl.appendChild(venn(A, B, onlyA.length, both.length, onlyB.length));
         summaryEl.appendChild(p);
         cols.appendChild(column("Allowed in " + A.c + ", not in " + B.c, onlyA));
         cols.appendChild(column("Allowed in " + B.c + ", not in " + A.c, onlyB));

@@ -21,7 +21,7 @@ from pipeline.names import e_display, e_parts, e_sort, name_variants, norm_name
 
 # Bump when parsing or matching rules change. Status differences caused by a method
 # change are not reported as regulatory changes on the changes page.
-METHOD_VERSION = "2026-10-01.4"
+METHOD_VERSION = "2026-10-19.1"
 
 STATUS_RANK = {"authorised": 7, "phase_out": 6, "listed_noreg": 5, "prohibited": 4, "delisted": 3,
                "not_authorised": 2, "not_listed": 1, "unknown": 0}
@@ -39,19 +39,25 @@ def match_rank(m, ent_key: str):
     return (q, exact, STATUS_RANK.get(r["status"], 0))
 
 
+_ISE = re.compile(r"(?<=[a-z]{3})is(e|ed|es|ing|ation|ations|er|ers)$")   # oxidised -> oxidized
+_YSE = re.compile(r"(?<=[a-z]{3})ys(e|ed|es)$")                           # hydrolysed -> hydrolyzed
+
+
+def match_word(w: str) -> str:
+    """Fold one normalised word: British/American -ise/-ize and -yse/-yze spellings, flavour, plurals."""
+    w = _YSE.sub(r"yz\1", _ISE.sub(r"iz\1", w)).replace("flavour", "flavor")
+    if len(w) >= 5 and w.endswith("s") and not w.endswith("ss"):
+        w = w[:-1]
+    return w
+
+
 def match_key(name: str) -> str:
-    """norm_name plus simple plural folding, used for name matching only."""
-    words = []
-    for w in norm_name(name).split():
-        if len(w) >= 5 and w.endswith("s") and not w.endswith("ss"):
-            w = w[:-1]
-        words.append(w)
-    return " ".join(words)
+    """norm_name plus spelling and plural folding, used for name matching only."""
+    return " ".join(match_word(w) for w in norm_name(name).split())
 
 
 def match_variants(name: str) -> set[str]:
-    return {" ".join(w[:-1] if len(w) >= 5 and w.endswith("s") and not w.endswith("ss") else w
-                     for w in v.split()) for v in name_variants(name)}
+    return {" ".join(match_word(w) for w in v.split()) for v in name_variants(name)}
 
 
 FUNCTION_WORDS = [
@@ -80,6 +86,26 @@ def canonical_function(raw: str) -> str | None:
         if key in t:
             return name
     return None
+
+
+LIMIT_ELEMENTS = ("Lead", "Arsenic", "Mercury", "Cadmium", "Aluminium", "Antimony", "Nickel", "Selenium", "Chromium", "Zinc", "Copper", "Barium")
+
+
+def spec_limits(purity: list) -> list[dict]:
+    """Element limits from a specification's purity criteria, e.g. ('Lead', 'Not more than 2 mg/kg') -> 2.0 mg/kg."""
+    out = []
+    for label, value in purity:
+        name = label.strip().rstrip(":")
+        el = name.split(" ")[0]
+        if el not in LIMIT_ELEMENTS or not re.fullmatch(rf"{el}(?: \((?:as|total|expressed as)[^)]*\))?", name, re.I):
+            continue
+        m = re.search(r"not more than\s+(\d+(?:[.,]\d+)?)\s*(mg/kg|µg/kg|%)", value, re.I)
+        if not m:
+            continue
+        v = float(m.group(1).replace(",", "."))
+        mg = v / 1000 if m.group(2) == "µg/kg" else v * 10000 if m.group(2) == "%" else v
+        out.append({"el": name.split(" ")[0], "text": f"{m.group(1)} {m.group(2)}", "mgkg": round(mg, 4), "full": value[:200]})
+    return out[:8]
 
 
 def key_label(k: str) -> str:
@@ -228,7 +254,52 @@ class Build:
             for n in sp["colour_index"]:
                 if n not in ent["ci"]:
                     ent["ci"].append(n)
+        self.add_anz_only(ents)
         return ents
+
+    def add_anz_only(self, ents: dict) -> None:
+        """Additives that Australia and New Zealand permit (Schedule 15 or 16) under an INS number that no
+        other entry on the site has. Names come from Schedule 8. Codes in `anz_only_exclude` are left out:
+        mostly substances the EU defines as food ingredients or flavourings rather than food additives,
+        where "not on the EU list" would mislead."""
+        anz = self.parsed.get("anz_code")
+        cw = self.curated
+        if not anz:   # source down: keep the entries published last time, so their pages do not disappear
+            for k, a in self.prev_by_id.items():
+                if k.startswith("anz-"):
+                    ents[k] = {"id": k, "e": None, "sort": a.get("sort", "~~~" + k), "name": a["name"],
+                               "names": [a["name"]] + a.get("aka", [])[:4], "cas": [], "ci": [], "classes": [],
+                               "jur": {}, "anz_only": True, "ins": a.get("ins")}
+            return
+        covered = set(ents) | {base_key(k) for k in ents} | set((cw.get("anz_codes") or {}).values())
+        taken_names = set()
+        for key in ("us_only", "ca_only"):
+            for it in cw.get(key) or []:
+                it = {"name": it} if isinstance(it, str) else it
+                if it.get("ins"):
+                    covered.add(parse_anz.norm_code(it["ins"]))
+                taken_names |= {match_key(n) for n in [it["name"]] + it.get("aka", [])}
+        exclude = set(cw.get("anz_only_exclude") or [])
+        names_over = cw.get("anz_only_names") or {}
+        for code in sorted(set(anz["gmp"]) | set(anz["colours_gmp"]) | set(anz["colours_max"]) | set(anz["schedule15"])):
+            base = re.match(r"(e\d+[a-z]?)", code).group(1)
+            if code in covered or base in covered or code in exclude or base in exclude:
+                continue
+            raw = anz["names"].get(code) or anz["names"].get(base) or []
+            if not raw:
+                continue   # a number read from a table that has no Schedule 8 name: not an additive code
+            over = names_over.get(code)
+            parts = [p.strip() for n in ([over] if over else raw) for p in re.split(r"\s+or\s+", n) if p.strip()]
+            parts = [p[:1].upper() + p[1:] for p in parts if not p.endswith(" or")]
+            if not parts or match_key(parts[0]) in taken_names:
+                continue
+            ins = code[1:].replace("-", "(") + (")" if "-" in code else "")
+            p = e_parts("E " + ins)
+            aid = "anz-" + re.sub(r"[^a-z0-9]+", "-", norm_name(parts[0])).strip("-")[:60]
+            ents[aid] = {"id": aid, "e": None, "sort": "~~~" + (e_sort(*p) if p else aid), "name": parts[0],
+                         "names": parts + [n for n in raw if n not in parts], "cas": [], "ci": [],
+                         "classes": ["Colours"] if code in anz["colours_gmp"] or code in anz["colours_max"] else [],
+                         "jur": {}, "anz_only": True, "ins": ins}
 
     def build_index(self, ents: dict):
         by_name: dict[str, set[str]] = defaultdict(set)
@@ -393,7 +464,8 @@ class Build:
         listed = eu["listed"].get(key)
         if not listed:
             detail = "Checked by E-number against Annex II, Part B." if ent.get("e") else \
-                "This substance has no E-number, and no entry on the EU list matches its names or identifiers."
+                (f"Not in Annex II, Part B under its international number (E {ent['ins']}) or its names." if ent.get("ins") else
+                 "This substance has no E-number, and no entry on the EU list matches its names or identifiers.")
             return {"status": "not_authorised", "headline": "Not on the EU list of authorised food additives",
                     "refs": refs, "source": "eu_annex2", "match": "e_number" if ent.get("e") else "name",
                     "match_detail": detail}
@@ -453,7 +525,14 @@ class Build:
             facts.append(["Register entry updated", r["last_modified"][:10]])
         if r.get("url"):
             refs.insert(0, {"label": "FSA register entry", "url": r["url"].replace("http://", "https://")})
-        notes = r["notes"][:5] + r.get("phase_notes", [])
+        for lbl, link in r.get("term_links", [])[:4]:
+            if link.startswith("https://www.legislation.gov.uk/"):
+                ver = re.search(r"/(\d{4}-\d{2}-\d{2})$", link)
+                refs.append({"label": lbl.replace("No. ", "No ") + (f" (legislation.gov.uk, version of {ver.group(1)})" if ver else " (legislation.gov.uk)"),
+                             "url": link})
+        if r.get("reg_dates"):
+            facts.append(["Date in the register", ", ".join(sorted(r["reg_dates"]))])
+        notes = r["notes"][:5] + r.get("phase_notes", []) + r.get("transition", [])
         headline = "Authorised in Great Britain" if st == "authorised" else (
             "; ".join(r.get("phase_notes", [])) or ", ".join(r["phases"]))
         terms = " ".join(r.get("terms", []))
@@ -488,6 +567,19 @@ class Build:
         ent_key = match_key(self._ent_names.get(key, ""))
         best = max(matches, key=lambda m: match_rank(m, ent_key))
         r = best[0]
+        food_colour = any(re.match(r"^7[34]\.\d{1,3}$", c) and not (c.startswith("73.") and int(c[3:]) in parse_us.FEED_ONLY_73)
+                          for m in matches for c in m[0]["cfr"])
+        if "Colours" in self._ent_classes.get(key, []) and not food_colour and r["status"] in ("authorised", "listed_noreg"):
+            # A colour may be used in US food only if FDA lists it as a colour additive (21 CFR 73 or 74);
+            # a GRAS, flavouring or other listing does not cover use as a colour.
+            return {"status": "not_authorised", "headline": "Not listed as a colour additive for food in the US",
+                    "facts": [["FDA name", r["display"]], ["FDA inventory status", r["headline"]]],
+                    "notes": [f"FDA's inventory lists {r['display']} ({r['headline'][0].lower() + r['headline'][1:]}), "
+                              "but not as a colour additive. Colour additives must be listed in 21 CFR 73 or 74 "
+                              "before they may be used to colour food."],
+                    "refs": refs + [{"label": "21 CFR Part 73 and Part 74 (eCFR)", "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-A"}],
+                    "source": "us_fda_substances", "match": best[1],
+                    "match_detail": f"Matched to the FDA inventory by {best[1]}; no colour additive listing (21 CFR 73 or 74) for food was found."}
         facts = [["FDA name", r["display"]]]
         cfr = sorted({c for m in matches for c in m[0]["cfr"]}, key=lambda s: tuple(int(x) for x in s.split(".")))
         def indirect(c):  # food-contact sections (see parse_us.classify)
@@ -502,6 +594,9 @@ class Build:
             facts.append(["21 CFR (animal feed uses)" if feed_only else "21 CFR (food uses)", ", ".join(food_cfr[:8])])
             for c in food_cfr[:3]:
                 refs.append({"label": f"21 CFR {c} (eCFR)", "url": f"https://www.ecfr.gov/current/title-21/section-{c}"})
+        fema = sorted({m[0]["fema"] for m in matches if m[0].get("fema")})
+        if fema:
+            facts.append(["FEMA number (flavouring)", ", ".join(fema[:3])])
         effects = sorted({e for m in matches for e in m[0]["effects"]})
         if effects:
             facts.append(["Technical effects (FDA inventory)", ", ".join(effects[:6])])
@@ -590,8 +685,9 @@ class Build:
         if ent.get("e"):
             codes.append((self.curated.get("anz_codes") or {}).get(key, key))
         if ent.get("ins"):
-            code = "e" + ent["ins"].lower()
-            codes += [code] + ([code[:-1]] if code[-1].isalpha() else [])   # INS 924a -> 924a, then 924
+            code = parse_anz.norm_code(ent["ins"])                        # "905c(ii)" -> e905c-ii
+            m = re.match(r"(e\d+)([a-z]?)", code)
+            codes += [c for c in dict.fromkeys([code, m.group(0), m.group(1)]) if c]   # INS 924a -> 924a, then 924
         for code in codes:
             st, reasons = parse_anz.status_of(anz, code)
             if st == "authorised":
@@ -664,7 +760,15 @@ class Build:
             ident = {"definition": main.get("definition", ""), "description": main.get("description", ""),
                      "formula": main.get("formula", [])[:4], "einecs": main.get("einecs", [])[:4],
                      "colour_index": main.get("colour_index", [])[:2], "synonyms": main.get("synonyms", [])[:6],
-                     "spec_title": main["title"].capitalize() if main["title"].isupper() else main["title"]}
+                     "spec_title": main["title"].capitalize() if main["title"].isupper() else main["title"],
+                     "mw": main.get("mw", ""), "assay": main.get("assay", ""), "solubility": main.get("solubility", ""),
+                     "identification": main.get("identification", [])[:12], "purity": main.get("purity", [])[:24],
+                     "micro": main.get("micro", [])[:8]}
+            ident["limits"] = spec_limits(main.get("purity", []))
+            nm = next((re.search(r"(\d{3})\s*nm", v) for k, v in main.get("identification", [])
+                       if k.lower().startswith("spectrometry") and re.search(r"\d{3}\s*nm", v)), None)
+            if nm and 380 <= int(nm.group(1)) <= 780:
+                ident["lambda_max"] = int(nm.group(1))
             if len(mine) > 1 or key not in specs:
                 ident["parts"] = [{"key": sp["key"], "label": key_label(sp["key"]),
                                    "title": sp["title"].capitalize() if sp["title"].isupper() else sp["title"],
@@ -672,6 +776,13 @@ class Build:
             out["identity"] = {k: v for k, v in ident.items() if v}
         eu = self.parsed.get("eu_annex2")
         if eu:
+            legal = eu.get("legal") or {}
+            groups = [g for g in ("I", "II", "III", "IV") if key in eu["groups"].get(g, []) or base_key(key) in eu["groups"].get(g, [])]
+            if groups:
+                out["eu_groups"] = [{"g": g, "title": (legal.get("group_titles") or {}).get(g, "")} for g in groups]
+            warn = legal.get("warning") or {}
+            if any(c["key"] == base_key(key) for c in warn.get("colours", [])):
+                out["eu_warning"] = {"text": warn["text"], "exceptions": warn.get("exceptions", [])}
             rows = eu.get("use_rows", {}).get(key) or []
             m = re.match(r"(e\d+[a-z]?)-", key)
             if not rows and m:
@@ -767,20 +878,34 @@ class Build:
         elif eu.get("status") in ("not_authorised", "delisted") and a.get("e"):
             h = eu.get("headline", "").rstrip(".")
             sents.append(f"In the EU: {h[0].lower() + h[1:]}." if h else "")
+        gb = a["jur"]["gb"]
+        if gb.get("status") != eu.get("status") and gb.get("headline") and "stale" not in gb:
+            sents.append("Great Britain authorises it." if gb.get("status") == "authorised"
+                         else f"In Great Britain: {gb['headline'][0].lower() + gb['headline'][1:]}.")
         for h in (a.get("eu_history") or [])[-1:]:
             d = date.fromisoformat(h["date"])
-            sents.append(f"EU history: {h['change'].lower()}, first shown in the consolidated text of {d.strftime('%-d %B %Y')}.")
+            sents.append(f"EU history: {h['change'][0].lower() + h['change'][1:]}, first shown in the consolidated text of {d.strftime('%-d %B %Y')}.")
         us = a["jur"]["us"]
         fda = next((f[1] for f in us.get("facts", []) if f[0] == "FDA name"), None)
         if us.get("status") in ("authorised", "phase_out", "delisted", "prohibited") and fda:
             sents.append(f"In the US it is listed as {fda}: {us['headline'][0].lower() + us['headline'][1:]}.")
         elif us.get("status") == "not_authorised":
-            sents.append(f"In the US: {us['headline'][0].lower() + us['headline'][1:]}.")
+            h = re.sub(r" in the US$", "", us["headline"])
+            sents.append(f"In the US: {h[0].lower() + h[1:]}.")
         ca = a["jur"]["ca"]
         if ca.get("status") == "authorised":
             listed = next((f[1] for f in ca.get("facts", []) if f[0] == "Listed as"), None)
             sents.append(f"Canada permits it{(' as ' + listed) if listed and listed.lower() != a['name'].lower() else ''} "
                          f"({ca['headline'][0].lower() + ca['headline'][1:]}).")
+        anz = a["jur"]["anz"]
+        if anz.get("status") == "authorised":
+            listed = next((f[1] for f in anz.get("facts", []) if f[0] == "Listed as"), None)
+            how = re.sub(r"^Permitted\s+", "", anz.get("headline") or "")
+            how = re.sub(r"\(Schedule 15(, by name)?\)", "(Schedule 15 of the Food Standards Code)", how)
+            sents.append(f"Australia and New Zealand permit it{(' (listed as ' + listed + ')') if listed and listed.lower() != a['name'].lower() else ''} "
+                         f"{how}.")
+        elif "processing aid" in (anz.get("headline") or ""):
+            sents.append("In Australia and New Zealand it is not a permitted food additive, but it is permitted as a processing aid.")
         return [x for x in sents if x]
 
     # ------------------------------------------------------------ run
@@ -825,7 +950,7 @@ class Build:
                 us_m[sid].append((r, "FDA inventory entry"))
                 continue
             info = us_only_info.get(r["name"], {})
-            ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": r["display"],
+            ents[sid] = {"id": sid, "e": None, "sort": "~" + sid, "name": info.get("display") or r["display"],
                          "names": [r["display"]] + info.get("aka", []) + r["other_names"][:10], "cas": r["cas"],
                          "ci": r["colour_index"], "classes": [], "jur": {}, "us_only": True,
                          "ins": info.get("ins")}
@@ -964,14 +1089,16 @@ class Build:
         eu_hist_all = []
         for a in additives:
             evs = []
-            seq = [e["from"] for e in events.get(a["id"], [])[:1]] + [e["to"] for e in events.get(a["id"], [])]
+            # entries without an E-number may have had one in the past (octyl gallate was E 311 until 2018)
+            evkey = a["id"] if a.get("e") or not a.get("ins") else "e" + a["ins"].lower()
+            seq = [e["from"] for e in events.get(evkey, [])[:1]] + [e["to"] for e in events.get(evkey, [])]
             if len(seq) != len(set(seq)):
                 # A status that comes back (e.g. authorised -> not -> authorised) is more likely an
                 # artefact of reading differently formatted old texts than a real legal history.
                 # Show nothing rather than a history we cannot vouch for.
                 a["eu_history_unclear"] = True
                 continue
-            for e in events.get(a["id"], []):
+            for e in events.get(evkey, []):
                 d = e["version"]
                 item = {"date": f"{d[:4]}-{d[4:6]}-{d[6:]}", "change": change_text.get((e["from"], e["to"]), "Status changed"),
                         "url": f"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:{e['celex']}"}
@@ -1043,14 +1170,17 @@ class Build:
         quality = []
         n_ca = sum(ca_stats.values())
         if n_ca:
-            quality.append(f"Health Canada lists: {n_ca - ca_stats.get('unmatched', 0) - ca_stats.get('excluded', 0)} "
+            quality.append(f"Health Canada lists: {n_ca - ca_stats.get('unmatched', 0) - ca_stats.get('excluded by review', 0)} "
                            f"of {n_ca} listed substances linked to an additive on this site; the rest are mostly "
                            "enzymes, solvents and substances with no counterpart here.")
         linked_us = sum(1 for a in additives if a["jur"]["us"].get("status") not in ("not_listed", "unknown"))
         quality.append(f"FDA inventory: {linked_us} additives on this site are linked to at least one FDA inventory entry.")
         n_e = sum(1 for a in additives if a.get("e"))
+        by_origin = Counter(a["id"].split("-")[0] for a in additives if not a.get("e"))
         quality.append(f"{n_e} additives with an E-number (all entries on the EU and GB lists) and "
-                       f"{len(additives) - n_e} US substances without an E-number.")
+                       f"{len(additives) - n_e} without one: {by_origin.get('us', 0)} from the US lists, "
+                       f"{by_origin.get('ca', 0)} from the Canadian lists and {by_origin.get('anz', 0)} from the "
+                       "Australia New Zealand schedules.")
 
         write_json(INTERIM / "unmatched_us.json", [
             {k: r[k] for k in ("name", "cas", "cfr", "status", "effects")} for r in us_unmatched
@@ -1059,8 +1189,10 @@ class Build:
             {"name": r["name"], "lists": [L["no"] for L in r["lists"]]} for r in ca_unmatched])
         write_json(INTERIM / "match_log.json", {"us": dict(us_stats), "ca": dict(ca_stats), **self.log})
 
+        eu_legal = (self.parsed.get("eu_annex2") or {}).get("legal") or self.prev.get("eu_legal") or {}
+        eu_categories = dict((self.parsed.get("eu_annex2") or {}).get("categories") or self.prev.get("eu_categories") or {})
         published = {"generated_at": now_iso(), "data_version": today, "method_version": METHOD_VERSION,
-                     "eu_history": eu_history_meta,
+                     "eu_history": eu_history_meta, "eu_legal": eu_legal, "eu_categories": eu_categories,
                      "eu_history_events": sorted(eu_hist_all, key=lambda x: x["date"], reverse=True),
                      "sources": src_out,
                      "counts": self.counts() or self.prev.get("counts", {}), "quality": quality,

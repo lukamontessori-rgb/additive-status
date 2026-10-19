@@ -6,7 +6,8 @@
 <article class="additive" data-additive="{{ a.id }}">
   <header class="a-head">
     <div class="a-title">
-      {% if a.e %}<span class="enum xl">{{ a.e }}</span>{% endif %}
+      {% if SWATCH.get(a.id) %}<span class="dye-blob" style="--dye: {{ SWATCH[a.id] }}" aria-hidden="true"><i></i><i></i><i></i></span>{% elif a.classes %}{{ elem(a.classes[0], 'lg') }}{% endif %}
+      {% if a.e %}<span class="enum xl">{{ a.e }}</span>{% elif a.ins %}<span class="enum xl enum-ins">INS {{ a.ins }}</span>{% endif %}
       <h1>{{ a.name }}</h1>
     </div>
     {% if a.aka %}<p class="aka"><span class="muted">Also called</span> {{ a.aka[:8]|join(' · ') }}{% if a.aka|length > 8 %} <span class="muted">+{{ a.aka|length - 8 }} more</span>{% endif %}</p>{% endif %}
@@ -70,7 +71,7 @@
       <p class="refs"><span class="muted">Official sources:</span> {% for ref in r.refs %}<a href="{{ ref.url }}" rel="noopener">{{ ref.label }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>
       {% endif %}
       {% if r.match_detail %}<p class="match muted small">How we matched it: {{ r.match_detail }}</p>{% endif %}
-      <p class="system muted small">{{ JUR[j].system_note }}</p>
+      <p class="system muted small">{{ JUR[j].system_note }} <a href="{{ url('/place/' ~ j ~ '/') }}">How {{ JUR_THE[j] }} regulates additives</a>.</p>
     </section>
     {% endfor %}
   </section>
@@ -78,15 +79,44 @@
   {% if a.identity %}{% set idn = a.identity %}
   <section aria-labelledby="id-h">
     <h2 id="id-h">What it is</h2>
+    <div class="spec-grid">
+      {% if idn.formula %}<div class="spec-card sc-formula"><span class="sc-k">Formula</span><span class="sc-v">{% for f in idn.formula %}{{ formula_html(f) }}{% if not loop.last %}<br>{% endif %}{% endfor %}</span></div>{% endif %}
+      {% if idn.mw %}<div class="spec-card"><span class="sc-k">Molecular weight</span><span class="sc-v">{{ idn.mw }}</span></div>{% endif %}
+      {% if idn.lambda_max %}<div class="spec-card"><span class="sc-k">Absorbs most light at</span><span class="sc-v">{{ idn.lambda_max }} nm</span></div>{% endif %}
+      {% if a.cas %}<div class="spec-card"><span class="sc-k">CAS number</span><span class="sc-v">{{ a.cas|join(', ') }}</span></div>{% endif %}
+      {% if idn.einecs %}<div class="spec-card"><span class="sc-k">EINECS</span><span class="sc-v">{{ idn.einecs|join(', ') }}</span></div>{% endif %}
+      {% if idn.colour_index %}<div class="spec-card"><span class="sc-k">Colour Index</span><span class="sc-v">{{ idn.colour_index|join(', ') }}</span></div>{% endif %}
+    </div>
     <dl class="facts wide">
       {% if idn.description %}<div><dt>Appearance</dt><dd>{{ idn.description }}</dd></div>{% endif %}
       {% if idn.definition %}<div><dt>Definition</dt><dd>{{ idn.definition }}</dd></div>{% endif %}
-      {% if idn.formula %}<div><dt>Chemical formula</dt><dd>{{ idn.formula|join('; ') }}</dd></div>{% endif %}
+      {% if idn.assay %}<div><dt>Purity (assay)</dt><dd>{{ idn.assay }}</dd></div>{% endif %}
+      {% if idn.solubility %}<div><dt>Solubility</dt><dd>{{ idn.solubility }}</dd></div>{% endif %}
       {% if idn.synonyms %}<div><dt>Synonyms</dt><dd>{{ idn.synonyms|join('; ') }}</dd></div>{% endif %}
-      {% if idn.einecs %}<div><dt>EINECS</dt><dd>{{ idn.einecs|join(', ') }}</dd></div>{% endif %}
-      {% if a.cas %}<div><dt>CAS number</dt><dd>{{ a.cas|join(', ') }}</dd></div>{% endif %}
-      {% if idn.colour_index %}<div><dt>Colour Index</dt><dd>{{ idn.colour_index|join(', ') }}</dd></div>{% endif %}
     </dl>
+    {% if idn.lambda_max %}
+    <figure class="spectrum" style="--nm: {{ (idn.lambda_max - 380) / 400 }}">
+      <div class="sp-bar" aria-hidden="true"><span class="sp-mark"><b>{{ idn.lambda_max }} nm</b></span></div>
+      <div class="sp-ticks" aria-hidden="true"><span>400</span><span>500</span><span>600</span><span>700 nm</span></div>
+      <figcaption class="muted small">Visible light from 380 to 780 nm. In the EU identification test this colour absorbs most strongly at about {{ idn.lambda_max }} nm; the colour you see is the light it does not absorb.</figcaption>
+    </figure>
+    {% endif %}
+    {% if idn.limits %}
+    <h3 class="subh">Purity limits for the additive itself</h3>
+    <ul class="limit-bars">
+      {% for l in idn.limits %}<li><span class="lb-el">{{ l.el }}</span><span class="lb-track" aria-hidden="true"><i style="width: {{ '%.1f'|format(log_pct(l.mgkg)) }}%"></i></span><span class="lb-v">≤ {{ l.text }}</span></li>{% endfor %}
+    </ul>
+    <p class="muted small">The most the additive may contain, per kilogram of the additive (not of the food). Bars use a log scale from 0.1 to 1,000 mg/kg.</p>
+    {% endif %}
+    {% if idn.identification or idn.purity or idn.micro %}
+    <details class="uses">
+      <summary>All criteria in the EU specification ({{ (idn.identification|length) + (idn.purity|length) + (idn.micro|length) }})</summary>
+      {% for title, rows in [("Identification", idn.identification), ("Purity", idn.purity), ("Microbiological criteria", idn.micro)] if rows %}
+      <h4 class="subh">{{ title }}</h4>
+      <dl class="facts">{% for k, v in rows %}<div><dt>{{ k }}</dt><dd>{{ v }}</dd></div>{% endfor %}</dl>
+      {% endfor %}
+    </details>
+    {% endif %}
     {% if idn.parts %}
     <p class="small">The EU specifications cover these forms:</p>
     <ul class="small">{% for p in idn.parts %}<li><strong>{{ p.label }}</strong> {{ p.title }}{% if p.description %} — {{ p.description }}{% endif %}</li>{% endfor %}</ul>
@@ -95,9 +125,21 @@
   </section>
   {% endif %}
 
+  {% if a.eu_warning %}
+  <aside class="warn-box" aria-labelledby="warnbox-h">
+    <p class="wb-tag" aria-hidden="true">!</p>
+    <div>
+      <h2 id="warnbox-h">Warning label in the EU</h2>
+      <p>Foods that contain {{ a.name.split(',')[0].split('/')[0] }} must say on the label: <strong>“{{ a.e }}: {{ a.eu_warning.text }}”</strong> (or the colour's name instead of the E-number).</p>
+      {% if a.eu_warning.exceptions %}<p class="muted small">Except: {{ a.eu_warning.exceptions|join('; ') }}. Annex V of Regulation (EC) No 1333/2008. <a href="{{ url('/place/eu/') }}#warn-h">The six colours</a>.</p>{% endif %}
+    </div>
+  </aside>
+  {% endif %}
+
   {% if a.eu_uses %}{% set ncat = a.eu_uses|map(attribute='cat')|unique|list|length %}
   <section aria-labelledby="euuse-h">
     <h2 id="euuse-h">Where it may be used in the EU</h2>
+    {% if a.eu_groups %}<p class="eu-groups">{% for g in a.eu_groups %}<a class="tag" href="{{ url('/glossary/') }}#eu-groups"><b>Group {{ g.g }}</b>{% if g.title %} {{ g.title }}{% endif %}</a>{% endfor %}<span class="muted small">Member of {{ 'this group' if a.eu_groups|length == 1 else 'these groups' }} in Part C of the EU list. Group uses are marked “via Group” below.</span></p>{% endif %}
     <details class="uses"{% if a.eu_uses|length <= 12 %} open{% endif %}>
       <summary>{{ a.eu_uses|length }} condition{{ '' if a.eu_uses|length == 1 else 's' }} of use in {{ ncat }} food categor{{ 'y' if ncat == 1 else 'ies' }}</summary>
       {% if a.eu_uses|length > 8 %}
@@ -109,7 +151,7 @@
         <tbody>
         {% for u in a.eu_uses %}
         <tr>
-          <td data-label="Food category"><span class="code">{{ u.cat }}</span> {{ u.cat_name }}</td>
+          <td data-label="Food category"><a class="cat-link" href="{{ url('/eu-food/' ~ cat_slug(u.cat) ~ '/') }}"><span class="code">{{ u.cat }}</span> {{ u.cat_name }}</a></td>
           <td data-label="Maximum level">{{ u.level or '—' }}{% if u.group %}<br><span class="muted small">via Group {{ u.group }}</span>{% elif u.entry %}<br><span class="muted small">as {{ u.entry }}</span>{% endif %}</td>
           <td data-label="Restrictions and notes">{{ u.restr }}{% for n in u.notes %}<br><span class="muted small">{{ n }}</span>{% endfor %}</td>
         </tr>

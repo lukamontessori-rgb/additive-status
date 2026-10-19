@@ -1,19 +1,5 @@
 [
  {
-  "name": "Calcium Stearate",
-  "lists": [
-   1,
-   8
-  ]
- },
- {
-  "name": "Magnesium Stearate",
-  "lists": [
-   1,
-   8
-  ]
- },
- {
   "name": "Ammonium Persulphate",
   "lists": [
    2,
@@ -39,13 +25,6 @@
   ]
  },
  {
-  "name": "L-Cysteine Hydrochloride",
-  "lists": [
-   2,
-   11
-  ]
- },
- {
   "name": "Potassium Iodate",
   "lists": [
    2
@@ -55,12 +34,6 @@
   "name": "Potassium Persulphate",
   "lists": [
    2
-  ]
- },
- {
-  "name": "Alkanet",
-  "lists": [
-   3
   ]
  },
  {
@@ -130,48 +103,6 @@
   ]
  },
  {
-  "name": "Ammonium Carrageenan",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Ammonium Salt of Phosphorylated Glyceride",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Arabinogalactan",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Baker's Yeast Glycan",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Calcium Carrageenan",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Calcium Furcelleran",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Calcium Glycerophosphate",
-  "lists": [
-   4
-  ]
- },
- {
   "name": "Calcium Hypophosphite",
   "lists": [
    4
@@ -185,19 +116,6 @@
  },
  {
   "name": "Gelatin",
-  "lists": [
-   4,
-   8
-  ]
- },
- {
-  "name": "Hydroxylated Lecithin",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Lactylic Esters of Fatty Acids",
   "lists": [
    4,
    8
@@ -222,57 +140,7 @@
   ]
  },
  {
-  "name": "Potassium Carrageenan",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Potassium Furcelleran",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Potassium Stearate",
-  "lists": [
-   4,
-   8
-  ]
- },
- {
-  "name": "Sodium Carrageenan",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Sodium Furcelleran",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Sodium Stearate",
-  "lists": [
-   4,
-   8
-  ]
- },
- {
   "name": "Sorbitan Trioleate",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Stearyl Monoglyceridyl Citrate",
-  "lists": [
-   4
-  ]
- },
- {
-  "name": "Sucrose Monoesters of Lauric, Palmitic or Stearic Acid",
   "lists": [
    4
   ]
@@ -620,27 +488,7 @@
   ]
  },
  {
-  "name": "Mineral Oil",
-  "lists": [
-   7,
-   8
-  ]
- },
- {
-  "name": "Petrolatum",
-  "lists": [
-   7,
-   8
-  ]
- },
- {
   "name": "Spermaceti Wax",
-  "lists": [
-   7
-  ]
- },
- {
-  "name": "Zein",
   "lists": [
    7
   ]
@@ -726,27 +574,7 @@
   ]
  },
  {
-  "name": "Magnesium Sulphate",
-  "lists": [
-   8,
-   10,
-   13
-  ]
- },
- {
   "name": "Monoacetin",
-  "lists": [
-   8
-  ]
- },
- {
-  "name": "Octafluorocyclobutane",
-  "lists": [
-   8
-  ]
- },
- {
-  "name": "Oxystearin",
   "lists": [
    8
   ]
@@ -759,12 +587,6 @@
  },
  {
   "name": "Pancreas Extract",
-  "lists": [
-   8
-  ]
- },
- {
-  "name": "Paraffin Wax",
   "lists": [
    8
   ]
@@ -788,43 +610,7 @@
   ]
  },
  {
-  "name": "Sodium Thiosulphate",
-  "lists": [
-   8
-  ]
- },
- {
-  "name": "Stearic Acid",
-  "lists": [
-   8
-  ]
- },
- {
-  "name": "Tannic Acid",
-  "lists": [
-   8
-  ]
- },
- {
-  "name": "Yeast Mannoproteins",
-  "lists": [
-   8
-  ]
- },
- {
-  "name": "Calcium Saccharin",
-  "lists": [
-   9
-  ]
- },
- {
   "name": "Monk Fruit Extract",
-  "lists": [
-   9
-  ]
- },
- {
-  "name": "Sodium Saccharin",
   "lists": [
    9
   ]
@@ -934,13 +720,6 @@
   "name": "Modified Vinegar (a liquid or spray-dried mixture containing acetic acid and one or more of potassium acetate, potassium diacetate, sodium acetate or sodium diacetate, prepared by adding potassium bicarbonate or sodium bicarbonate, potassium carbonate or sodium carbonate, or potassium hydroxide or sodium hydroxide to vinegar)",
   "lists": [
    11
-  ]
- },
- {
-  "name": "Monoglyceride Citrate",
-  "lists": [
-   11,
-   15
   ]
  },
  {
