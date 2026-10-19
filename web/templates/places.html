@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, globe, jkey, meter %}
+{% block main %}
+{{ breadcrumbs([("Places", None)]) }}
+<div class="page-head">
+  <h1>Five rulebooks, {{ N_COUNTRIES }} countries</h1>
+  <p class="lede">The five lists on this site set the food additive rules for {{ N_COUNTRIES }} countries: the 27 EU member states, Iceland, Liechtenstein and Norway, the United Kingdom, the United States, Canada, Australia and New Zealand. Each place decides in its own way.</p>
+</div>
+
+<section class="world" aria-labelledby="world-h">
+  <h2 id="world-h" class="sr">Where each list applies</h2>
+  <div class="world-grid">
+    {{ globe() }}
+    <ul class="place-cards">
+      {% for p in places %}{% set j = p.j %}
+      <li>
+        <a class="place-card" href="{{ url(p.path) }}" data-globe-focus="{{ j }}">
+          <span class="pc-code">{{ jkey(j) }}{{ JUR_CODE[j] }}</span>
+          <span class="pc-name">{{ JUR[j].name }}</span>
+          <span class="pc-where">{% if j == 'eu' %}27 member states + Iceland, Liechtenstein, Norway and Northern Ireland{% else %}{{ p.countries|join(', ') }}{% endif %}</span>
+          <span class="pc-stat"><strong data-count="{{ p.counts.yes }}">{{ p.counts.yes }}</strong> of {{ total }} allowed</span>
+          {{ meter(p.counts.yes, total) }}
+          <span class="pc-sys">{{ JUR[j].system }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="reveal" aria-labelledby="sys-h">
+  <h2 id="sys-h">How the five systems differ</h2>
+  <div class="tbl-wrap">
+  <table class="tbl stack-tbl">
+    <thead><tr><th scope="col">Place</th><th scope="col">System</th><th scope="col">Allowed</th><th scope="col">Not allowed</th><th scope="col">Unclear</th><th scope="col">Allowed only there</th></tr></thead>
+    <tbody>
+    {% for p in places %}
+    <tr>
+      <th scope="row"><a href="{{ url(p.path) }}">{{ JUR[p.j].name }}</a></th>
+      <td data-label="System">{{ JUR[p.j].system }}</td>
+      <td data-label="Allowed">{{ p.counts.yes }}</td>
+      <td data-label="Not allowed">{{ p.counts.no }}</td>
+      <td data-label="Unclear">{{ p.counts.unk }}</td>
+      <td data-label="Allowed only there">{{ p.only|length }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <p class="muted small">"Allowed only there" counts additives allowed in that place and in none of the other four. "Unclear" means not on a list that does not cover everything, or no data; it never means banned.</p>
+</section>
+
+<div class="note">
+  <p><strong>Not covered.</strong> Other countries publish additive lists too, but not under terms that clearly allow this site to reuse and republish them automatically, so they are left out rather than covered badly. US state laws are not covered either. See <a href="{{ url('/about/') }}#limits">what this site does not cover</a>.</p>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('explore.js') }}" defer></script>{% endblock %}

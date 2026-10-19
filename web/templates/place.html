@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, globe, jkey, meter, additive_card, chip %}
+{% block main %}
+{% set j = p.j %}
+{{ breadcrumbs([("Places", "/places/"), (JUR[j].name, None)]) }}
+<header class="place-head" style="--pj: var(--jc-{{ j }})">
+  <p class="ph-code" aria-hidden="true">{% for ch in JUR_CODE[j] %}<span style="--i:{{ loop.index0 }}">{{ ch }}</span>{% endfor %}</p>
+  <div>
+    <h1>Food additives in {{ JUR_THE[j] }}</h1>
+    <p class="lede">{{ JUR[j].system_note }}</p>
+    <p class="ph-tags"><span class="tag tag-plain">{{ JUR[j].system }}</span>{% for pub in p.sources|map('extract_pub', sources)|unique %}<span class="tag tag-plain">{{ pub }}</span>{% endfor %}</p>
+  </div>
+</header>
+
+<section class="place-stats" aria-label="Status of the {{ total }} additives tracked here">
+  <a class="pstat ps-ok" href="{{ url('/additives/') }}?allow={{ j }}"><strong data-count="{{ p.counts.yes }}">{{ p.counts.yes }}</strong><span>allowed</span>{{ meter(p.counts.yes, total, 'ok') }}</a>
+  <a class="pstat ps-no" href="{{ url('/additives/') }}?deny={{ j }}"><strong data-count="{{ p.counts.no }}">{{ p.counts.no }}</strong><span>not allowed</span>{{ meter(p.counts.no, total, 'no') }}</a>
+  <div class="pstat ps-unk"><strong data-count="{{ p.counts.unk }}">{{ p.counts.unk }}</strong><span>unclear: not on a list that does not cover everything, or no data</span>{{ meter(p.counts.unk, total, 'unknown') }}</div>
+  <div class="pstat ps-only"><strong data-count="{{ p.only|length }}">{{ p.only|length }}</strong><span>allowed here and in none of the other four</span>{{ meter(p.only|length, total, 'ink') }}</div>
+</section>
+
+<section class="world reveal" aria-labelledby="where-h">
+  <div class="world-grid">
+    {{ globe(focus=j) }}
+    <div>
+      <h2 id="where-h">Where this list applies</h2>
+      <p>{{ p.basis }}</p>
+      <ul class="country-chips">
+        {% for c in p.countries %}<li>{{ jkey(j) }}{{ c }}</li>{% endfor %}
+        {% for c in p.extra %}<li>{{ jkey(j) }}{{ c[0] }} <span class="muted">({{ c[3] }})</span></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="reveal" aria-labelledby="types-h">
+  <h2 id="types-h">Allowed here, by type</h2>
+  <ul class="type-bars">
+    {% for x in p.classes %}
+    <li><a href="{{ url(x.c.path) }}"><span class="tb-name">{{ x.c.name }}</span><span class="tb-n"><strong>{{ x.n }}</strong> of {{ x.c.count }}</span>{{ meter(x.n, x.c.count, 'ok') }}</a></li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% if p.only %}
+<section class="reveal" aria-labelledby="only-h">
+  <h2 id="only-h">Allowed here and in none of the other four places</h2>
+  <p class="muted">{{ p.only|length }} additive{{ '' if p.only|length == 1 else 's' }}. In the other places each one is not allowed, or not on a list that does not cover everything.</p>
+  <div class="card-grid">{% for a in p.only[:24] %}{{ additive_card(a) }}{% endfor %}</div>
+  {% if p.only|length > 24 %}<p><a class="btn btn-ghost btn-sm" href="{{ url('/additives/') }}?allow={{ j }}">See all {{ p.only|length }} in the table</a></p>{% endif %}
+</section>
+{% endif %}
+
+{% if p.missing %}
+<section class="reveal" aria-labelledby="miss-h">
+  <h2 id="miss-h">Allowed in all four other places, but not here</h2>
+  <div class="card-grid">{% for a in p.missing %}{{ additive_card(a) }}{% endfor %}</div>
+</section>
+{% endif %}
+
+{% if p.phase %}
+<section class="reveal" aria-labelledby="phase-h">
+  <h2 id="phase-h">Being phased out here</h2>
+  <ul class="phase-list">{% for a in p.phase %}<li><a href="{{ url('/additive/' ~ a.id ~ '/') }}">{% if a.e %}<span class="enum">{{ a.e }}</span> {% endif %}{{ a.name }}</a> {{ chip('phase_out', True) }} <span class="muted">{{ a.jur[j].headline }}</span></li>{% endfor %}</ul>
+</section>
+{% endif %}
+
+{% if j == 'eu' %}
+{% if eu_legal.conditions %}
+<section class="reveal" aria-labelledby="cond-h">
+  <h2 id="cond-h">What it takes to get on the EU list</h2>
+  <p>{{ eu_legal.conditions.intro }}:</p>
+  <ol class="cond-list">{% for c in eu_legal.conditions['items'] %}<li><span>{{ c[0]|upper }}{{ c[1:] }}.</span></li>{% endfor %}</ol>
+  {% if eu_legal.purposes %}<details class="uses"><summary>{{ eu_legal.purposes.intro }}</summary><ol>{% for c in eu_legal.purposes['items'] %}<li>{{ c[0]|upper }}{{ c[1:] }}.</li>{% endfor %}</ol></details>{% endif %}
+  <p class="muted small">Article 6 of Regulation (EC) No 1333/2008 (consolidated text).</p>
+</section>
+{% endif %}
+{% if eu_legal.warning and eu_legal.warning.colours %}
+<section class="reveal" aria-labelledby="warn-h">
+  <h2 id="warn-h">Six colours that need a warning on the label</h2>
+  <p>Foods that contain any of these colours must say on the label: <strong>“[name or E-number of the colour]: {{ eu_legal.warning.text }}”</strong></p>
+  <ul class="warn-swatches">{% for c in eu_legal.warning.colours %}<li><a href="{{ url('/additive/' ~ c.key ~ '/') }}"><span class="enum">E {{ c.key[1:] }}</span> {{ c.name }}</a></li>{% endfor %}</ul>
+  {% if eu_legal.warning.exceptions %}<p class="muted small">Except: {{ eu_legal.warning.exceptions|join('; ') }}. Annex V of Regulation (EC) No 1333/2008.</p>{% endif %}
+</section>
+{% endif %}
+{% if eu_legal.traditional_foods %}
+<section class="reveal" aria-labelledby="trad-h">
+  <h2 id="trad-h">Traditional foods where countries may keep their own bans</h2>
+  <p>For these {{ eu_legal.traditional_foods|length }} traditional foods, the member states named may continue to prohibit some or all categories of additives.</p>
+  <div class="tbl-wrap"><table class="tbl stack-tbl">
+    <thead><tr><th scope="col">Food</th><th scope="col">Member state</th><th scope="col">Additives that may stay banned</th></tr></thead>
+    <tbody>{% for t in eu_legal.traditional_foods %}<tr><th scope="row">{{ t.food }}</th><td data-label="Member state">{{ t.states|join(', ') }}</td><td data-label="Additives that may stay banned">{{ t.banned }}</td></tr>{% endfor %}</tbody>
+  </table></div>
+  <p class="muted small">Annex IV of Regulation (EC) No 1333/2008.</p>
+</section>
+{% endif %}
+<section class="reveal" aria-labelledby="food-h">
+  <h2 id="food-h">What can go in each kind of food</h2>
+  <p>The EU list sets, for {{ EU_FOOD_TOPS|length }} main groups of foods and their subcategories, which additives may be used and how much. <a href="{{ url('/eu-food/') }}">Browse the EU food categories</a>.</p>
+</section>
+{% endif %}
+
+<section class="reveal" aria-labelledby="src-h">
+  <h2 id="src-h">Official sources for {{ JUR_THE[j] }}</h2>
+  <ul class="src-list">
+    {% for sid in p.sources %}{% set s = sources[sid] %}
+    <li><a href="{{ s.url }}" rel="noopener">{{ s.title }}</a><span class="muted small">{{ s.publisher }} · {{ s.licence }} · last downloaded {{ fmt_date(s.retrieved_at) }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+
+<nav class="other-places" aria-label="Other places">
+  {% for k in JUR_ORDER if k != j %}<a class="pill" href="{{ url('/place/' ~ k ~ '/') }}">{{ jkey(k) }}{{ JUR[k].name }}</a>{% endfor %}
+  <a class="pill" href="{{ url('/compare/') }}?a={{ j }}&amp;b={{ 'us' if j != 'us' else 'eu' }}">Compare with another place</a>
+</nav>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('explore.js') }}" defer></script>{% endblock %}

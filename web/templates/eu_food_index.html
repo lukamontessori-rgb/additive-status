@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, meter %}
+{% block main %}
+{{ breadcrumbs([("EU food categories", None)]) }}
+<div class="page-head">
+  <h1>What can go in each kind of food?</h1>
+  <p class="lede">EU law does not just list additives: it says, food by food, which ones may be used and how much. Here are all {{ n_cats }} food categories of the EU list, from dairy to drinks, each with the additives it may contain.</p>
+</div>
+
+{% if all0 %}
+<a class="food-zero" href="{{ url(all0.path) }}">
+  <span class="fz-code">0</span>
+  <span><strong>{{ all0.name }}</strong><span class="muted"> · {{ all0.n }} additives</span></span>
+</a>
+{% endif %}
+
+<p class="table-filter"><label for="food-filter">Find a food</label> <input id="food-filter" type="search" data-list-filter="food-tops" placeholder="e.g. chocolate, cheese, soft drinks" autocomplete="off"></p>
+<ul class="food-grid" id="food-tops">
+  {% for c in tops %}
+  <li class="food-card" style="--h: {{ (loop.index0 * 47) % 360 }}">
+    <a class="fc-main" href="{{ url(c.path) }}">
+      <span class="fc-code">{{ c.code }}</span>
+      <span class="fc-name">{{ c.name }}</span>
+      <span class="fc-n"><strong data-count="{{ c.n_tree }}">{{ c.n_tree }}</strong> additives listed in this group and its subcategories</span>
+      {{ meter(c.n_tree, vmax, 'ink') }}
+    </a>
+    {% if c.children %}
+    <details class="fc-subs">
+      <summary>{{ c.children|length }} subcategor{{ 'y' if c.children|length == 1 else 'ies' }}</summary>
+      <ul>
+        {% for k in c.children %}<li><a href="{{ url(k.path) }}"><span class="code">{{ k.code }}</span> {{ k.name[:110] }}{% if k.name|length > 110 %}…{% endif %}</a> <span class="muted small">{{ k.n_tree }}</span></li>{% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+<p class="muted small">From Annex II, Parts D and E of Regulation (EC) No 1333/2008 (consolidated version {{ sources.eu_annex2.version if sources.eu_annex2 else '' }}). A count includes every additive listed for the category or one of its subcategories, directly or through a group (Group I to IV). Data checked {{ fmt_date(generated_at) }}.</p>
+{% endblock %}

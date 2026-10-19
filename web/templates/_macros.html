@@ -106,3 +106,21 @@
 {% macro contact(lead="Contact") -%}
 {{ lead }}: {% if OPERATOR.contact_email %}<a href="mailto:{{ OPERATOR.contact_email }}">{{ OPERATOR.contact_email }}</a>{% if REPO_URL %}, or <a href="{{ REPO_URL }}/issues">open an issue on GitHub</a> (public){% endif %}{% elif REPO_URL %}<a href="{{ REPO_URL }}/issues">open an issue on GitHub</a> (issues are public){% else %}through the project's GitHub page{% endif %}.
 {%- endmacro %}
+
+{# A slowly turning globe with a marker for every country where one of the five lists applies. Decorative:
+   the same countries are always listed in text next to it. Drawn by explore.js from GLOBE. #}
+{% macro globe(focus='', label='') -%}
+<figure class="globe-fig" data-globe data-focus="{{ focus }}" aria-hidden="true">
+  <svg class="globe" viewBox="-160 -160 320 320" focusable="false"><circle class="g-sea" r="150"/><g class="g-grid"></g><g class="g-pts"></g><circle class="g-rim" r="150"/></svg>
+  <span class="globe-hint js-only">Drag to turn</span>
+  <script type="application/json" class="globe-data">{{ GLOBE|tojson }}</script>
+</figure>
+{%- endmacro %}
+
+{# Little coloured key for a place, used on globe legends and place cards. #}
+{% macro jkey(j) -%}<span class="jkey jk-{{ j }}" aria-hidden="true"></span>{%- endmacro %}
+
+{# Horizontal bar with an animated fill; value text is always shown. #}
+{% macro meter(n, total, tone_='ok', label=None) -%}
+<span class="meter m-{{ tone_ }}" style="--f: {{ '%.4f'|format(n / total if total else 0) }}"{% if label %} role="img" aria-label="{{ label }}"{% endif %}><i></i></span>
+{%- endmacro %}

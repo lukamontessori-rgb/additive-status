@@ -40,11 +40,13 @@ window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson
     </a>
     {% if not home %}<div class="top-search">{{ search_box('q-top') }}</div>{% endif %}
     <nav class="nav" id="main-nav" aria-label="Main">
-      <a href="{{ url('/additives/') }}"{% if path == '/additives/' %} aria-current="page"{% endif %}>Additives</a>
+      <a href="{{ url('/additives/') }}"{% if path == '/additives/' or path.startswith('/additive/') %} aria-current="page"{% endif %}>Additives</a>
+      <a href="{{ url('/map/') }}"{% if path == '/map/' %} aria-current="page"{% endif %}>Map</a>
+      <a href="{{ url('/places/') }}"{% if path == '/places/' or path.startswith('/place/') %} aria-current="page"{% endif %}>Places</a>
+      <a href="{{ url('/eu-food/') }}"{% if path.startswith('/eu-food/') %} aria-current="page"{% endif %}>Foods</a>
       <a href="{{ url('/compare/') }}"{% if path.startswith('/compare/') %} aria-current="page"{% endif %}>Compare</a>
       <a href="{{ url('/scan/') }}"{% if path == '/scan/' %} aria-current="page"{% endif %}>Label check</a>
       <a href="{{ url('/quiz/') }}"{% if path == '/quiz/' %} aria-current="page"{% endif %}>Quiz</a>
-      <a href="{{ url('/changes/') }}"{% if path == '/changes/' %} aria-current="page"{% endif %}>Changes</a>
       <a href="{{ url('/about/') }}"{% if path == '/about/' %} aria-current="page"{% endif %}>About</a>
       <button class="nav-motion js-only" type="button" data-motion-toggle aria-pressed="false" title="Pause animations">
         <span class="nm-ico" aria-hidden="true">{{ icon('pause', 18) }}{{ icon('play', 18) }}</span><span class="nm-label">Pause animations</span>
@@ -68,12 +70,15 @@ window.SITE={{ dict(base=url('/'), index=SEARCH_INDEX_URL, **site_config)|tojson
     <div class="foot-grid">
       <div class="foot-about">
         <a class="brand" href="{{ url('/') }}"><span class="logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="brand-name">{{ SITE_NAME }}</span></a>
-        <p>Official food additive rules in {{ PLACES }}, side by side. Free to use, with no ads, accounts, cookies or tracking.</p>
+        <p>Official food additive rules in {{ PLACES }} ({{ N_COUNTRIES }} countries), side by side. Free to use, with no ads, accounts, cookies or tracking.</p>
         <p class="small muted">Data checked {{ fmt_date(generated_at) }}. Rechecked every week.</p>
       </div>
       <nav aria-label="Explore">
         <h2>Explore</h2>
         <a href="{{ url('/additives/') }}">All additives</a>
+        <a href="{{ url('/map/') }}">E-number map</a>
+        <a href="{{ url('/places/') }}">Places and their rules</a>
+        <a href="{{ url('/eu-food/') }}">EU food categories</a>
         <a href="{{ url('/compare/') }}">Compare two places</a>
         <a href="{{ url('/changes/') }}">Changes</a>
         <a href="{{ url('/additives/') }}" data-random>Random additive</a>

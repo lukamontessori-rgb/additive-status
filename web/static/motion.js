@@ -116,7 +116,8 @@
   // ------------------------------------------------------------ reveals (entrances when things scroll into view)
   const STAGGER = [".card-grid", ".type-list", ".legal-cards", ".dl-grid", ".pair-grid", ".count-strip", ".who-grid",
     ".pipeline", ".check-list", ".gloss", ".toc", ".defs", ".lic", ".legend-strip", ".foot-grid", ".try", ".a-tags",
-    ".prose > ul:not(.check-list)", ".prose > ol", ".sb-legend", ".heat-key", ".quiz-rules"];
+    ".prose > ul:not(.check-list)", ".prose > ol", ".sb-legend", ".heat-key", ".quiz-rules", ".place-cards", ".type-bars",
+    ".food-grid", ".country-chips", ".cond-list", ".warn-swatches", ".place-stats", ".spec-grid", ".limit-bars", ".pill-list"];
   const SOLO = [".panel", ".note", ".cta-quiz", ".tbl-wrap:not(.heat-wrap)", ".overview", ".answer", "details.uses", ".jur-details",
     ".prose > p", ".prose > dl", ".prose > .tbl-wrap", ".cmp-tool", ".empty", ".statement", ".foot-legal", ".checked"];
   const rio = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => {
@@ -176,7 +177,7 @@
       if (vis.get(h)) return;
       if (h.classList.contains("foot-mark") || splitWords(h)) watch(h, "split", false);
     });
-    $$(".sbars, .heat, .vcols, .timeline").forEach((el) => { if (rio) { el.__rv = "chart"; rio.observe(el); } else el.classList.add("in"); });
+    $$(".sbars, .heat, .vcols, .timeline, .meter, .spectrum, .minimap").forEach((el) => { if (rio) { el.__rv = "chart"; rio.observe(el); } else el.classList.add("in"); });
     $$("[data-count]").forEach((n) => { if (!n.closest(".reveal, [data-stagger], [data-solo]") && rio) { n.__rv = "count"; rio.observe(n); } });
   }
 
@@ -897,7 +898,7 @@
     setupIntro(); setupHero(); setupStory(); setupPointer(); setupTransitions();
     const idle = window.requestIdleCallback || ((f) => setTimeout(f, 120));
     idle(() => { setupBand(); setupScrub(); setupSideways(); setupStack(); setupTimelines(); kick(); }, { timeout: 600 });
-    listeners.push(() => $$(".reveal, [data-stagger], [data-solo], .split-h, .sbars, .heat, .vcols, .timeline").forEach((el) => el.classList.add("in")));
+    listeners.push(() => $$(".reveal, [data-stagger], [data-solo], .split-h, .sbars, .heat, .vcols, .timeline, .meter, .spectrum, .minimap").forEach((el) => el.classList.add("in")));
     let rq = 0;
     const later = () => { cancelAnimationFrame(rq); rq = requestAnimationFrame(remeasure); };
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);

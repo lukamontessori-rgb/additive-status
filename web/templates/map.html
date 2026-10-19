@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_macros.html" import breadcrumbs, chip, elem %}
+{% block main %}
+{{ breadcrumbs([("E-number map", None)]) }}
+<div class="page-head">
+  <h1>The E-number map</h1>
+  <p class="lede">Every one of the {{ n }} numbered additives on this site, in number order, the way a chemist lays out the elements. Pick a place and the map recolours itself. Select a tile to open the additive.</p>
+</div>
+
+<div class="emap" id="emap" data-emap data-place="all">
+  <div class="emap-bar">
+    <div class="emap-tabs" role="group" aria-label="Colour the map by place">
+      <button type="button" class="tog" data-map-place="all" aria-pressed="true">All five</button>
+      {% for j in JUR_ORDER %}<button type="button" class="tog" data-map-place="{{ j }}" aria-pressed="false" title="{{ JUR[j].name }}">{{ JUR_CODE[j] }}</button>{% endfor %}
+    </div>
+    <p class="emap-legend" aria-hidden="true">
+      <span><i class="lg lg-ok"></i>Allowed</span><span><i class="lg lg-warn"></i>Phase-out</span><span><i class="lg lg-no"></i>Not allowed</span><span><i class="lg lg-unknown"></i>Not listed / no data</span>
+    </p>
+    <p class="emap-summary small" aria-live="polite" data-map-summary>In the "All five" view, each tile shows five bars, one per place, in the order {% for j in JUR_ORDER %}{{ JUR_CODE[j] }}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+  </div>
+  {% set ns = namespace(i=0) %}
+  {% for b in bands %}
+  <section class="eband" aria-labelledby="band-{{ b.band }}">
+    <h2 id="band-{{ b.band }}" class="eband-h"><span class="eb-range">{{ b.label }}</span>{% if b.mostly %}<span class="eb-mostly">mostly {% for c, k in b.mostly %}{{ c|lower }} ({{ k }}){% if not loop.last %}, {% endif %}{% endfor %}</span>{% endif %}<span class="eb-n">{{ b.n }}</span></h2>
+    <ul class="etiles">
+      {% for t in b['items'] %}{% set a = t.a %}{% set ns.i = ns.i + 1 %}
+      <li><a class="et{% if t.ins_only %} et-ins{% endif %}" href="{{ url('/additive/' ~ a.id ~ '/') }}" style="--i: {{ ns.i }}"{% for j in JUR_ORDER %} data-{{ j }}="{{ t.t[loop.index0] }}"{% endfor %}
+          aria-label="{{ 'E ' if not t.ins_only else 'INS ' }}{{ t.code }} {{ a.name }}: {% for j in JUR_ORDER %}{{ JUR_CODE[j] }} {{ STATUSES[status_of(a, j)][1] }}{% if not loop.last %}, {% endif %}{% endfor %}">
+        <b class="et-code">{{ t.code }}</b><span class="et-name">{{ t.short }}</span>
+        <span class="et-bars" aria-hidden="true">{% for x in t.t %}<i class="bt-{{ x }}"></i>{% endfor %}</span>
+      </a></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+</div>
+<p class="muted small">Tiles with a dashed edge have no E-number: they are known by their international (INS) number from the Canadian, US or Australia/New Zealand lists. Data checked {{ fmt_date(generated_at) }}. <a href="{{ url('/about/') }}#statuses">What the statuses mean</a>.</p>
+{% endblock %}
+{% block scripts %}<script src="{{ asset('explore.js') }}" defer></script>{% endblock %}
