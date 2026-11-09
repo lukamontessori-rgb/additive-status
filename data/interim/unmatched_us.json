@@ -3867,22 +3867,6 @@
   ]
  },
  {
-  "name": "CURDLAN",
-  "cas": [
-   "54724-00-4"
-  ],
-  "cfr": [
-   "172.809"
-  ],
-  "status": "authorised",
-  "effects": [
-   "Formulation aid",
-   "Processing aid",
-   "Stabilizer or thickener",
-   "Texturizer"
-  ]
- },
- {
   "name": "CYCLOHEXANE",
   "cas": [
    "110-82-7"

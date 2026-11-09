@@ -1,9 +1,9 @@
 {
  "us": {
-  "unmatched": 3644,
+  "unmatched": 3643,
   "name": 188,
   "excluded by review": 8,
-  "CAS": 13,
+  "CAS": 14,
   "reviewed": 69,
   "alternative": 35,
   "Colour": 13
@@ -18,6 +18,7 @@
   "FD&C RED NO. 3: 2025-00830 (2027-01-15)"
  ],
  "us_only_not_found_or_matched": [
+  "CURDLAN",
   "ORANGE B"
  ]
 }
