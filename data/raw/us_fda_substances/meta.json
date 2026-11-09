@@ -2,7 +2,7 @@
  "title": "Substances Added to Food inventory (formerly EAFUS)",
  "publisher": "U.S. Food and Drug Administration",
  "licence": "U.S. Government work (not subject to copyright in the United States)",
- "last_attempt": "2026-11-02T05:19:39+00:00",
+ "last_attempt": "2026-11-09T12:59:41+00:00",
  "files": {
   "substances.xls": {
    "url": "https://www.hfpappexternal.fda.gov/scripts/fdcc/cfc/XMLService.cfm?method=downloadxls&set=FoodSubstances",
@@ -10,12 +10,12 @@
    "content_type": "application/vnd.ms-excel;charset=UTF-8",
    "bytes": 1456112,
    "stored_as": "substances.xls.gz",
-   "sha256": "e7bc72b06f91326390b75c01ffd829740c43bd0e25f8f63c361b50f39a3225e8",
-   "fingerprint": "e7bc72b06f91326390b75c01ffd829740c43bd0e25f8f63c361b50f39a3225e8",
-   "fetched_at": "2026-11-02T05:19:42+00:00",
-   "content_changed_at": "2026-11-02T05:19:42+00:00"
+   "sha256": "28982bca11561b5be749da9cfadd4ca4b319f96810d9635aa7591ed5d5ddce84",
+   "fingerprint": "28982bca11561b5be749da9cfadd4ca4b319f96810d9635aa7591ed5d5ddce84",
+   "fetched_at": "2026-11-09T12:59:44+00:00",
+   "content_changed_at": "2026-11-09T12:59:44+00:00"
   }
  },
- "last_success": "2026-11-02T05:19:42+00:00",
+ "last_success": "2026-11-09T12:59:44+00:00",
  "last_error": null
 }
