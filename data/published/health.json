@@ -1,10 +1,10 @@
 {
- "at": "2026-11-09T13:00:59+00:00",
+ "at": "2026-11-16T12:54:30+00:00",
  "problems": [],
  "counts": {
   "eu_annex2": 339,
   "us_fda_substances": 3970,
-  "ca_lists": 454,
+  "ca_lists": 455,
   "uk_fsa": 333,
   "eu_specs": 386,
   "anz_code": 310
@@ -19,7 +19,7 @@
   "Colour": 13
  },
  "ca_match": {
-  "name": 230,
+  "name": 231,
   "reviewed": 71,
   "unmatched": 126,
   "own entry": 27

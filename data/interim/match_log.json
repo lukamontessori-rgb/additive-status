@@ -9,13 +9,16 @@
   "Colour": 13
  },
  "ca": {
-  "name": 230,
+  "name": 231,
   "reviewed": 71,
   "unmatched": 126,
   "own entry": 27
  },
  "revocations_applied": [
-  "FD&C RED NO. 3: 2025-00830 (2027-01-15)"
+  "ETHYLENE DICHLORIDE: 2026-22865 (2027-01-11)",
+  "FD&C RED NO. 3: 2025-00830 (2027-01-15)",
+  "METHYLENE CHLORIDE: 2026-22865 (2027-01-11)",
+  "TRICHLOROETHYLENE: 2026-22865 (2027-01-11)"
  ],
  "us_only_not_found_or_matched": [
   "CURDLAN",

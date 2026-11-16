@@ -4766,7 +4766,7 @@
    "177.1585",
    "177.2550"
   ],
-  "status": "authorised",
+  "status": "phase_out",
   "effects": [
    "Fumigant"
   ]
@@ -8251,7 +8251,7 @@
    "177.1580",
    "177.1585"
   ],
-  "status": "authorised",
+  "status": "phase_out",
   "effects": [
    "Color or coloring adjunct",
    "Flavor enhancer",
@@ -13395,7 +13395,7 @@
    "175.105",
    "177.1960"
   ],
-  "status": "authorised",
+  "status": "phase_out",
   "effects": [
    "Solvent or vehicle"
   ]
